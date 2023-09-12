@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "276864239924",
+    "project_id": "barta-a-messenger-app",
+    "storage_bucket": "barta-a-messenger-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:276864239924:android:ebf87f528702cfd2fc3d61",
+        "android_client_info": {
+          "package_name": "com.example.barta_a_messenger_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnsvcP0tYc1_vRfCqH68iywscCzgYQxFU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

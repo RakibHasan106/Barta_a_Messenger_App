@@ -13,6 +13,16 @@
         android:theme="@style/Theme.Barta_a_Messenger_App"
         tools:targetApi="31">
         <activity
+            android:name=".VerifyOTPActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".SendOTPActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity
             android:name=".LoginPageActivity"
             android:exported="true">
             <intent-filter>

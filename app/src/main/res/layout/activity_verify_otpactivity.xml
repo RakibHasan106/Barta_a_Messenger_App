@@ -34,7 +34,7 @@
             android:layout_marginEnd="50dp"
             android:layout_marginTop="8dp"
             android:gravity="center"
-            android:text="Enter the OTP sent to"
+            android:text="Enter the OTP sent via messege"
             android:textSize="14sp"/>
 
 <!--        <TextView-->

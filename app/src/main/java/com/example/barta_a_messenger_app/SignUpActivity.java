@@ -27,9 +27,24 @@ public class SignUpActivity extends AppCompatActivity {
         sendOTPButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SignUpActivity.this, SendOTPActivity.class);
-                intent.putExtra("phone",phone.getText().toString());
-                startActivity(intent);
+                //if the edittexts are empty then set error , else change the activity.
+
+                if(phone.getText().toString().isEmpty()==true){
+                    phone.setError("not filled");
+                }
+                if(name.getText().toString().isEmpty()==true){
+                    name.setError("not filled");
+                }
+                if(password.getText().toString().isEmpty()==true){
+                    password.setError("not filled");
+                }
+                if(!phone.getText().toString().isEmpty() && !name.getText().toString().isEmpty() && !password.getText().toString().isEmpty()){
+                    Intent intent = new Intent(SignUpActivity.this, SendOTPActivity.class);
+                    intent.putExtra("phone",phone.getText().toString());
+                    intent.putExtra("name",name.getText().toString());
+                    intent.putExtra("password",password.getText().toString());
+                    startActivity(intent);
+                }
             }
         });
 

@@ -57,7 +57,8 @@
             android:orientation="horizontal">
 
             <com.hbb20.CountryCodePicker
-                android:layout_width="wrap_content"
+                android:id="@+id/countrypicker"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 app:ccp_defaultPhoneCode="880"
                 />
@@ -65,7 +66,7 @@
 
             <EditText
                 android:id="@+id/inputMobile"
-                android:layout_width="150dp"
+                android:layout_width="170dp"
                 android:layout_height="40dp"
                 android:inputType="number"
                 android:textSize="16sp"
@@ -80,6 +81,7 @@
 <!--                android:layout_marginEnd="70dp"-->
 <!--                android:background="#03A7FF"/>-->
             <Button
+                android:id="@+id/getotpbutton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="30dp"

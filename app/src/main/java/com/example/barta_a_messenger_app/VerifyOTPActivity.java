@@ -69,7 +69,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
 
     }
     void sendOtp(String phoneNumber,boolean isResend){
-        startResendTimer();
+        //startResendTimer();
         setInProgress(true);
         PhoneAuthOptions.Builder builder =
                 PhoneAuthOptions.newBuilder(mAuth)
@@ -119,24 +119,24 @@ public class VerifyOTPActivity extends AppCompatActivity {
         setInProgress(true);
     }
 
-    void startResendTimer(){
-//        resendButton.setActivated(false);
-//        Timer timer = new Timer();
-//        timer.scheduleAtFixedRate(new TimerTask() {
-//            @Override
-//            public void run() {
-//                timeoutSeconds--;
-//                resendButton.setText("Resend OTP in "+timeoutSeconds +" seconds");
-//                if(timeoutSeconds<=0){
-//                    timeoutSeconds =60L;
-//                    timer.cancel();
-//                    runOnUiThread(() -> {
-//                        resendButton.setActivated(true);
-//                    });
-//                }
-//            }
-//        },0,1000);
-    }
+//    void startResendTimer(){
+////        resendButton.setActivated(false);
+////        Timer timer = new Timer();
+////        timer.scheduleAtFixedRate(new TimerTask() {
+////            @Override
+////            public void run() {
+////                timeoutSeconds--;
+////                resendButton.setText("Resend OTP in "+timeoutSeconds +" seconds");
+////                if(timeoutSeconds<=0){
+////                    timeoutSeconds =60L;
+////                    timer.cancel();
+////                    runOnUiThread(() -> {
+////                        resendButton.setActivated(true);
+////                    });
+////                }
+////            }
+////        },0,1000);
+//    }
 
 
 }

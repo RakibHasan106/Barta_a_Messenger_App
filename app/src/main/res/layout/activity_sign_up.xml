@@ -76,6 +76,7 @@
                 android:textStyle="bold"/>
 
             <EditText
+                android:id="@+id/phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="phone"
@@ -93,6 +94,7 @@
                 android:textStyle="bold"/>
 
             <EditText
+                android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
@@ -110,6 +112,7 @@
                 android:textStyle="bold"/>
 
             <EditText
+                android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
@@ -121,13 +124,15 @@
                 android:layout_height="10dp"/>
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/otpsendbutton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:text="Sign Up"
+                android:text="Send OTP"
                 app:cornerRadius="32dp"/>
 
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/loginbutton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:backgroundTint="#745F9A"

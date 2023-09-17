@@ -122,12 +122,14 @@
                 android:layout_height="10dp"/>
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/loginbutton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:text="Login"
                 app:cornerRadius="32dp"/>
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/signupbutton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:text="SignUp"

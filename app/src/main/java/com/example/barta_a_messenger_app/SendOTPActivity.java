@@ -41,6 +41,7 @@ public class SendOTPActivity extends AppCompatActivity {
                 if(!countryCodePicker.isValidFullNumber()){
                     phoneNumber.setError("Invalid phone number");
                 }
+
                 else{
                     Intent intent = new Intent(SendOTPActivity.this, VerifyOTPActivity.class);
                     intent.putExtra("phone",countryCodePicker.getFullNumberWithPlus());

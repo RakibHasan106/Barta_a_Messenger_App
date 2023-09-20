@@ -97,7 +97,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
         }.start();
 
 
-        sendOtp(phoneNumber,true);
+        sendOtp(phoneNumber);
 
         verifyButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,6 +120,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
             public void onClick(View view) {
                 timer.setVisibility(View.VISIBLE);
                 resendButton.setEnabled(false);
+                sendOtp(phoneNumber);
                 new CountDownTimer(60000, 1000) {
                     public void onTick(long millisUntilFinished) {
                         // This method will be called every second until the timer is finished
@@ -144,11 +145,11 @@ public class VerifyOTPActivity extends AppCompatActivity {
 
 
     }
-    void sendOtp(String phoneNumber,boolean isResend){
+    void sendOtp(String phoneNumber){
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-                Toast.makeText(VerifyOTPActivity.this,"OTP verification successfull!",Toast.LENGTH_SHORT);
+                Toast.makeText(VerifyOTPActivity.this,"OTP verification successfull!",Toast.LENGTH_SHORT).show();
                 signin(phoneAuthCredential);
                 Intent intent = new Intent(VerifyOTPActivity.this,HomeScreen.class);
                 startActivity(intent);
@@ -156,7 +157,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
 
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
-                Toast.makeText(VerifyOTPActivity.this,"OTP verification not successfull!",Toast.LENGTH_SHORT);
+                Toast.makeText(VerifyOTPActivity.this,e.toString(),Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
 
@@ -165,7 +166,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
                 super.onCodeSent(verificationId, forceResendingToken);
                 mVerificationId = verificationId;
                 mResendToken = forceResendingToken;
-                Toast.makeText(VerifyOTPActivity.this,"OTP sent successfully",Toast.LENGTH_SHORT);
+                Toast.makeText(VerifyOTPActivity.this,"OTP sent successfully",Toast.LENGTH_SHORT).show();
             }
         };
 

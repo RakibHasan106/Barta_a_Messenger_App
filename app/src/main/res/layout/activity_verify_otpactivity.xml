@@ -37,6 +37,18 @@
             android:text="Enter the OTP sent via messege"
             android:textSize="14sp"/>
 
+        <TextView
+            android:id="@+id/error_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="Fill all the box"
+            android:textColor="#E53935"
+            android:visibility="gone"
+            android:textSize="14sp"/>
+
+
 <!--        <TextView-->
 <!--            android:layout_width="match_parent"-->
 <!--            android:layout_height="wrap_content"-->
@@ -50,7 +62,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -118,6 +130,17 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 tools:ignore="LabelFor" />
+            <EditText
+                android:id="@+id/inputCode6"
+                android:layout_width="40dp"
+                android:layout_height="45dp"
+                android:gravity="center"
+                android:imeOptions="actionNext"
+                android:importantForAutofill="no"
+                android:inputType="number"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                tools:ignore="LabelFor" />
 
         </LinearLayout>
 
@@ -128,6 +151,15 @@
 <!--            android:layout_marginTop="2dp"-->
 <!--            android:layout_marginEnd="70dp"-->
 <!--            android:background="#03A7FF"/>-->
+        <TextView
+            android:id="@+id/timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="00:59"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            />
         <Button
             android:id="@+id/verifybutton"
             android:layout_width="match_parent"
@@ -142,7 +174,8 @@
             android:id="@+id/resendbutton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="30dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:backgroundTint="#A382DD"
             android:background="@drawable/background_button"
             android:text="Resend"

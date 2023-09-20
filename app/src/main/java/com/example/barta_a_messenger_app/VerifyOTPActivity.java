@@ -150,6 +150,8 @@ public class VerifyOTPActivity extends AppCompatActivity {
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
                 Toast.makeText(VerifyOTPActivity.this,"OTP verification successfull!",Toast.LENGTH_SHORT);
                 signin(phoneAuthCredential);
+                Intent intent = new Intent(VerifyOTPActivity.this,HomeScreen.class);
+                startActivity(intent);
             }
 
             @Override
@@ -259,7 +261,9 @@ public class VerifyOTPActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             //Successful Verification
-                            FirebaseUser user = task.getResult().getUser();
+//                            FirebaseUser user = task.getResult().getUser();
+                            Intent intent = new Intent(VerifyOTPActivity.this,HomeScreen.class);
+                            startActivity(intent);
 
                             //User is signed in
                         }

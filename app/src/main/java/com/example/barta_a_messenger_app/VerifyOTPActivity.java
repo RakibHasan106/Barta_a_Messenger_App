@@ -160,6 +160,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
 
             @Override
             public void onCodeSent(@NonNull String verificationId, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                super.onCodeSent(verificationId, forceResendingToken);
                 mVerificationId = verificationId;
                 mResendToken = forceResendingToken;
                 Toast.makeText(VerifyOTPActivity.this,"OTP sent successfully",Toast.LENGTH_SHORT);

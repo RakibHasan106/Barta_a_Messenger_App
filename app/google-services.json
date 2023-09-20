@@ -12,7 +12,20 @@
           "package_name": "com.example.barta_a_messenger_app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "276864239924-fhu3705u5sugvf2ghqobfpiq03vaak0j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.barta_a_messenger_app",
+            "certificate_hash": "c77bec01237e2c5fd7b3a703c97fc09e3b84b302"
+          }
+        },
+        {
+          "client_id": "276864239924-k269711r5u6jl6m539cq6en155ltisfn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCnsvcP0tYc1_vRfCqH68iywscCzgYQxFU"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "276864239924-k269711r5u6jl6m539cq6en155ltisfn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

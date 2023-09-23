@@ -15,7 +15,13 @@
         android:theme="@style/Theme.Barta_a_Messenger_App"
         tools:targetApi="31">
         <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ProfileActivity"
+
             android:name=".InboxActivity"
+
             android:exported="false" />
         <activity
             android:name=".HomeScreen"

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -14,7 +15,11 @@
         android:theme="@style/Theme.Barta_a_Messenger_App"
         tools:targetApi="31">
         <activity
-            android:name=".HomeScreen"            android:exported="false" />
+            android:name=".InboxActivity"
+            android:exported="false" />
+        <activity
+            android:name=".HomeScreen"
+            android:exported="false" />
         <activity
             android:name=".SplashScreenActivity"
             android:exported="true">

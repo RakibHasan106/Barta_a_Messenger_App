@@ -76,6 +76,8 @@ public class VerifyOTPActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressbar);
 
+        //mAuth.getFirebaseAuthSettings().setAppVerificationDisabledForTesting(true);
+
 
         //timer for otp send
         new CountDownTimer(60000, 1000) {
@@ -154,8 +156,8 @@ public class VerifyOTPActivity extends AppCompatActivity {
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
                 Toast.makeText(VerifyOTPActivity.this,"OTP verification successfull!",Toast.LENGTH_SHORT).show();
                 linkWithCurrentUser(phoneAuthCredential);
-                Intent intent = new Intent(VerifyOTPActivity.this,HomeScreen.class);
-                startActivity(intent);
+//                Intent intent = new Intent(VerifyOTPActivity.this,HomeScreen.class);
+//                startActivity(intent);
             }
 
             @Override
@@ -269,13 +271,13 @@ public class VerifyOTPActivity extends AppCompatActivity {
 //                            Toast.makeText(VerifyOTPActivity.this,"account linked successfully!",Toast.LENGTH_SHORT).show();
 
                             Intent intent = new Intent(VerifyOTPActivity.this,HomeScreen.class);
-//                            startActivity(intent);
+                            startActivity(intent);
                         }
                         else{
                             Log.w(TAG, "linkWithCredential:failure",task.getException());
                             Toast.makeText(VerifyOTPActivity.this, "Authentication Failed!", Toast.LENGTH_SHORT).show();
                         }
-                        
+
                     }
                 });
     }

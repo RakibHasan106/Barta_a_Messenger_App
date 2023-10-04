@@ -8,9 +8,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -30,21 +33,48 @@ public class LoginPageActivity extends AppCompatActivity{
     Button loginButton, signupButton;
     ImageView googleButton;
 
+    EditText email,password;
+
     GoogleSignInOptions gso;
 
     GoogleSignInClient gsc;
 
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_page);
+
+        email = findViewById(R.id.email);
+        password = findViewById(R.id.password);
+
+        loginButton = findViewById(R.id.loginbutton);
+        signupButton = findViewById(R.id.signupbutton);
 
         googleButton = findViewById(R.id.googleButton);
 
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
 
         gsc = GoogleSignIn.getClient(this,gso);
+
+
+        password.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_RIGHT = 2; // Index of drawableEnd
+
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (event.getRawX() >= (password.getRight() - password.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        // Handle the click on the drawableEnd here
+                        // For example, toggle the password visibility
+                        togglePasswordVisibility(password);
+                        return true; // Consume the touch event
+                    }
+                }
+                return false; // Let the EditText handle the touch event
+            }
+        });
 
 
         googleButton.setOnClickListener(new View.OnClickListener() {
@@ -54,8 +84,7 @@ public class LoginPageActivity extends AppCompatActivity{
             }
         });
 
-        loginButton = findViewById(R.id.loginbutton);
-        signupButton = findViewById(R.id.signupbutton);
+
 
         signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,7 +93,23 @@ public class LoginPageActivity extends AppCompatActivity{
                 startActivity(intent);
             }
         });
+
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
+
+    private void togglePasswordVisibility(EditText editText) {
+        if (editText.getInputType() == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
+            editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        } else {
+            editText.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+        }
+    }
+
 
 
     private void signOut() {

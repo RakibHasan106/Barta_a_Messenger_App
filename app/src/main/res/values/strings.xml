@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Barta_a_Messenger_App</string>
+    <string name="title_activity_add_friend">AddFriendActivity</string>
 </resources>

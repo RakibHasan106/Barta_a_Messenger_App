@@ -1,5 +1,7 @@
 package com.example.barta_a_messenger_app;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -7,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -26,7 +29,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginPageActivity extends AppCompatActivity{
 
@@ -38,6 +45,8 @@ public class LoginPageActivity extends AppCompatActivity{
     GoogleSignInOptions gso;
 
     GoogleSignInClient gsc;
+
+    FirebaseAuth mAuth;
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -57,6 +66,8 @@ public class LoginPageActivity extends AppCompatActivity{
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
 
         gsc = GoogleSignIn.getClient(this,gso);
+
+        mAuth = FirebaseAuth.getInstance();
 
 
         password.setOnTouchListener(new View.OnTouchListener() {
@@ -80,11 +91,24 @@ public class LoginPageActivity extends AppCompatActivity{
         googleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signIn();
+                signInwithGoogle();
             }
         });
 
-
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(email.getText().toString().isEmpty()==true){
+                    email.setError("required");
+                }
+                if(password.getText().toString().isEmpty()==true){
+                    password.setError("password empty");
+                }
+                if(!email.getText().toString().isEmpty() &&  !password.getText().toString().isEmpty()){
+                    signInwithEmailPassword(email.getText().toString(),password.getText().toString());
+                }
+            }
+        });
 
         signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,12 +118,18 @@ public class LoginPageActivity extends AppCompatActivity{
             }
         });
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-            }
-        });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null){
+            Intent intent = new Intent(LoginPageActivity.this,HomeScreen.class);
+            startActivity(intent);
+        }
     }
 
     private void togglePasswordVisibility(EditText editText) {
@@ -116,9 +146,29 @@ public class LoginPageActivity extends AppCompatActivity{
         // Implement sign out logic here
     }
 
-    private void signIn() {
+    private void signInwithGoogle() {
         Intent signInIntent = gsc.getSignInIntent();
         startActivityForResult(signInIntent,1000);
+    }
+
+
+    void signInwithEmailPassword(String mail,String pass){
+        mAuth.signInWithEmailAndPassword(mail,pass).addOnCompleteListener(this,new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    Log.d(TAG,"signInWithEmail:success");
+                    FirebaseUser user = mAuth.getCurrentUser();
+
+                    Intent intent = new Intent(LoginPageActivity.this,HomeScreen.class);
+                    startActivity(intent);
+                }
+                else{
+                    Log.w(TAG,"signInWithEmail:Failed",task.getException());
+                    Toast.makeText(LoginPageActivity.this,"Email Or Password is Wrong",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override

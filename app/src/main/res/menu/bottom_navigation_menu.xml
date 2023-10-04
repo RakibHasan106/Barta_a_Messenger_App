@@ -10,7 +10,6 @@
         android:id="@+id/menu_profile"
         />
     <item android:title="Settings"
-        android:icon="@drawable/settings_icon"
         android:id="@+id/menu_settings"
         />
 </menu>

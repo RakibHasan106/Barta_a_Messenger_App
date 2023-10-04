@@ -34,13 +34,12 @@ public class SendOTPActivity extends AppCompatActivity {
         getOtpButton = findViewById(R.id.getotpbutton);
         countryCodePicker = findViewById(R.id.countrypicker);
 
-        String phone,name,password;
+        String email,name,password;
 
-        phone = getIntent().getStringExtra("phone");
+        email = getIntent().getStringExtra("email");
         name = getIntent().getStringExtra("name");
         password = getIntent().getStringExtra("password");
 
-        phoneNumber.setText(phone);
 
         countryCodePicker.registerCarrierNumberEditText(phoneNumber);
         getOtpButton.setOnClickListener(new View.OnClickListener() {
@@ -53,6 +52,7 @@ public class SendOTPActivity extends AppCompatActivity {
                 else{
 
                     Intent intent = new Intent(SendOTPActivity.this, VerifyOTPActivity.class);
+                    intent.putExtra("email",email);
                     intent.putExtra("phone",countryCodePicker.getFullNumberWithPlus());
                     intent.putExtra("name",name);
                     intent.putExtra("password",password);

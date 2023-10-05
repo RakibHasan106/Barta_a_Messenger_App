@@ -1,11 +1,14 @@
 package com.example.barta_a_messenger_app;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -72,6 +75,8 @@ public class VerifyOTPActivity extends AppCompatActivity {
         resendButton.setEnabled(false);
 
         progressBar = findViewById(R.id.progressbar);
+
+        //mAuth.getFirebaseAuthSettings().setAppVerificationDisabledForTesting(true);
 
 
         //timer for otp send
@@ -150,9 +155,9 @@ public class VerifyOTPActivity extends AppCompatActivity {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
                 Toast.makeText(VerifyOTPActivity.this,"OTP verification successfull!",Toast.LENGTH_SHORT).show();
-                signin(phoneAuthCredential);
-                Intent intent = new Intent(VerifyOTPActivity.this,HomeScreen.class);
-                startActivity(intent);
+                linkWithCurrentUser(phoneAuthCredential);
+//                Intent intent = new Intent(VerifyOTPActivity.this,HomeScreen.class);
+//                startActivity(intent);
             }
 
             @Override
@@ -251,28 +256,50 @@ public class VerifyOTPActivity extends AppCompatActivity {
 
     void verifyotp(){
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId,typedOTP);
-        signin(credential);
-
+//        signin(credential);
+        linkWithCurrentUser(credential);
     }
 
-    void signin(PhoneAuthCredential credential){
-        mAuth.signInWithCredential(credential)
+    void linkWithCurrentUser(PhoneAuthCredential credential){
+        mAuth.getCurrentUser().linkWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            //Successful Verification
-//                            FirebaseUser user = task.getResult().getUser();
+                            Log.d(TAG, "linkWithCredential:Success");
+                            FirebaseUser user = task.getResult().getUser();
+//                            Toast.makeText(VerifyOTPActivity.this,"account linked successfully!",Toast.LENGTH_SHORT).show();
+
                             Intent intent = new Intent(VerifyOTPActivity.this,HomeScreen.class);
                             startActivity(intent);
-
-                            //User is signed in
                         }
                         else{
-                            Exception e = task.getException();
+                            Log.w(TAG, "linkWithCredential:failure",task.getException());
+                            Toast.makeText(VerifyOTPActivity.this, "Authentication Failed!", Toast.LENGTH_SHORT).show();
                         }
+
                     }
                 });
     }
+
+//    void signin(PhoneAuthCredential credential){
+//        mAuth.signInWithCredential(credential)
+//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<AuthResult> task) {
+//                        if(task.isSuccessful()){
+//                            //Successful Verification
+////                            FirebaseUser user = task.getResult().getUser();
+//                            Intent intent = new Intent(VerifyOTPActivity.this,HomeScreen.class);
+//                            startActivity(intent);
+//
+//                            //User is signed in
+//                        }
+//                        else{
+//                            Exception e = task.getException();
+//                        }
+//                    }
+//                });
+//    }
 
 }

@@ -49,6 +49,8 @@ public class LoginPageActivity extends AppCompatActivity{
     FirebaseAuth mAuth;
 
 
+
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {

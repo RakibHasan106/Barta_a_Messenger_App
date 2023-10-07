@@ -80,6 +80,8 @@ public class SignUpActivity extends AppCompatActivity {
                             Log.d(TAG, "New User Created Successfully!");
                             FirebaseUser user = mAuth.getCurrentUser();
 
+                            user.delete();
+
                             Intent intent = new Intent(SignUpActivity.this, SendOTPActivity.class);
                             intent.putExtra("email",mail);
                             intent.putExtra("name",name.getText().toString());

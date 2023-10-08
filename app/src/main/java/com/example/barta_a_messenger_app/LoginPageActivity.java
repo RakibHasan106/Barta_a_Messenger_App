@@ -115,24 +115,6 @@ public class LoginPageActivity extends AppCompatActivity{
                 });
 
 
-        password.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_RIGHT = 2; // Index of drawableEnd
-
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (event.getRawX() >= (password.getRight() - password.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        // Handle the click on the drawableEnd here
-                        // For example, toggle the password visibility
-                        togglePasswordVisibility(password);
-                        return true; // Consume the touch event
-                    }
-                }
-                return false; // Let the EditText handle the touch event
-            }
-        });
-
-
         googleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -181,13 +163,6 @@ public class LoginPageActivity extends AppCompatActivity{
         }
     }
 
-    private void togglePasswordVisibility(EditText editText) {
-        if (editText.getInputType() == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
-            editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        } else {
-            editText.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-        }
-    }
 
 
 

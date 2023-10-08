@@ -5,9 +5,12 @@ import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,8 +19,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.identity.BeginSignInRequest;
-import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
@@ -28,8 +29,6 @@ import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public class VerifyOTPActivity extends AppCompatActivity {
@@ -38,7 +37,8 @@ public class VerifyOTPActivity extends AppCompatActivity {
     EditText editText1,editText2,editText3,editText4,editText5,editText6;
     TextView timer,errorView;
 
-    ProgressBar progressBar;
+
+    ProgressDialog progressDialog;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     PhoneAuthProvider.ForceResendingToken mResendToken;
@@ -75,11 +75,12 @@ public class VerifyOTPActivity extends AppCompatActivity {
         verifyButton = findViewById(R.id.verifybutton);
         resendButton = findViewById(R.id.resendbutton);
 
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Verifying...");
+        progressDialog.setCancelable(false);
+
         resendButton.setEnabled(false);
 
-        progressBar = findViewById(R.id.progressbar);
-
-        //mAuth.getFirebaseAuthSettings().setAppVerificationDisabledForTesting(true);
 
 
         //timer for otp send
@@ -110,8 +111,10 @@ public class VerifyOTPActivity extends AppCompatActivity {
         verifyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressDialog.show();
                 if(editText1.getText().toString().isEmpty()||editText2.getText().toString().isEmpty()||editText3.getText().toString().isEmpty()||editText4.getText().toString().isEmpty()||
                         editText5.getText().toString().isEmpty()||editText6.getText().toString().isEmpty() ){
+                    progressDialog.cancel();
                     errorView.setVisibility(View.VISIBLE);
                 }
                 else{
@@ -154,19 +157,148 @@ public class VerifyOTPActivity extends AppCompatActivity {
         });
 
 
+        editText1.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.length()>=1){
+                    editText2.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        editText2.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.length()>=1){
+                    editText3.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        editText3.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.length()>=1){
+                    editText4.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        editText4.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.length()>=1){
+                    editText5.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        editText5.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.length()>=1){
+                    editText6.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        editText6.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.length()>=1){
+                    if(editText1.getText().toString().isEmpty() && editText2.getText().toString().isEmpty() && editText3.getText().toString().isEmpty()
+                            && editText4.getText().toString().isEmpty()
+                            && editText5.getText().toString().isEmpty() ){
+
+                        typedOTP = editText1.getText().toString()+editText2.getText().toString()
+                                +editText3.getText().toString()+editText4.getText().toString()
+                                +editText5.getText().toString()+editText6.getText().toString();
+
+                        progressDialog.show();
+
+                        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId,typedOTP);
+                        linkWithCurrentUser(credential);
+
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+
     }
+
+
     void sendOtp(String phoneNumber){
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
                 Toast.makeText(VerifyOTPActivity.this,"OTP verification successfull!",Toast.LENGTH_SHORT).show();
                 linkWithCurrentUser(phoneAuthCredential);
-//                Intent intent = new Intent(VerifyOTPActivity.this,HomeScreen.class);
-//                startActivity(intent);
             }
 
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
+                progressDialog.cancel();
                 Toast.makeText(VerifyOTPActivity.this,e.toString(),Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
@@ -209,10 +341,12 @@ public class VerifyOTPActivity extends AppCompatActivity {
                                                     FirebaseUser user = task.getResult().getUser();
 
                                                     Intent intent = new Intent(VerifyOTPActivity.this,HomeScreen.class);
+                                                    progressDialog.cancel();
                                                     finish();
                                                     startActivity(intent);
                                                 }
                                                 else{
+                                                    progressDialog.cancel();
                                                     Log.w(TAG, "linkWithCredential:failure",task.getException());
                                                     Toast.makeText(VerifyOTPActivity.this, "Authentication Failed!", Toast.LENGTH_SHORT).show();
                                                     user.delete();
@@ -222,6 +356,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
                             }
                         }
                         else{
+                            progressDialog.cancel();
                             Log.w(TAG, "linkWithCredential: Failure", task.getException());
                             Toast.makeText(VerifyOTPActivity.this, "Authentication Failed!", Toast.LENGTH_SHORT).show();
                         }

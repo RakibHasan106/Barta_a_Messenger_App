@@ -5,8 +5,10 @@ import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -28,6 +30,9 @@ public class SignUpActivity extends AppCompatActivity {
     EditText email,name,password;
 
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+    ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,21 +47,30 @@ public class SignUpActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading.....");
+        progressDialog.setCancelable(false);
+
         sendOTPButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //if the edittexts are empty then set error , else change the activity.
+
+                progressDialog.show();
 
                 if(email.getText().toString().isEmpty()==true){
                     email.setError("not filled");
+                    progressDialog.cancel();
                 }
                 if(name.getText().toString().isEmpty()==true){
                     name.setError("not filled");
+                    progressDialog.cancel();
                 }
                 if(password.getText().toString().isEmpty()==true){
                     password.setError("not filled");
+                    progressDialog.cancel();
                 }
                 if(!email.getText().toString().isEmpty() && !name.getText().toString().isEmpty() && !password.getText().toString().isEmpty()){
+
                     createNewUser(email.getText().toString(),password.getText().toString());
                 }
             }
@@ -65,11 +79,13 @@ public class SignUpActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                finish();
                 Intent intent = new Intent(SignUpActivity.this, LoginPageActivity.class);
                 startActivity(intent);
             }
         });
     }
+
 
     void createNewUser(String mail,String pass){
         mAuth.createUserWithEmailAndPassword(mail,pass)
@@ -86,6 +102,7 @@ public class SignUpActivity extends AppCompatActivity {
                             intent.putExtra("email",mail);
                             intent.putExtra("name",name.getText().toString());
                             intent.putExtra("password",pass);
+                            progressDialog.cancel();
                             startActivity(intent);
                         }
                         else{
@@ -94,14 +111,17 @@ public class SignUpActivity extends AppCompatActivity {
                                 throw task.getException();
                             }
                             catch (FirebaseAuthWeakPasswordException weakPasswordException){
+                                progressDialog.cancel();
                                 password.setError("password must be greater than 6 characters");
                                 Toast.makeText(SignUpActivity.this,"Invalid Password",Toast.LENGTH_LONG).show();
                             }
                             catch(FirebaseAuthUserCollisionException userCollisionException){
+                                progressDialog.cancel();
                                 email.setError("This Email is Already Registered");
                                 Toast.makeText(SignUpActivity.this,"Email Already Registered",Toast.LENGTH_LONG).show();
                             }
                             catch (Exception e) {
+                                progressDialog.cancel();
                                 Toast.makeText(SignUpActivity.this,"Authentication Failed",Toast.LENGTH_LONG).show();
                             }
 

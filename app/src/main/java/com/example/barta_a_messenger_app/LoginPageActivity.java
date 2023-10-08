@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.nfc.Tag;
@@ -54,6 +55,8 @@ public class LoginPageActivity extends AppCompatActivity{
 
     EditText email,password;
 
+    ProgressDialog progressDialog;
+
     FirebaseAuth mAuth;
 
 
@@ -76,6 +79,10 @@ public class LoginPageActivity extends AppCompatActivity{
         signupButton = findViewById(R.id.signupbutton);
 
         googleButton = findViewById(R.id.googleButton);
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading...");
+        progressDialog.setCancelable(false);
 
 
         oneTapClient = Identity.getSignInClient(this);
@@ -137,10 +144,13 @@ public class LoginPageActivity extends AppCompatActivity{
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressDialog.show();
                 if(email.getText().toString().isEmpty()==true){
+                    progressDialog.cancel();
                     email.setError("required");
                 }
                 if(password.getText().toString().isEmpty()==true){
+                    progressDialog.cancel();
                     password.setError("password empty");
                 }
                 if(!email.getText().toString().isEmpty() &&  !password.getText().toString().isEmpty()){
@@ -214,9 +224,11 @@ public class LoginPageActivity extends AppCompatActivity{
                     FirebaseUser user = mAuth.getCurrentUser();
 
                     Intent intent = new Intent(LoginPageActivity.this,HomeScreen.class);
+                    progressDialog.cancel();
                     startActivity(intent);
                 }
                 else{
+                    progressDialog.cancel();
                     Log.w(TAG,"signInWithEmail:Failed",task.getException());
                     Toast.makeText(LoginPageActivity.this,"Email Or Password is Wrong",Toast.LENGTH_SHORT).show();
                 }

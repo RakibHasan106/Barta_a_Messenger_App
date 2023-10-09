@@ -24,6 +24,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -55,6 +56,8 @@ public class LoginPageActivity extends AppCompatActivity{
 
     EditText email,password;
 
+    TextView forgetPass;
+
     ProgressDialog progressDialog;
 
     FirebaseAuth mAuth;
@@ -84,6 +87,16 @@ public class LoginPageActivity extends AppCompatActivity{
         progressDialog.setMessage("Loading...");
         progressDialog.setCancelable(false);
 
+        forgetPass = findViewById(R.id.forgetpasstext);
+
+
+        forgetPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginPageActivity.this, ForgetPasswordActivity.class);
+                startActivity(intent);
+            }
+        });
 
         oneTapClient = Identity.getSignInClient(this);
         signUpRequest = BeginSignInRequest.builder()

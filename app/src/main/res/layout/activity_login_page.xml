@@ -123,15 +123,18 @@
             
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                >
                 
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Remember me"
-                    android:layout_centerVertical="true"
-                    android:alpha="0.7"/>
+<!--                <CheckBox-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Remember me"-->
+<!--                    android:layout_centerVertical="true"-->
+<!--                    android:alpha="0.7"/>-->
                 <TextView
+                    android:id="@+id/forgetpasstext"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="I forgot my password"

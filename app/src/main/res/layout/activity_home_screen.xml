@@ -8,37 +8,6 @@
 
 
 
-
-    <!--    <RelativeLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:background="#6C25FF"-->
-<!--        android:padding="10dp"-->
-<!--        android:id="@+id/main_toolbar">-->
-
-<!--        <TextView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="Baarta"-->
-<!--            android:textSize="22sp"-->
-<!--            android:textStyle="bold"-->
-<!--            android:textColor="@color/white"-->
-<!--            android:layout_marginStart="10dp"-->
-<!--            android:layout_centerVertical="true"/>-->
-
-<!--        <ImageButton-->
-<!--            android:layout_width="32dp"-->
-<!--            android:layout_height="32dp"-->
-<!--            android:src="@drawable/icon_search"-->
-<!--            android:layout_alignParentEnd="true"-->
-<!--            android:background="?attr/selectableItemBackgroundBorderless"-->
-<!--            app:tint="@color/white"-->
-<!--            android:layout_centerVertical="true"-->
-<!--            android:layout_marginEnd="10dp"-->
-<!--            android:id="@+id/main_search_btn"/>-->
-
-<!--    </RelativeLayout>-->
-
     <FrameLayout
         android:id="@+id/main_frame_layout"
         android:layout_width="match_parent"
@@ -125,6 +94,7 @@
         app:menu="@menu/bottom_navigation_menu"/>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_button"
+        android:src="@drawable/fab_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

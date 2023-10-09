@@ -9,6 +9,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -72,6 +73,12 @@ public class SignUpActivity extends AppCompatActivity {
                 if(!email.getText().toString().isEmpty() && !name.getText().toString().isEmpty() && !password.getText().toString().isEmpty()){
 
                     createNewUser(email.getText().toString(),password.getText().toString());
+                    Intent intent = new Intent(SignUpActivity.this, SendOTPActivity.class);
+                    intent.putExtra("email", email.getText().toString());
+                    intent.putExtra("name",name.getText().toString());
+                    intent.putExtra("password", password.getText().toString());
+                    startActivity(intent);
+
                 }
             }
         });

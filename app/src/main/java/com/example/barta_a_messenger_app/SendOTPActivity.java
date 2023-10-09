@@ -14,6 +14,8 @@ import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.hbb20.CountryCodePicker;
 
 import java.util.concurrent.TimeUnit;
@@ -24,6 +26,8 @@ public class SendOTPActivity extends AppCompatActivity {
     Button getOtpButton;
 
     CountryCodePicker countryCodePicker;
+
+    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +54,9 @@ public class SendOTPActivity extends AppCompatActivity {
                 }
 
                 else{
-
-                    Intent intent = new Intent(SendOTPActivity.this, VerifyOTPActivity.class);
+                    String phone = countryCodePicker.getFullNumberWithPlus();
+                    databaseReference.child("All Accounts").child(phone).setValue(phone);
+                    Intent intent = new Intent(SendOTPActivity.this, HomeScreen.class);
                     intent.putExtra("email",email);
                     intent.putExtra("phone",countryCodePicker.getFullNumberWithPlus());
                     intent.putExtra("name",name);

@@ -10,7 +10,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,11 +25,10 @@ import com.hbb20.CountryCodePicker;
 
 public class AddFriendActivity extends AppCompatActivity {
 
+    String fname,phone,uid;
     EditText name, phone_number;
     Button save;
-
     private FirebaseAuth mAuth;
-
     CountryCodePicker countryCodePicker;
 
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -43,6 +46,13 @@ public class AddFriendActivity extends AppCompatActivity {
 
         countryCodePicker.registerCarrierNumberEditText(phone_number);
 
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        if(currentUser != null){
+            uid = currentUser.getUid();
+        }
+
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,49 +60,42 @@ public class AddFriendActivity extends AppCompatActivity {
             }
 
             private void addContact() {
-                String fname = name.getText().toString().trim();
-                String phone = countryCodePicker.getFullNumberWithPlus();
+                if(!countryCodePicker.isValidFullNumber()){
+                    phone_number.setError("Invalid phone number");
+                }
 
-                mAuth.getInstance().fetchSignInMethodsForEmail(phone)
-                        .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()){
-                                if (task.getResult().getSignInMethods().isEmpty()){
-                                    Toast.makeText(AddFriendActivity.this, "User doesn't exists with this phone number", Toast.LENGTH_SHORT).show();
-                                }
-                                else {
-                                    String user = mAuth.getCurrentUser().getUid();
-                                    databaseReference.child(user).child("All Contacts").child(phone);
+                else {
+                    fname = name.getText().toString().trim();
+                    phone = countryCodePicker.getFullNumberWithPlus();
 
-                                }
+                    databaseReference.child("All Accounts").child(phone).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()){
+                                saveContact();
                             }
                             else {
-                                Exception exception = task.getException();
+                                Toast.makeText(AddFriendActivity.this, "Phone number doesn't exists", Toast.LENGTH_SHORT).show();
+
+
                             }
-                        });
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
-
-
-//                databaseReference.child("All Accounts").addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                        if(snapshot.hasChild(phone)){
-//                            phone_number.setError("Contact already exists");
-//                            phone_number.requestFocus();
-//                        }
-//                        else{
-//                            databaseReference.child("All Accounts").child(phone).child("Name").setValue(fname);
-//                            databaseReference.child("All Acconts").child(phone).child("Phone_number").setValue(phone);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError error) {
-//
-//                    }
-//                });
+                        }
+                    });
+                }
             }
-
         });
+    }
+
+    private void saveContact() {
+        Contact contact = new Contact(fname,phone);
+        databaseReference.child("Contacts").child(uid).child(phone).setValue(contact);
+        name.setText("");
+        phone_number.setText("");
+
     }
 
 

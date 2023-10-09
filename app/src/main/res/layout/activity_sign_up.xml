@@ -75,12 +75,21 @@
                 android:alpha="0.7"
                 android:textStyle="bold"/>
 
-            <EditText
-                android:id="@+id/email"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:drawableEnd="@drawable/done_icon"/>
+                app:boxBackgroundMode="filled">
+
+                <EditText
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:drawableEnd="@drawable/done_icon"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
 
             <View
                 android:layout_width="wrap_content"
@@ -93,12 +102,21 @@
                 android:alpha="0.7"
                 android:textStyle="bold"/>
 
-            <EditText
-                android:id="@+id/name"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:drawableEnd="@drawable/account_name"/>
+                app:boxBackgroundMode="filled">
+
+                <EditText
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:drawableEnd="@drawable/account_name"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
 
             <View
                 android:layout_width="wrap_content"
@@ -111,12 +129,22 @@
                 android:alpha="0.7"
                 android:textStyle="bold"/>
 
-            <EditText
-                android:id="@+id/password"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:drawableEnd="@drawable/password_icon"/>
+                app:passwordToggleEnabled="true"
+                app:boxBackgroundMode="filled">
+
+                <EditText
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:drawableEnd="@drawable/password_icon"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
 
 
             <View

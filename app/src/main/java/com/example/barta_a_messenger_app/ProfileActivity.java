@@ -25,7 +25,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     DatabaseReference databaseReference;
 
-    AddContactAdapter adapter;
+    ContactAdapter adapter;
 
     FirebaseAuth mAuth;
 
@@ -42,7 +42,7 @@ public class ProfileActivity extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference("Contacts").child(uid);
         list = new ArrayList<>();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new AddContactAdapter(this,list);
+        adapter = new ContactAdapter(this,list);
 
         recyclerView.setAdapter(adapter);
 

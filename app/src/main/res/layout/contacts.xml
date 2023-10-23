@@ -1,0 +1,38 @@
+<!-- contact_item.xml -->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    >
+
+    <!-- Contact Image -->
+    <ImageView
+        android:id="@+id/contact_image"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/profile_pic"
+        android:layout_alignParentStart="true"
+        android:layout_marginEnd="16dp"/>
+
+    <!-- Contact Name -->
+    <TextView
+        android:id="@+id/contact_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Contact Name"
+        android:textSize="18sp"
+        android:layout_toEndOf="@+id/contact_image"
+        android:layout_alignTop="@+id/contact_image"/>
+
+    <!-- Contact Number -->
+    <TextView
+        android:id="@+id/contact_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Contact Number"
+        android:textSize="14sp"
+        android:layout_toEndOf="@+id/contact_image"
+        android:layout_below="@+id/contact_name"/>
+
+</RelativeLayout>

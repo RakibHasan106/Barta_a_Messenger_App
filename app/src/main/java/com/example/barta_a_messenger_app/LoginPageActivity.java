@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.nfc.Tag;
@@ -23,6 +24,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -54,6 +56,10 @@ public class LoginPageActivity extends AppCompatActivity{
 
     EditText email,password;
 
+    TextView forgetPass;
+
+    ProgressDialog progressDialog;
+
     FirebaseAuth mAuth;
 
 
@@ -77,6 +83,20 @@ public class LoginPageActivity extends AppCompatActivity{
 
         googleButton = findViewById(R.id.googleButton);
 
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading...");
+        progressDialog.setCancelable(false);
+
+        forgetPass = findViewById(R.id.forgetpasstext);
+
+
+        forgetPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginPageActivity.this, ForgetPasswordActivity.class);
+                startActivity(intent);
+            }
+        });
 
         oneTapClient = Identity.getSignInClient(this);
         signUpRequest = BeginSignInRequest.builder()
@@ -108,24 +128,6 @@ public class LoginPageActivity extends AppCompatActivity{
                 });
 
 
-        password.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_RIGHT = 2; // Index of drawableEnd
-
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (event.getRawX() >= (password.getRight() - password.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        // Handle the click on the drawableEnd here
-                        // For example, toggle the password visibility
-                        togglePasswordVisibility(password);
-                        return true; // Consume the touch event
-                    }
-                }
-                return false; // Let the EditText handle the touch event
-            }
-        });
-
-
         googleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,10 +139,13 @@ public class LoginPageActivity extends AppCompatActivity{
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressDialog.show();
                 if(email.getText().toString().isEmpty()==true){
+                    progressDialog.cancel();
                     email.setError("required");
                 }
                 if(password.getText().toString().isEmpty()==true){
+                    progressDialog.cancel();
                     password.setError("password empty");
                 }
                 if(!email.getText().toString().isEmpty() &&  !password.getText().toString().isEmpty()){
@@ -171,13 +176,6 @@ public class LoginPageActivity extends AppCompatActivity{
 //        }
     }
 
-    private void togglePasswordVisibility(EditText editText) {
-        if (editText.getInputType() == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
-            editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        } else {
-            editText.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-        }
-    }
 
 
 
@@ -214,9 +212,11 @@ public class LoginPageActivity extends AppCompatActivity{
                     FirebaseUser user = mAuth.getCurrentUser();
 
                     Intent intent = new Intent(LoginPageActivity.this,HomeScreen.class);
+                    progressDialog.cancel();
                     startActivity(intent);
                 }
                 else{
+                    progressDialog.cancel();
                     Log.w(TAG,"signInWithEmail:Failed",task.getException());
                     Toast.makeText(LoginPageActivity.this,"Email Or Password is Wrong",Toast.LENGTH_SHORT).show();
                 }

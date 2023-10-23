@@ -16,6 +16,9 @@
         android:theme="@style/Theme.Barta_a_Messenger_App"
         tools:targetApi="31">
         <activity
+            android:name=".PasswordResetLinkSentActivity"
+            android:exported="false" />
+        <activity
             android:name=".ForgetPasswordActivity"
             android:exported="false" />
         <activity

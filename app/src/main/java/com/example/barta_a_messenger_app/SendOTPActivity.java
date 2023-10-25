@@ -14,8 +14,11 @@ import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.hbb20.CountryCodePicker;
 
 import java.util.concurrent.TimeUnit;
@@ -55,45 +58,31 @@ public class SendOTPActivity extends AppCompatActivity {
 
                 else{
                     String phone = countryCodePicker.getFullNumberWithPlus();
-                    databaseReference.child("All Accounts").child(phone).setValue(phone);
-                    Intent intent = new Intent(SendOTPActivity.this, HomeScreen.class);
-                    intent.putExtra("email",email);
-                    intent.putExtra("phone",countryCodePicker.getFullNumberWithPlus());
-                    intent.putExtra("name",name);
-                    intent.putExtra("password",password);
-                    startActivity(intent);
+//                    databaseReference.child("All Accounts").child(phone).setValue(phone);
+                    databaseReference.child("All Accounts");
+                    databaseReference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if(snapshot.child(phone).exists()){
+                                phoneNumber.setError("Phone Number Already Registered");
+                            }
+                            else{
+                                databaseReference.child("All Accounts").child(phone).setValue(phone);
+                                Intent intent = new Intent(SendOTPActivity.this, HomeScreen.class);
+                                intent.putExtra("email",email);
+                                intent.putExtra("phone",countryCodePicker.getFullNumberWithPlus());
+                                intent.putExtra("name",name);
+                                intent.putExtra("password",password);
+                                startActivity(intent);
+                            }
+                        }
 
-//                    PhoneAuthOptions options =
-//                            PhoneAuthOptions.newBuilder()
-//                                    .setPhoneNumber("+15555555555")
-//                                    .setTimeout(60L, TimeUnit.SECONDS)
-//                                    .setActivity(SendOTPActivity.this)
-//                                    .setCallbacks(new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-//                                        @Override
-//                                        public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-//                                            Toast.makeText(SendOTPActivity.this,"OTP verification successfull!",Toast.LENGTH_SHORT).show();
-//                                        }
-//
-//                                        @Override
-//                                        public void onVerificationFailed(@NonNull FirebaseException e) {
-//                                            Toast.makeText(SendOTPActivity.this,"OTP verification not successfull!",Toast.LENGTH_SHORT).show();
-//                                            e.printStackTrace();
-//                                        }
-//
-//                                        @Override
-//                                        public void onCodeSent(@NonNull String verificationId, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-//                                            super.onCodeSent(verificationId,forceResendingToken);
-//                                            Toast.makeText(SendOTPActivity.this,"OTP sent successfully",Toast.LENGTH_SHORT).show();
-//                                            Intent intent = new Intent(SendOTPActivity.this, VerifyOTPActivity.class);
-//                                            intent.putExtra("phone",countryCodePicker.getFullNumberWithPlus());
-//                                            intent.putExtra("name",name);
-//                                            intent.putExtra("password",password);
-//                                            startActivity(intent);
-//                                        }
-//                                    })
-//                                    .build();
-//
-//                    PhoneAuthProvider.verifyPhoneNumber(options);
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
 
                 }
             }

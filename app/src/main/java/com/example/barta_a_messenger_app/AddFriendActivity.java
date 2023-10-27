@@ -72,7 +72,8 @@ public class AddFriendActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if (snapshot.exists()){
-                                saveContact();
+
+                                saveContact(snapshot.child("uid").getValue().toString());
                             }
                             else {
                                 Toast.makeText(AddFriendActivity.this, "Phone number doesn't exists", Toast.LENGTH_SHORT).show();
@@ -90,8 +91,8 @@ public class AddFriendActivity extends AppCompatActivity {
         });
     }
 
-    private void saveContact() {
-        Contact contact = new Contact(fname,phone);
+    private void saveContact(String contact_uid) {
+        Contact contact = new Contact(fname,phone,contact_uid);
         databaseReference.child("Contacts").child(uid).child(phone).setValue(contact);
         name.setText("");
         phone_number.setText("");

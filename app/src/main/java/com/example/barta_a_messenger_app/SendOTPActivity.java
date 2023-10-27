@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -67,7 +68,8 @@ public class SendOTPActivity extends AppCompatActivity {
                                 phoneNumber.setError("Phone Number Already Registered");
                             }
                             else{
-                                databaseReference.child("All Accounts").child(phone).setValue(phone);
+                                databaseReference.child("All Accounts").child(phone).child("phone_no").setValue(phone);
+                                databaseReference.child("All Accounts").child(phone).child("uid").setValue(FirebaseAuth.getInstance().getUid());
                                 Intent intent = new Intent(SendOTPActivity.this, HomeScreen.class);
                                 intent.putExtra("email",email);
                                 intent.putExtra("phone",countryCodePicker.getFullNumberWithPlus());

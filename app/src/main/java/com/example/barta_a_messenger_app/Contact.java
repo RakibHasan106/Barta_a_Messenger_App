@@ -3,13 +3,23 @@ package com.example.barta_a_messenger_app;
 public class Contact {
     private String full_name;
     private String phone_number;
+    private String uid;
 
     public Contact() {
     }
 
-    public Contact(String full_name, String phone_number) {
+    public Contact(String full_name, String phone_number,String uid) {
         this.full_name = full_name;
         this.phone_number = phone_number;
+        this.uid = uid;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getFull_name() {

@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.ktx.Firebase;
 
 import java.util.ArrayList;
 
@@ -18,6 +17,9 @@ public class ChatAdapter extends RecyclerView.Adapter{
 
     ArrayList<MessageModel> messageModels;
     Context context;
+    String recId;
+
+
 
     int SENDER_VIEW_TYPE = 1;
     int RECEIVER_VIEW_TYPE = 2;
@@ -27,6 +29,11 @@ public class ChatAdapter extends RecyclerView.Adapter{
         this.context = context;
     }
 
+    public ChatAdapter(ArrayList<MessageModel> messageModels, Context context, String recId) {
+        this.messageModels = messageModels;
+        this.context = context;
+        this.recId = recId;
+    }
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

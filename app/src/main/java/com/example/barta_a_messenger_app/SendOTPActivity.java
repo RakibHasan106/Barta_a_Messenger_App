@@ -31,7 +31,7 @@ public class SendOTPActivity extends AppCompatActivity {
 
     CountryCodePicker countryCodePicker;
 
-    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference databaseReference ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +41,8 @@ public class SendOTPActivity extends AppCompatActivity {
         phoneNumber = findViewById(R.id.inputMobile);
         getOtpButton = findViewById(R.id.getotpbutton);
         countryCodePicker = findViewById(R.id.countrypicker);
+
+        databaseReference =  FirebaseDatabase.getInstance().getReference();
 
         String email,name,password;
 
@@ -60,8 +62,7 @@ public class SendOTPActivity extends AppCompatActivity {
                 else{
                     String phone = countryCodePicker.getFullNumberWithPlus();
 //                    databaseReference.child("All Accounts").child(phone).setValue(phone);
-                    databaseReference.child("All Accounts");
-                    databaseReference.addValueEventListener(new ValueEventListener() {
+                    databaseReference.child("All Accounts").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if(snapshot.child(phone).exists()){
@@ -81,6 +82,8 @@ public class SendOTPActivity extends AppCompatActivity {
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
+
+                            Toast.makeText(SendOTPActivity.this,"error",Toast.LENGTH_SHORT).show();
 
                         }
                     });

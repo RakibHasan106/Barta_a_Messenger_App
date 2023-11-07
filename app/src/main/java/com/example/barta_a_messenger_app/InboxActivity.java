@@ -1,5 +1,6 @@
 package com.example.barta_a_messenger_app;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,7 +13,12 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,6 +35,8 @@ public class InboxActivity extends AppCompatActivity {
     AppCompatImageView sendButton;
     EditText inputMessage;
 
+    FirebaseDatabase database;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +52,9 @@ public class InboxActivity extends AppCompatActivity {
 
         sendButton = findViewById(R.id.send);
         inputMessage = findViewById(R.id.inputMessage);
+
+        database = FirebaseDatabase.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
         String senderId = mAuth.getCurrentUser().getUid();
         String receiverId = getIntent().getStringExtra("contact_uid").toString();
@@ -67,14 +78,55 @@ public class InboxActivity extends AppCompatActivity {
         final String senderRoom = senderId + receiverId;
         final String receiverRoom = receiverId + senderId;
 
+        database.getReference().child("chats")
+                        .child(senderRoom)
+                                .addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        messageModels.clear();
+                                        for(DataSnapshot snapshot1:snapshot.getChildren()){
+                                            MessageModel model = snapshot1.getValue(MessageModel.class);
+                                            model.setMessageId(snapshot1.getKey());
+                                            messageModels.add(model);
+                                        }
+                                        chatAdapter.notifyDataSetChanged();
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String message = inputMessage.getText().toString();
                 final MessageModel model = new MessageModel(senderId,message);
                 model.setTimestamp(new Date().getTime());
-                inputMessage.setText("");            }
+                inputMessage.setText("");
+
+                database.getReference().child("chats")
+                        .child(senderRoom)
+                        .push()
+                        .setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                database.getReference().child("chats")
+                                        .child(receiverRoom)
+                                        .push()
+                                        .setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+
+                                            }
+                                        });
+                            }
+                        });
+            }
         });
+
+
 
     }
 }

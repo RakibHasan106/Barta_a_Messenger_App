@@ -21,6 +21,7 @@
         android:id="@+id/imageBack"
         android:layout_width="30dp"
         android:layout_height="30dp"
+        android:clickable="true"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="12dp"
@@ -42,7 +43,7 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
-        android:id="@+id/textName"
+        android:id="@+id/userName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -66,7 +67,6 @@
         android:orientation="vertical"
         android:overScrollMode="never"
         android:padding="20dp"
-        android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="@+id/viewBackground"
         app:layout_constraintTop_toBottomOf="@+id/imageBack"/>
@@ -92,6 +92,8 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/send"
+            android:clickable="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="4dp"

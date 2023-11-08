@@ -76,11 +76,13 @@ public class SignUpActivity extends AppCompatActivity {
                 if(!email.getText().toString().isEmpty() && !name.getText().toString().isEmpty() && !password.getText().toString().isEmpty()){
 
                     createNewUser(email.getText().toString(),password.getText().toString());
-//                    Intent intent = new Intent(SignUpActivity.this, SendOTPActivity.class);
-//                    intent.putExtra("email", email.getText().toString());
-//                    intent.putExtra("name",name.getText().toString());
-//                    intent.putExtra("password", password.getText().toString());
-//                    startActivity(intent);
+
+                    Intent intent = new Intent(SignUpActivity.this, SendOTPActivity.class);
+                    intent.putExtra("email", email.getText().toString());
+                    intent.putExtra("name",name.getText().toString());
+                    intent.putExtra("password", password.getText().toString());
+                    startActivity(intent);
+
 
                 }
             }
@@ -104,7 +106,9 @@ public class SignUpActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             Log.d(TAG, "New User Created Successfully!");
+
                             String user = mAuth.getCurrentUser().getUid();
+
 
 //                            user.delete();
                             firebaseDatabase.getInstance().getReference().child("user").child(user).setValue(new User(name.getText().toString(),email.getText().toString(),""));

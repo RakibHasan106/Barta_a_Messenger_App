@@ -56,7 +56,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
         }
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public static class MyViewHolder extends RecyclerView.ViewHolder{
         ImageView profile_pic;
         TextView contact_name;
         TextView contact_phone;
@@ -67,13 +67,20 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
             contact_name=itemView.findViewById(R.id.contact_name);
             contact_phone=itemView.findViewById(R.id.contact_number);
 
-            itemView.setOnClickListener(this);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Context c = view.getContext();
+                    Intent intent = new Intent(c,InboxActivity.class);
+                    int position = getAdapterPosition();
+                    Contact contact = list.get(position);
+                    intent.putExtra("Name",contact.getFull_name());
+                    intent.putExtra("phone_no",contact.getPhone_number());
+                    intent.putExtra("contact_uid",contact.getUid());
+                    c.startActivity(intent);
+                }
+            });
 
-
-        }
-
-        @Override
-        public void onClick(View v) {
 
         }
     }

@@ -24,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -33,6 +34,8 @@ public class SignUpActivity extends AppCompatActivity {
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     ProgressDialog progressDialog;
+
+    FirebaseDatabase firebaseDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,11 +76,11 @@ public class SignUpActivity extends AppCompatActivity {
                 if(!email.getText().toString().isEmpty() && !name.getText().toString().isEmpty() && !password.getText().toString().isEmpty()){
 
                     createNewUser(email.getText().toString(),password.getText().toString());
-                    Intent intent = new Intent(SignUpActivity.this, SendOTPActivity.class);
-                    intent.putExtra("email", email.getText().toString());
-                    intent.putExtra("name",name.getText().toString());
-                    intent.putExtra("password", password.getText().toString());
-                    startActivity(intent);
+//                    Intent intent = new Intent(SignUpActivity.this, SendOTPActivity.class);
+//                    intent.putExtra("email", email.getText().toString());
+//                    intent.putExtra("name",name.getText().toString());
+//                    intent.putExtra("password", password.getText().toString());
+//                    startActivity(intent);
 
                 }
             }
@@ -101,11 +104,11 @@ public class SignUpActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             Log.d(TAG, "New User Created Successfully!");
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            String user = mAuth.getCurrentUser().getUid();
 
-                            user.delete();
-
-                            Intent intent = new Intent(SignUpActivity.this, SendOTPActivity.class);
+//                            user.delete();
+                            firebaseDatabase.getInstance().getReference().child("user").child(user).setValue(new User(name.getText().toString(),email.getText().toString(),""));
+                            Intent intent = new Intent(SignUpActivity.this, HomeScreen.class);
                             intent.putExtra("email",mail);
                             intent.putExtra("name",name.getText().toString());
                             intent.putExtra("password",pass);

@@ -19,42 +19,29 @@ tools:context=".HomeScreen">
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/roundImageView"
-            android:layout_width="46dp"
-            android:layout_height="46dp"
-            android:layout_margin="16dp"
-            android:background="@drawable/round_shape"
-            android:scaleType="fitCenter"
-            tools:ignore="MissingConstraints"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="16dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingConstraints">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/roundImageView"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:layout_margin="16dp"
+                android:background="@drawable/round_shape" />
 
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="220dp"
-            android:layout_height="27dp"
-            android:text="Steve Smith"
-            android:textColor="#FFFFFF"
-            android:textSize="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.439"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="MissingConstraints"
-            tools:layout_editor_absoluteY="16dp" />
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="220dp"
+                android:layout_height="27dp"
+                android:text="Steve Smith"
+                android:textColor="#FFFFFF"
+                android:textSize="20dp"
+                android:layout_marginTop="24dp"
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteY="16dp" />
 
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="209dp"
-            android:layout_height="24dp"
-            android:text="01723456756"
-            android:textColor="#FFFFFF"
-            android:textSize="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.424"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="MissingConstraints"
-            tools:layout_editor_absoluteY="52dp" />
+        </LinearLayout>
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -71,23 +58,20 @@ tools:context=".HomeScreen">
                 android:layout_gravity="center"
                 android:gravity="center">
 
-                <ImageView
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profilePicture"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
                     android:layout_centerHorizontal="true"
-                    android:src="@drawable/profile_pic" />
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/round_shape"
+                    android:backgroundTint="#B80E0E"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/profile_icon" />
 
-
-<!--                <Button-->
-<!--                    android:id="@+id/changeProfilePictureButton"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_below="@id/profilePicture"-->
-<!--                    android:layout_centerHorizontal="true"-->
-<!--                    android:layout_marginTop="12dp"-->
-<!--                    android:layout_marginBottom="30dp"-->
-<!--                    android:text="Change Profile Picture" />-->
 
                 <TextView
                     android:id="@+id/username"
@@ -98,26 +82,27 @@ tools:context=".HomeScreen">
 
                     android:text="Username"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="@color/black"/>
 
-                <TextView
-                    android:id="@+id/status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/username"
-                    android:layout_centerHorizontal="true"
+<!--                <TextView-->
+<!--                    android:id="@+id/status"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_below="@id/username"-->
+<!--                    android:layout_centerHorizontal="true"-->
 
-                    android:text="Phone"
-                    android:textSize="14sp" />
+<!--                    android:text="Phone"-->
+<!--                    android:textSize="14sp" />-->
 
-                <Button
-                    android:id="@+id/editStatusButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/status"
-                    android:layout_centerHorizontal="true"
+<!--                <Button-->
+<!--                    android:id="@+id/editStatusButton"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_below="@id/status"-->
+<!--                    android:layout_centerHorizontal="true"-->
 
-                    android:text="Edit Status" />
+<!--                    android:text="Edit Status" />-->
 
                 <TextView
                     android:id="@+id/contact_list"
@@ -126,7 +111,7 @@ tools:context=".HomeScreen">
                     android:text="Contact List"
                     android:textSize="20dp"
                     android:layout_margin="20dp"
-                    android:layout_below="@+id/editStatusButton"
+                    android:layout_below="@+id/username"
                     android:textColor="#9377E3"
                     android:textStyle="bold"/>
 

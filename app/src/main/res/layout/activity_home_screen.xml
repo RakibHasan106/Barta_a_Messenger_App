@@ -19,43 +19,30 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingConstraints">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/headImageView"
+                    android:layout_width="46dp"
+                    android:layout_height="46dp"
+                    android:layout_margin="16dp" />
+
+                <TextView
+                    android:id="@+id/head_textView"
+                    android:layout_width="220dp"
+                    android:layout_height="27dp"
+                    android:text="Steve Smith"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20dp"
+                    android:layout_marginTop="24dp"
+                    tools:ignore="MissingConstraints" />
+
+            </LinearLayout>
 
 
-            <ImageView
-                android:id="@+id/roundImageView"
-                android:layout_width="46dp"
-                android:layout_height="46dp"
-                android:layout_margin="16dp"
-                android:scaleType="fitCenter"
-                tools:ignore="MissingConstraints"
-                tools:layout_editor_absoluteX="16dp"
-                tools:layout_editor_absoluteY="16dp" />
 
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="220dp"
-                android:layout_height="27dp"
-                android:text="Steve Smith"
-                android:textColor="#FFFFFF"
-                android:textSize="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.439"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:ignore="MissingConstraints"
-                tools:layout_editor_absoluteY="16dp" />
-
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="209dp"
-                android:layout_height="24dp"
-                android:text="01723456756"
-                android:textColor="#FFFFFF"
-                android:textSize="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.424"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:ignore="MissingConstraints"
-                tools:layout_editor_absoluteY="52dp" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"

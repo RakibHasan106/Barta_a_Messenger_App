@@ -5,10 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -19,6 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -29,14 +33,18 @@ public class HomeScreen extends AppCompatActivity implements BottomNavigationVie
 
     RecyclerView recyclerView;
 
+    TextView header_user;
+    ImageView header_img;
+
     FirebaseAuth mAuth ;
     FirebaseUser user;
 
-    DatabaseReference database;
+    DatabaseReference databaseReference;
     String uid;
 
     ArrayList<Contact> contactList;
 
+    @SuppressLint({"MissingInflatedId", "WrongViewCast"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,9 +53,8 @@ public class HomeScreen extends AppCompatActivity implements BottomNavigationVie
         recyclerView = findViewById(R.id.recyclerView);
         fab = findViewById(R.id.fab_button);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        contactList = new ArrayList<>();
-
+        header_user = findViewById(R.id.head_textView);
+        header_img = findViewById(R.id.headImageView);
 
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
@@ -55,9 +62,43 @@ public class HomeScreen extends AppCompatActivity implements BottomNavigationVie
             uid = user.getUid();
         }
 
-        database = FirebaseDatabase.getInstance().getReference("Contacts").child(uid);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference userRef = database.getReference("user").child(uid);
+
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String name = dataSnapshot.child("username").getValue(String.class);
+                    String profilePictureUrl = dataSnapshot.child("profilePicture").getValue(String.class);
+
+                    header_user.setText(name);
+                    if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) {
+                        Picasso.get().load(profilePictureUrl).into(header_img);
+                    }
+                    else {
+
+                    }
+
+                } else {
+                    // Handle the case where the user data doesn't exist
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle any errors
+            }
+        });
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        contactList = new ArrayList<>();
+
+
+        databaseReference = FirebaseDatabase.getInstance().getReference("Contacts").child(uid);
         ContactAdapter adapter = new ContactAdapter(this,contactList);
-        database.addValueEventListener(new ValueEventListener() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 contactList.clear();

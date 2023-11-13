@@ -77,11 +77,11 @@ public class SignUpActivity extends AppCompatActivity {
 
                     createNewUser(email.getText().toString(),password.getText().toString());
 
-                    Intent intent = new Intent(SignUpActivity.this, SendOTPActivity.class);
-                    intent.putExtra("email", email.getText().toString());
-                    intent.putExtra("name",name.getText().toString());
-                    intent.putExtra("password", password.getText().toString());
-                    startActivity(intent);
+//                    Intent intent = new Intent(SignUpActivity.this, SendOTPActivity.class);
+//                    intent.putExtra("email", email.getText().toString());
+//                    intent.putExtra("name",name.getText().toString());
+//                    intent.putExtra("password", password.getText().toString());
+//                    startActivity(intent);
 
 
                 }
@@ -112,7 +112,7 @@ public class SignUpActivity extends AppCompatActivity {
 
 //                            user.delete();
                             firebaseDatabase.getInstance().getReference().child("user").child(user).setValue(new User(name.getText().toString(),email.getText().toString(),""));
-                            Intent intent = new Intent(SignUpActivity.this, HomeScreen.class);
+                            Intent intent = new Intent(SignUpActivity.this, SendOTPActivity.class);
                             intent.putExtra("email",mail);
                             intent.putExtra("name",name.getText().toString());
                             intent.putExtra("password",pass);

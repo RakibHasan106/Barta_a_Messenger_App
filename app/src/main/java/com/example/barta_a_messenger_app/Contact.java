@@ -5,13 +5,16 @@ public class Contact {
     private String phone_number;
     private String uid;
 
+    private String profilePic;
+
     public Contact() {
     }
 
-    public Contact(String full_name, String phone_number,String uid) {
+    public Contact(String full_name, String phone_number, String uid, String profilePic) {
         this.full_name = full_name;
         this.phone_number = phone_number;
         this.uid = uid;
+        this.profilePic=profilePic;
     }
 
     public String getUid() {
@@ -30,6 +33,8 @@ public class Contact {
         return phone_number;
     }
 
+    public String getProfilePic(){ return profilePic; }
+
     public void setFull_name(String full_name) {
         this.full_name = full_name;
     }
@@ -37,4 +42,6 @@ public class Contact {
     public void setPhone_number(String phone_number) {
         this.phone_number = phone_number;
     }
+
+    public void setProfilePic(String profilePic) { this.profilePic = profilePic;}
 }

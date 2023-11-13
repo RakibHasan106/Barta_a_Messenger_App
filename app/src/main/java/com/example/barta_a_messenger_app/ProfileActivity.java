@@ -44,7 +44,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     ArrayList<Contact>list;
 
-    DatabaseReference databaseReference;
+    DatabaseReference databaseReference,userRef;
 
     ContactAdapter adapter;
 
@@ -65,42 +65,23 @@ public class ProfileActivity extends AppCompatActivity {
         imgProfile = findViewById(R.id.profilePicture);
         header_user = findViewById(R.id.textView3);
         header_img = findViewById(R.id.roundImageView);
-//        editStatusBtn = findViewById(R.id.editStatusButton);
 
         recyclerView = findViewById(R.id.recyclerView);
-        databaseReference = FirebaseDatabase.getInstance().getReference("Contacts").child(uid);
+
         list = new ArrayList<>();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new ContactAdapter(this,list);
 
         recyclerView.setAdapter(adapter);
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                list.clear();
-                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
-
-                    Contact contact = dataSnapshot.getValue(Contact.class);
-                    list.add(contact);
-                }
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference userRef = database.getReference("user").child(uid);
+        userRef = FirebaseDatabase.getInstance().getReference().child("user").child(uid);
 
 
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
+
                     String name = dataSnapshot.child("username").getValue(String.class);
                     String profilePictureUrl = dataSnapshot.child("profilePicture").getValue(String.class);
 
@@ -110,18 +91,61 @@ public class ProfileActivity extends AppCompatActivity {
                         Picasso.get().load(profilePictureUrl).into(imgProfile);
                         Picasso.get().load(profilePictureUrl).into(header_img);
                     }
+
                     else {
 
                     }
 
-                } else {
-                    // Handle the case where the user data doesn't exist
+                }
+                else {
+
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 // Handle any errors
+            }
+        });
+
+        databaseReference = FirebaseDatabase.getInstance().getReference("Contacts").child(uid);
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                list.clear();
+                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
+
+                    Contact contact = dataSnapshot.getValue(Contact.class);
+                    list.add(contact);
+
+                    String uid2 = contact.getUid();
+                    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("user").child(uid2);
+
+                    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                String profilePictureUrl = dataSnapshot.child("profilePicture").getValue(String.class);
+                                contact.setProfilePic(profilePictureUrl);
+                                adapter.notifyDataSetChanged();  // Notify adapter to update the UI
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            // Handle errors
+                        }
+                    });
+
+
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
 
@@ -176,6 +200,35 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void updateProfilePicture(String url) {
         FirebaseDatabase.getInstance().getReference("user/"+uid+"/profilePicture").setValue(url);
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String name = dataSnapshot.child("username").getValue(String.class);
+                    String profilePictureUrl = dataSnapshot.child("profilePicture").getValue(String.class);
+
+                    username.setText(name);
+                    header_user.setText(name);
+                    if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) {
+                        Picasso.get().load(profilePictureUrl).into(imgProfile);
+                        Picasso.get().load(profilePictureUrl).into(header_img);
+                    }
+
+                    else {
+
+                    }
+
+                }
+                else {
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle any errors
+            }
+        });
     }
 
     @Override

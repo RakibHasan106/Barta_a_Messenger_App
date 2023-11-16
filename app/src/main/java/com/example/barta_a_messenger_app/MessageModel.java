@@ -2,26 +2,26 @@ package com.example.barta_a_messenger_app;
 
 public class MessageModel {
     String uid, message, messageId;
-    Boolean isItImage;
+    String fileType;
     Long timestamp;
 
     public MessageModel(String uid, String message, Long timestamp) {
         this.uid = uid;
         this.message = message;
         this.timestamp = timestamp;
-        isItImage=false;
+        fileType = "msg";
     }
 
-    public MessageModel(String uid, String message,  Boolean isItImage) {
+    public MessageModel(String uid, String message,  String fileType) {
         this.uid = uid;
         this.message = message;
-        this.isItImage = isItImage;
+        this.fileType = fileType;
     }
 
     public MessageModel(String uid, String message) {
         this.uid = uid;
         this.message = message;
-        isItImage=false;
+        fileType = "msg";
     }
 
     public MessageModel() {
@@ -59,11 +59,11 @@ public class MessageModel {
         this.timestamp = timestamp;
     }
 
-    public Boolean getItImage() {
-        return isItImage;
+    public String getFileType() {
+        return fileType;
     }
 
-    public void setItImage(Boolean itImage) {
-        isItImage = itImage;
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
     }
 }

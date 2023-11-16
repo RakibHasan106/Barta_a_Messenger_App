@@ -77,12 +77,6 @@ public class SignUpActivity extends AppCompatActivity {
 
                     createNewUser(email.getText().toString(),password.getText().toString());
 
-//                    Intent intent = new Intent(SignUpActivity.this, SendOTPActivity.class);
-//                    intent.putExtra("email", email.getText().toString());
-//                    intent.putExtra("name",name.getText().toString());
-//                    intent.putExtra("password", password.getText().toString());
-//                    startActivity(intent);
-
 
                 }
             }

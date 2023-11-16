@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,10 +18,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
-import android.view.ViewTreeObserver;
+
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
+
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,12 +34,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
@@ -59,8 +57,8 @@ public class InboxActivity extends AppCompatActivity {
     ImageButton imageSendButton;
 
     String checker="",myUrl="";
-    Uri imagePath;
-    String imageUrl;
+    Uri imagePath,fileUri;
+    String imageUrl,fileUrl;
 
     String senderRoom,receiverRoom,senderId,receiverId;
 
@@ -196,6 +194,11 @@ public class InboxActivity extends AppCompatActivity {
                         }
                         else if(i==1){
                             checker="pdf";
+
+                            Intent intent = new Intent();
+                            intent.setAction(Intent.ACTION_GET_CONTENT);
+                            intent.setType("application/pdf");
+                            startActivityForResult(intent.createChooser(intent,"Select Pdf File"),123);
                         }
                         else{
                             checker="doc";
@@ -231,18 +234,14 @@ public class InboxActivity extends AppCompatActivity {
         super.onActivityResult(requestCode,resultCode,data);
 
         if(requestCode==123 && resultCode==RESULT_OK && data!=null && data.getData()!=null){
-            imagePath = data.getData();
-            if(!checker.equals("image")){
-                
-            }
-            else if(checker.equals("image")){
+
+            if(checker.equals("image")){
+                imagePath = data.getData();
                 uploadImage();
-
-
-
             }
             else if(checker.equals("pdf")){
-
+                fileUri = data.getData();
+                uploadFile("pdf");
             }
             else if(checker.equals("doc")){
 
@@ -267,9 +266,8 @@ public class InboxActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Uri> task) {
                             if (task.isSuccessful()){
                                 imageUrl = task.getResult().toString();
-//                                Toast.makeText(InboxActivity.this, imageUrl, Toast.LENGTH_SHORT).show();
 
-                                MessageModel model = new MessageModel(senderId,imageUrl,true);
+                                MessageModel model = new MessageModel(senderId,imageUrl,"img");
                                 model.setTimestamp(new Date().getTime());
 
                                 database.getReference().child("chats")
@@ -278,7 +276,6 @@ public class InboxActivity extends AppCompatActivity {
                                         .setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void unused) {
-//                                chatRecyclerView.refreshDrawableState();
                                                 chatRecyclerView.scrollToPosition(messageModels.size()-1);
                                                 database.getReference().child("chats")
                                                         .child(receiverRoom)
@@ -311,16 +308,61 @@ public class InboxActivity extends AppCompatActivity {
 
     }
 
-    private void getImageInImageView() {
+    private void uploadFile(String fileType){
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Uploading....");
+        progressDialog.show();
 
-        Bitmap bitmap = null;
-        try {
-            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),imagePath);
-        }
-        catch (IOException e){
-            e.printStackTrace();
-        }
+        FirebaseStorage.getInstance().getReference("pdf_files/"+ getFileNameFromUri(fileUri)).putFile(fileUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                if (task.isSuccessful()){
+                    task.getResult().getStorage().getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()){
+                                fileUrl = task.getResult().toString();
 
-//        imgProfile.setImageBitmap(bitmap);
+                                MessageModel model = new MessageModel(senderId,fileUrl,fileType);
+                                model.setTimestamp(new Date().getTime());
+
+                                database.getReference().child("chats")
+                                        .child(senderRoom)
+                                        .push()
+                                        .setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                chatRecyclerView.scrollToPosition(messageModels.size()-1);
+                                                database.getReference().child("chats")
+                                                        .child(receiverRoom)
+                                                        .push()
+                                                        .setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void unused) {
+                                                                progressDialog.dismiss();
+                                                            }
+                                                        });
+                                            }
+                                        });
+
+//                                updateProfilePicture(task.getResult().toString());
+                            }
+
+                        }
+
+                    });
+//                    Toast.makeText(ProfileActivity.this, "Image Uploaded", Toast.LENGTH_SHORT).show();
+                }
+                else {
+//                    Toast.makeText(ProfileActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+        });
+    }
+    private String getFileNameFromUri(Uri uri) {
+        DocumentFile documentFile = DocumentFile.fromSingleUri(this, uri);
+        return documentFile.getName();
     }
 }

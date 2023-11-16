@@ -15,7 +15,9 @@
         android:layout_marginBottom="16dp"
         android:background="@drawable/background_content_top"
         app:layout_constraintBottom_toTopOf="@+id/layoutSend"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="0dp" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageBack"
@@ -28,7 +30,8 @@
         android:padding="5dp"
         android:src="@drawable/ic_back"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageInfo"
@@ -68,8 +71,10 @@
         android:overScrollMode="never"
         android:padding="20dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="@+id/viewBackground"
-        app:layout_constraintTop_toBottomOf="@+id/imageBack"/>
+        app:layout_constraintBottom_toTopOf="@+id/inputMessage"
+        app:layout_constraintTop_toBottomOf="@+id/imageBack"
+        android:layout_marginBottom="20dp"
+        app:stackFromEnd="true" />
 
 
     <FrameLayout
@@ -96,15 +101,27 @@
 
     </FrameLayout>
 
+    <ImageButton
+        android:id="@+id/image_send_button"
+        android:clickable="true"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/image_send_button"
+        android:backgroundTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+
     <EditText
         android:id="@+id/inputMessage"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginStart="10dp"
         android:layout_marginBottom="12dp"
+        android:layout_marginEnd="10dp"
         android:background="@drawable/background_chat_input"
         android:hint="Type a message"
         android:imeOptions="actionDone"
@@ -116,7 +133,8 @@
         android:textColorHint="@color/secondary_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/layoutSend"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toEndOf="@id/image_send_button"
+        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

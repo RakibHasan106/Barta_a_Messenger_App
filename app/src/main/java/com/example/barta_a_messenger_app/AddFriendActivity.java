@@ -92,7 +92,7 @@ public class AddFriendActivity extends AppCompatActivity {
     }
 
     private void saveContact(String contact_uid) {
-        Contact contact = new Contact(fname,phone,contact_uid);
+        Contact contact = new Contact(fname,phone,contact_uid,"");
         databaseReference.child("Contacts").child(uid).child(phone).setValue(contact);
         name.setText("");
         phone_number.setText("");

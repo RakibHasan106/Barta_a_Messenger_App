@@ -85,25 +85,6 @@ tools:context=".HomeScreen">
                     android:textStyle="bold"
                     android:textColor="@color/black"/>
 
-<!--                <TextView-->
-<!--                    android:id="@+id/status"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_below="@id/username"-->
-<!--                    android:layout_centerHorizontal="true"-->
-
-<!--                    android:text="Phone"-->
-<!--                    android:textSize="14sp" />-->
-
-<!--                <Button-->
-<!--                    android:id="@+id/editStatusButton"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_below="@id/status"-->
-<!--                    android:layout_centerHorizontal="true"-->
-
-<!--                    android:text="Edit Status" />-->
-
                 <TextView
                     android:id="@+id/contact_list"
                     android:layout_width="match_parent"
@@ -119,13 +100,9 @@ tools:context=".HomeScreen">
                     <!-- Your RecyclerView goes here -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerView"
-                    android:layout_below="@+id/contact_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="20dp" />
+                    android:layout_below="@+id/contact_list" />
 
 
             </RelativeLayout>

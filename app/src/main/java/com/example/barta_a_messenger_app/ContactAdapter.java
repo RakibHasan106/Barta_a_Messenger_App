@@ -11,6 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHolder>{
@@ -37,6 +39,17 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
         Contact contact = list.get(position);
         holder.contact_name.setText(contact.getFull_name());
         holder.contact_phone.setText(contact.getPhone_number());
+
+        String profilePicUrl = contact.getProfilePic();
+
+        if (profilePicUrl != null && !profilePicUrl.isEmpty()) {
+            Picasso.get().load(profilePicUrl).into(holder.profile_pic);
+        } else {
+            // Handle the case where the URL is empty or null
+        }
+
+
+//        Picasso.get().load(contact.getProfilePic()).into(holder.profile_pic);
 
 //        ImageView alertImageView = holder.itemView.findViewById(R.id.danger);
 //

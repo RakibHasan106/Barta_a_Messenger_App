@@ -115,7 +115,7 @@ public class HomeScreen extends AppCompatActivity implements BottomNavigationVie
             }
         });
 
-        recyclerView.setAdapter(adapter);
+       recyclerView.setAdapter(adapter);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

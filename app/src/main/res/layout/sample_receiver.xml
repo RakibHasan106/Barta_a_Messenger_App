@@ -57,6 +57,7 @@
         android:layout_marginBottom="3dp"
         android:layout_marginEnd="20dp"
 
+
         app:layout_constraintBottom_toTopOf="@id/receiverTime"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline"

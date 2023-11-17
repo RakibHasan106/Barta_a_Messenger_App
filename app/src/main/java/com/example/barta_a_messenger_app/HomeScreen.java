@@ -2,8 +2,10 @@ package com.example.barta_a_messenger_app;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -26,7 +29,10 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class HomeScreen extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+public class HomeScreen extends AppCompatActivity {
+
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
 
     private FloatingActionButton fab;
     BottomNavigationView bottomNavigationView;
@@ -49,6 +55,20 @@ public class HomeScreen extends AppCompatActivity implements BottomNavigationVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
+
+
+
+        tabLayout = findViewById(R.id.tablayout);
+        viewPager = findViewById(R.id.viewpager);
+
+        tabLayout.setupWithViewPager(viewPager);
+
+        viewPagerAdapter vpAdapter = new viewPagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        vpAdapter.addFragment(new chatFragment(),"CHATS");
+        vpAdapter.addFragment(new profileFragment(),"PROFILE");
+        vpAdapter.addFragment(new settingsFragment(),"SETTINGS");
+        viewPager.setAdapter(vpAdapter);
+
 
         recyclerView = findViewById(R.id.recyclerView);
         fab = findViewById(R.id.fab_button);
@@ -91,64 +111,64 @@ public class HomeScreen extends AppCompatActivity implements BottomNavigationVie
                 // Handle any errors
             }
         });
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        contactList = new ArrayList<>();
-
-
-        databaseReference = FirebaseDatabase.getInstance().getReference("Contacts").child(uid);
-        ContactAdapter adapter = new ContactAdapter(this,contactList);
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                contactList.clear();
-                for(DataSnapshot datasnapshot:snapshot.getChildren()){
-                    Contact contact = datasnapshot.getValue(Contact.class);
-                    contactList.add(contact);
-                }
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-       recyclerView.setAdapter(adapter);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomeScreen.this, AddFriendActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
-
-        bottomNavigationView.setOnNavigationItemSelectedListener(this);
-
-
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.menu_chat) {
-            return true;
-        }
-        else if (id == R.id.menu_profile) {
-            startActivity(new Intent(HomeScreen.this,ProfileActivity.class));
-            return true;
-        }
-        else if (id == R.id.menu_settings) {
-            startActivity(new Intent(HomeScreen.this,SettingsActivity.class));
-            return true;
-        }
-        else {
-            return false;
-        }
+//
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        contactList = new ArrayList<>();
+//
+//
+//        databaseReference = FirebaseDatabase.getInstance().getReference("Contacts").child(uid);
+//        ContactAdapter adapter = new ContactAdapter(this,contactList);
+//        databaseReference.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                contactList.clear();
+//                for(DataSnapshot datasnapshot:snapshot.getChildren()){
+//                    Contact contact = datasnapshot.getValue(Contact.class);
+//                    contactList.add(contact);
+//                }
+//                adapter.notifyDataSetChanged();
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//
+//       recyclerView.setAdapter(adapter);
+//
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(HomeScreen.this, AddFriendActivity.class);
+//                startActivity(intent);
+//            }
+//        });
+//
+//        bottomNavigationView = findViewById(R.id.bottom_navigation);
+//
+//        bottomNavigationView.setOnNavigationItemSelectedListener(this);
+//
+//
+//    }
+//
+//    @Override
+//    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//        int id = item.getItemId();
+//
+//        if (id == R.id.menu_chat) {
+//            return true;
+//        }
+//        else if (id == R.id.menu_profile) {
+//            startActivity(new Intent(HomeScreen.this,ProfileActivity.class));
+//            return true;
+//        }
+//        else if (id == R.id.menu_settings) {
+//            startActivity(new Intent(HomeScreen.this,SettingsActivity.class));
+//            return true;
+//        }
+//        else {
+//            return false;
+//        }
     }
 }

@@ -13,10 +13,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
+
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
+
 import android.view.View;
 
 import android.widget.EditText;
@@ -36,7 +36,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
@@ -98,10 +97,7 @@ public class InboxActivity extends AppCompatActivity {
         messageModels = new ArrayList<>();
         final ChatAdapter chatAdapter = new ChatAdapter(messageModels,this,receiverId);
 
-        chatRecyclerView.setAdapter(chatAdapter);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        chatRecyclerView.setLayoutManager(layoutManager);
 
         senderRoom = senderId + receiverId;
         receiverRoom = receiverId + senderId;
@@ -126,6 +122,11 @@ public class InboxActivity extends AppCompatActivity {
 
                                     }
                                 });
+
+        chatRecyclerView.setAdapter(chatAdapter);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        chatRecyclerView.setLayoutManager(layoutManager);
 
         RecyclerView.ItemAnimator animator = chatRecyclerView.getItemAnimator();
         if (animator instanceof DefaultItemAnimator){

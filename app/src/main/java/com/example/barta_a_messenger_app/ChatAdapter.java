@@ -68,7 +68,7 @@ public class ChatAdapter extends RecyclerView.Adapter{
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         MessageModel messageModel = messageModels.get(position);
 
-        if(messageModel.fileType =="msg"){
+        if(messageModel.getMessageType().equals("msg")){
             if(holder.getClass() == SenderViewHolder.class){
                 ((SenderViewHolder)holder).sentImage.setVisibility(View.GONE);
                 ((SenderViewHolder)holder).sentFile.setVisibility(View.GONE);
@@ -84,7 +84,7 @@ public class ChatAdapter extends RecyclerView.Adapter{
                 ((ReceiverViewHolder)holder).receiverMsg.setText(new SimpleDateFormat("HH:mm").format(new Date(messageModel.getTimestamp())));
             }
         }
-        else if(messageModel.getFileType()== "img"){
+        else if(messageModel.getMessageType().equals( "img")){
             if(holder.getClass() == SenderViewHolder.class){
                 ((SenderViewHolder)holder).senderMsg.setVisibility(View.GONE);
                 ((SenderViewHolder)holder).sentFile.setVisibility(View.GONE);
@@ -105,7 +105,7 @@ public class ChatAdapter extends RecyclerView.Adapter{
                 ((SenderViewHolder)holder).sentFile.setVisibility(View.VISIBLE);
                 ((SenderViewHolder)holder).senderMsg.setVisibility(View.GONE);
                 ((SenderViewHolder)holder).sentImage.setVisibility(View.GONE);
-                if(messageModel.getFileType()=="pdf"){
+                if(messageModel.getMessageType()=="pdf"){
                     ((SenderViewHolder)holder).sentFile.setImageResource(R.drawable.pdf_icon);
                 }
                 else{
@@ -117,7 +117,7 @@ public class ChatAdapter extends RecyclerView.Adapter{
                 ((ReceiverViewHolder)holder).receivedFile.setVisibility(View.VISIBLE);
                 ((ReceiverViewHolder)holder).receiverMsg.setVisibility(View.GONE);
                 ((ReceiverViewHolder)holder).receivedImage.setVisibility(View.GONE);
-                if(messageModel.getFileType()=="pdf"){
+                if(messageModel.getMessageType()=="pdf"){
                     ((ReceiverViewHolder)holder).receivedFile.setImageResource(R.drawable.pdf_icon);
                 }
                 else{

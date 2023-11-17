@@ -2,17 +2,26 @@ package com.example.barta_a_messenger_app;
 
 public class MessageModel {
     String uid, message, messageId;
+    String messageType;
     Long timestamp;
 
     public MessageModel(String uid, String message, Long timestamp) {
         this.uid = uid;
         this.message = message;
         this.timestamp = timestamp;
+        messageType = "msg";
+    }
+
+    public MessageModel(String uid, String message,  String messageType) {
+        this.uid = uid;
+        this.message = message;
+        this.messageType = messageType;
     }
 
     public MessageModel(String uid, String message) {
         this.uid = uid;
         this.message = message;
+        messageType = "msg";
     }
 
     public MessageModel() {
@@ -48,5 +57,13 @@ public class MessageModel {
 
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(String messageType) {
+        this.messageType = messageType;
     }
 }

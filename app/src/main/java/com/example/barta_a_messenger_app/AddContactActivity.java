@@ -10,20 +10,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.ktx.Firebase;
 import com.hbb20.CountryCodePicker;
 
-public class AddFriendActivity extends AppCompatActivity {
+public class AddContactActivity extends AppCompatActivity {
 
     String fname,phone,uid;
     EditText name, phone_number;
@@ -37,7 +33,7 @@ public class AddFriendActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_friend);
+        setContentView(R.layout.activity_add_contact);
 
         name = findViewById(R.id.contact_name);
         phone_number = findViewById(R.id.contact_number);
@@ -76,7 +72,7 @@ public class AddFriendActivity extends AppCompatActivity {
                                 saveContact(snapshot.child("uid").getValue().toString());
                             }
                             else {
-                                Toast.makeText(AddFriendActivity.this, "Phone number doesn't exists", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddContactActivity.this, "Phone number doesn't exists", Toast.LENGTH_SHORT).show();
 
 
                             }

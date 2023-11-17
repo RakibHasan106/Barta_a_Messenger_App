@@ -25,7 +25,7 @@
                 android:textStyle="bold"
                 android:layout_margin="30dp"
                 android:padding="10dp"
-                android:background="#9B7CEF"/>
+                android:background="#19668F"/>
         </LinearLayout>
 <!--        <ImageView-->
 <!--            android:layout_width="130dp"-->
@@ -62,18 +62,41 @@
 <!--            android:gravity="center"-->
 <!--            android:text="Enter Mobile Number"-->
 <!--            android:textSize="14sp"/>-->
-        <EditText
-            android:id="@+id/contact_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Name"
-            android:layout_margin="50dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="60dp"
-            android:layout_marginEnd="60dp"
+            android:orientation="vertical">
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/usernameContainer"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:helperText="Required"
+                app:hintTextColor="#035283"
+                android:textColorHint="#035283"
+                app:boxStrokeColor="#035283"
+                app:helperTextTextColor="#d40202"
+                android:layout_marginHorizontal="20dp"
+                android:layout_margin="30dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/contact_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:lines="1"
+
+                    android:hint="Name"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -87,7 +110,7 @@
 
             <EditText
                 android:id="@+id/contact_number"
-                android:layout_width="170dp"
+                android:layout_width="200dp"
                 android:layout_height="40dp"
                 android:inputType="number"
                 android:textSize="16sp"
@@ -108,7 +131,8 @@
             android:layout_margin="30dp"
             android:text="Save"
             android:textSize="16sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:backgroundTint="#3771AE"/>
 
 
     </LinearLayout>

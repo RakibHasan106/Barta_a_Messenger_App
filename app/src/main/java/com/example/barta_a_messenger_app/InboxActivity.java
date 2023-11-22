@@ -17,6 +17,7 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
@@ -42,6 +43,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import io.grpc.Context;
@@ -96,18 +98,7 @@ public class InboxActivity extends AppCompatActivity {
         receiverId = getIntent().getStringExtra("contact_uid").toString();
 
         dbHelper = new DBHelper(this);
-        db = dbHelper.getWritableDatabase();
 
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(InboxActivity.this,HomeScreen.class);
-                startActivity(intent);
-            }
-        });
-
-        messageModels = new ArrayList<>();
-        final ChatAdapter chatAdapter = new ChatAdapter(messageModels,this,receiverId);
 
 
 
@@ -117,30 +108,15 @@ public class InboxActivity extends AppCompatActivity {
         dbHelper.sender_table_name=senderRoom;
         dbHelper.receiver_table_name=receiverRoom;
 
-        database.getReference().child("chats")
-                        .child(senderRoom)
-                                .addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        messageModels.clear();
-                                        for(DataSnapshot snapshot1:snapshot.getChildren()){
-                                            MessageModel message = snapshot1.getValue(MessageModel.class);
-                                            message.setMessageId(snapshot1.getKey());
+        db = dbHelper.getWritableDatabase();
 
-                                            messageModels.add(message);
-                                            updateLocalDatabase();
-                                        }
-                                        chatAdapter.notifyDataSetChanged();
-                                        chatRecyclerView.scrollToPosition(messageModels.size()-1);
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-
-                                    }
-                                });
-
+        messageModels = new ArrayList<>();
+        messageModels = getAllMessages();
+        final ChatAdapter chatAdapter = new ChatAdapter(messageModels,this,receiverId);
         chatRecyclerView.setAdapter(chatAdapter);
+        chatRecyclerView.scrollToPosition(messageModels.size()-1);
+
+
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         chatRecyclerView.setLayoutManager(layoutManager);
@@ -151,6 +127,40 @@ public class InboxActivity extends AppCompatActivity {
 //            defaultItemAnimator.setAddDuration(1000);
 //        }
 
+                database.getReference().child("chats")
+                        .child(senderRoom)
+                                .addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if(snapshot.exists()){
+                                            for(DataSnapshot snapshot1:snapshot.getChildren()){
+                                                MessageModel message = snapshot1.getValue(MessageModel.class);
+                                                message.setMessageId(snapshot1.getKey());
+
+                                                messageModels.add(message);
+                                                updateLocalDatabase();
+                                            }
+                                            chatAdapter.notifyDataSetChanged();
+                                            chatRecyclerView.scrollToPosition(messageModels.size()-1);
+
+                                            database.getReference().child("chats").child(senderRoom).removeValue().addOnCompleteListener(task -> {
+                                                if (task.isSuccessful()) {
+                                                    // Node deleted successfully
+                                                    System.out.println("Node deleted successfully.");
+                                                } else {
+                                                    // Failed to delete the node
+                                                    System.out.println("Failed to delete the node. Error: " + task.getException().getMessage());
+                                                }
+                                            });
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
 
 
         sendButton.setOnClickListener(new View.OnClickListener() {
@@ -164,27 +174,24 @@ public class InboxActivity extends AppCompatActivity {
 
 
                     database.getReference().child("chats")
-                            .child(senderRoom)
+                            .child(receiverRoom)
                             .push()
                             .setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
 //                                chatRecyclerView.refreshDrawableState();
                                     chatRecyclerView.scrollToPosition(messageModels.size()-1);
-                                    database.getReference().child("chats")
-                                            .child(receiverRoom)
-                                            .push()
-                                            .setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void unused) {
-                                                    ContentValues values = new ContentValues();
-                                                    values.put("SENDER_ID",model.getUid());
-                                                    values.put("MESSAGE", model.getMessage());
-                                                    values.put("TIMESTAMP", model.getTimestamp());
+                                    ContentValues values = new ContentValues();
+                                    values.put("SENDER_ID",model.getUid());
+                                    values.put("MESSAGE", model.getMessage());
+                                    values.put("TIMESTAMP", model.getTimestamp());
 
-                                                    db.insert(dbHelper.sender_table_name, null, values);
-                                                }
-                                            });
+                                    db.insert(dbHelper.sender_table_name, null, values);
+                                    messageModels.add(model);
+                                    chatAdapter.notifyDataSetChanged();
+                                    chatRecyclerView.scrollToPosition(messageModels.size()-1);
+
+
                                 }
                             });
                 }
@@ -251,6 +258,14 @@ public class InboxActivity extends AppCompatActivity {
             }
         });
 
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(InboxActivity.this,HomeScreen.class);
+                startActivity(intent);
+            }
+        });
+
 
     }
 
@@ -263,9 +278,11 @@ public class InboxActivity extends AppCompatActivity {
 
         for(MessageModel message : messageModels){
             ContentValues values = new ContentValues();
-            values.put("SENDER_ID",message.getUid());
+
             values.put("MESSAGE", message.getMessage());
+            values.put("MESSAGETYPE",message.getMessageType());
             values.put("TIMESTAMP", message.getTimestamp());
+            values.put("SENDER_ID",message.getUid());
 
             db.insert(dbHelper.sender_table_name, null, values);
             //db.insert(dbHelper.receiver_table_name,null,values);
@@ -406,6 +423,39 @@ public class InboxActivity extends AppCompatActivity {
 
         });
     }
+
+    public ArrayList<MessageModel> getAllMessages() {
+        ArrayList<MessageModel> messages = new ArrayList<>();
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.query(
+                dbHelper.sender_table_name,
+                null,  // projection: null means all columns
+                null,  // selection
+                null,  // selectionArgs
+                null,  // groupBy
+                null,  // having
+                "TIMESTAMP" + " ASC"  // orderBy
+        );
+
+        while (cursor.moveToNext()) {
+            MessageModel message = new MessageModel();
+
+            message.setMessage(cursor.getString(cursor.getColumnIndexOrThrow("MESSAGE")));
+            message.setMessageType(cursor.getString(cursor.getColumnIndexOrThrow("MESSAGETYPE")));
+            message.setTimestamp(cursor.getLong(cursor.getColumnIndexOrThrow("TIMESTAMP")));
+            message.setUid(cursor.getString(cursor.getColumnIndexOrThrow("SENDER_ID")));
+
+            messages.add(message);
+        }
+
+        cursor.close();
+        //db.close();
+
+        return messages;
+    }
+
     private String getFileNameFromUri(Uri uri) {
         DocumentFile documentFile = DocumentFile.fromSingleUri(this, uri);
         return documentFile.getName();

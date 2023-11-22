@@ -1,5 +1,7 @@
 package com.example.barta_a_messenger_app;
 
+import static android.app.PendingIntent.getActivity;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -11,9 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -40,6 +44,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
+import io.grpc.Context;
+
 public class InboxActivity extends AppCompatActivity {
 
     TextView userName;
@@ -62,6 +68,9 @@ public class InboxActivity extends AppCompatActivity {
     String senderRoom,receiverRoom,senderId,receiverId;
 
     ArrayList<MessageModel> messageModels;
+
+    private DBHelper dbHelper;
+    SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +95,9 @@ public class InboxActivity extends AppCompatActivity {
         senderId = mAuth.getCurrentUser().getUid();
         receiverId = getIntent().getStringExtra("contact_uid").toString();
 
+        dbHelper = new DBHelper(this);
+        db = dbHelper.getWritableDatabase();
+
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -102,6 +114,9 @@ public class InboxActivity extends AppCompatActivity {
         senderRoom = senderId + receiverId;
         receiverRoom = receiverId + senderId;
 
+        dbHelper.sender_table_name=senderRoom;
+        dbHelper.receiver_table_name=receiverRoom;
+
         database.getReference().child("chats")
                         .child(senderRoom)
                                 .addValueEventListener(new ValueEventListener() {
@@ -109,9 +124,11 @@ public class InboxActivity extends AppCompatActivity {
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                         messageModels.clear();
                                         for(DataSnapshot snapshot1:snapshot.getChildren()){
-                                            MessageModel model = snapshot1.getValue(MessageModel.class);
-                                            model.setMessageId(snapshot1.getKey());
-                                            messageModels.add(model);
+                                            MessageModel message = snapshot1.getValue(MessageModel.class);
+                                            message.setMessageId(snapshot1.getKey());
+
+                                            messageModels.add(message);
+                                            updateLocalDatabase();
                                         }
                                         chatAdapter.notifyDataSetChanged();
                                         chatRecyclerView.scrollToPosition(messageModels.size()-1);
@@ -128,11 +145,13 @@ public class InboxActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         chatRecyclerView.setLayoutManager(layoutManager);
 
-        RecyclerView.ItemAnimator animator = chatRecyclerView.getItemAnimator();
-        if (animator instanceof DefaultItemAnimator){
-            DefaultItemAnimator defaultItemAnimator = (DefaultItemAnimator) animator;
-            defaultItemAnimator.setAddDuration(1000);
-        }
+//        RecyclerView.ItemAnimator animator = chatRecyclerView.getItemAnimator();
+//        if (animator instanceof DefaultItemAnimator){
+//            DefaultItemAnimator defaultItemAnimator = (DefaultItemAnimator) animator;
+//            defaultItemAnimator.setAddDuration(1000);
+//        }
+
+
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,7 +177,12 @@ public class InboxActivity extends AppCompatActivity {
                                             .setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void unused) {
+                                                    ContentValues values = new ContentValues();
+                                                    values.put("SENDER_ID",model.getUid());
+                                                    values.put("MESSAGE", model.getMessage());
+                                                    values.put("TIMESTAMP", model.getTimestamp());
 
+                                                    db.insert(dbHelper.sender_table_name, null, values);
                                                 }
                                             });
                                 }
@@ -227,6 +251,26 @@ public class InboxActivity extends AppCompatActivity {
             }
         });
 
+
+    }
+
+    private void updateLocalDatabase() {
+        //String createTableQuery = "CREATE TABLE IF NOT EXISTS "+senderRoom+
+//                " (COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT," +
+//                "SENDER_ID TEXT, MESSAGE TEXT, TIMESTAMP INTEGER);";
+
+        //db.execSQL(createTableQuery);
+
+        for(MessageModel message : messageModels){
+            ContentValues values = new ContentValues();
+            values.put("SENDER_ID",message.getUid());
+            values.put("MESSAGE", message.getMessage());
+            values.put("TIMESTAMP", message.getTimestamp());
+
+            db.insert(dbHelper.sender_table_name, null, values);
+            //db.insert(dbHelper.receiver_table_name,null,values);
+
+        }
 
     }
 

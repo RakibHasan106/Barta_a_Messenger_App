@@ -81,7 +81,7 @@ public class ChatAdapter extends RecyclerView.Adapter{
                 ((ReceiverViewHolder)holder).receivedFile.setVisibility(View.GONE);
                 ((ReceiverViewHolder)holder).receiverMsg.setVisibility(View.VISIBLE);
                 ((ReceiverViewHolder)holder).receiverMsg.setText(messageModel.getMessage());
-                ((ReceiverViewHolder)holder).receiverMsg.setText(new SimpleDateFormat("HH:mm").format(new Date(messageModel.getTimestamp())));
+                ((ReceiverViewHolder)holder).receiverTime.setText(new SimpleDateFormat("HH:mm").format(new Date(messageModel.getTimestamp())));
             }
         }
         else if(messageModel.getMessageType().equals( "img")){
@@ -97,7 +97,7 @@ public class ChatAdapter extends RecyclerView.Adapter{
                 ((ReceiverViewHolder)holder).receivedFile.setVisibility(View.GONE);
                 ((ReceiverViewHolder)holder).receivedImage.setVisibility(View.VISIBLE);
                 Picasso.get().load(messageModel.getMessage()).into(((ReceiverViewHolder)holder).receivedImage);
-                ((ReceiverViewHolder)holder).receiverMsg.setText(new SimpleDateFormat("HH:mm").format(new Date(messageModel.getTimestamp())));
+                ((ReceiverViewHolder)holder).receiverTime.setText(new SimpleDateFormat("HH:mm").format(new Date(messageModel.getTimestamp())));
             }
         }
         else{
@@ -123,7 +123,7 @@ public class ChatAdapter extends RecyclerView.Adapter{
                 else{
                     ((ReceiverViewHolder)holder).receivedFile.setImageResource(R.drawable.word_icon);
                 }
-                ((ReceiverViewHolder)holder).receiverMsg.setText(new SimpleDateFormat("HH:mm").format(new Date(messageModel.getTimestamp())));
+                ((ReceiverViewHolder)holder).receiverTime.setText(new SimpleDateFormat("HH:mm").format(new Date(messageModel.getTimestamp())));
             }
         }
 

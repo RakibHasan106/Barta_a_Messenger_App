@@ -14,9 +14,9 @@ import androidx.annotation.Nullable;
 public class DBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "messenger_db";
-    private static final int DATABASE_VERSION = 1;
+    private static int DATABASE_VERSION = 3;
 
-    public String sender_table_name , receiver_table_name;
+    public static String sender_table_name , receiver_table_name;
     Context context;
     public DBHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -28,15 +28,17 @@ public class DBHelper extends SQLiteOpenHelper {
         Toast.makeText(context,"OnCreate is called",Toast.LENGTH_SHORT).show();
         Log.d("DBHelper","onCreate called");
         String createTableQuery = "CREATE TABLE IF NOT EXISTS "+sender_table_name+
-                            " (MESSAGE_ID INTEGER PRIMARY KEY AUTOINCREMENT," +
-                            "SENDER_ID TEXT, MESSAGE TEXT, TIMESTAMP INTEGER);";
+                            " (ID INTEGER PRIMARY KEY AUTOINCREMENT," +
+                            " MESSAGE TEXT, MESSAGETYPE TEXT ," +
+                            "TIMESTAMP INTEGER, SENDER_ID TEXT);";
 
         sqLiteDatabase.execSQL(createTableQuery);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int i1) {
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+sender_table_name);
+        onCreate(sqLiteDatabase);
     }
 
 

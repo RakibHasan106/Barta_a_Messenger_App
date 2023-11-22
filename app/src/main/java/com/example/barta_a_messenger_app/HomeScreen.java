@@ -10,11 +10,14 @@ import androidx.viewpager.widget.ViewPager;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -25,6 +28,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -110,7 +114,9 @@ public class HomeScreen extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 // Handle any errors
             }
+
         });
+        getFCMToken();
 //
 //        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 //        contactList = new ArrayList<>();
@@ -170,5 +176,16 @@ public class HomeScreen extends AppCompatActivity {
 //        else {
 //            return false;
 //        }
+    }
+    void getFCMToken(){
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if(task.isSuccessful()){
+                    String token = task.getResult();
+                    Log.i("My token: ",token);
+                }
+            }
+        });
     }
 }

@@ -1,6 +1,5 @@
 package com.example.barta_a_messenger_app;
 
-import static android.app.PendingIntent.getActivity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,7 +7,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.documentfile.provider.DocumentFile;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +20,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 
 import android.widget.EditText;
@@ -43,10 +44,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
-
-import io.grpc.Context;
 
 public class InboxActivity extends AppCompatActivity {
 
@@ -69,10 +67,11 @@ public class InboxActivity extends AppCompatActivity {
 
     String senderRoom,receiverRoom,senderId,receiverId;
 
-    ArrayList<MessageModel> messageModels;
+    ArrayList<MessageModel> localMessageModel;
 
     private DBHelper dbHelper;
     SQLiteDatabase db;
+    ValueEventListener chatListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,62 +104,58 @@ public class InboxActivity extends AppCompatActivity {
         senderRoom = senderId + receiverId;
         receiverRoom = receiverId + senderId;
 
-        dbHelper.sender_table_name=senderRoom;
-        dbHelper.receiver_table_name=receiverRoom;
+        dbHelper.sender_table_name="t_"+senderRoom;
+        dbHelper.receiver_table_name="t_"+receiverRoom;
 
         db = dbHelper.getWritableDatabase();
 
-        messageModels = new ArrayList<>();
-        messageModels = getAllMessages();
-        final ChatAdapter chatAdapter = new ChatAdapter(messageModels,this,receiverId);
+        localMessageModel = new ArrayList<>();
+        localMessageModel = getAllMessages();
+        for(int i=0;i<localMessageModel.size();i++){
+            Log.d("message",localMessageModel.get(i).getMessage());
+        }
+
+
+
+        final ChatAdapter chatAdapter = new ChatAdapter(localMessageModel,this,receiverId);
         chatRecyclerView.setAdapter(chatAdapter);
-        chatRecyclerView.scrollToPosition(messageModels.size()-1);
-
-
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         chatRecyclerView.setLayoutManager(layoutManager);
 
-//        RecyclerView.ItemAnimator animator = chatRecyclerView.getItemAnimator();
-//        if (animator instanceof DefaultItemAnimator){
-//            DefaultItemAnimator defaultItemAnimator = (DefaultItemAnimator) animator;
-//            defaultItemAnimator.setAddDuration(1000);
-//        }
+        chatRecyclerView.scrollToPosition(localMessageModel.size()-1);
+
+        chatListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    //localMessageModel.clear();
+                    for(DataSnapshot snapshot1:snapshot.getChildren()){
+                        MessageModel message = snapshot1.getValue(MessageModel.class);
+                        message.setMessageId(snapshot1.getKey());
+
+                        localMessageModel.add(message);
+                        updateLocalDatabase(message);
+                        chatAdapter.notifyDataSetChanged();
+
+                        chatRecyclerView.scrollToPosition(localMessageModel.size()-1);
+                    }
+
+                    database.getReference().child("chats").child(senderRoom).removeValue();
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
 
                 database.getReference().child("chats")
-                        .child(senderRoom)
-                                .addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        if(snapshot.exists()){
-                                            for(DataSnapshot snapshot1:snapshot.getChildren()){
-                                                MessageModel message = snapshot1.getValue(MessageModel.class);
-                                                message.setMessageId(snapshot1.getKey());
-
-                                                messageModels.add(message);
-                                                updateLocalDatabase();
-                                            }
-                                            chatAdapter.notifyDataSetChanged();
-                                            chatRecyclerView.scrollToPosition(messageModels.size()-1);
-
-                                            database.getReference().child("chats").child(senderRoom).removeValue().addOnCompleteListener(task -> {
-                                                if (task.isSuccessful()) {
-                                                    // Node deleted successfully
-                                                    System.out.println("Node deleted successfully.");
-                                                } else {
-                                                    // Failed to delete the node
-                                                    System.out.println("Failed to delete the node. Error: " + task.getException().getMessage());
-                                                }
-                                            });
-                                        }
-
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-
-                                    }
-                                });
+                        .child(receiverRoom)
+                                .addValueEventListener(chatListener);
 
 
         sendButton.setOnClickListener(new View.OnClickListener() {
@@ -174,26 +169,27 @@ public class InboxActivity extends AppCompatActivity {
 
 
                     database.getReference().child("chats")
-                            .child(receiverRoom)
+                            .child(senderRoom)
                             .push()
                             .setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-//                                chatRecyclerView.refreshDrawableState();
-                                    chatRecyclerView.scrollToPosition(messageModels.size()-1);
                                     ContentValues values = new ContentValues();
-                                    values.put("SENDER_ID",model.getUid());
+
                                     values.put("MESSAGE", model.getMessage());
+                                    values.put("MESSAGETYPE",model.getMessageType());
                                     values.put("TIMESTAMP", model.getTimestamp());
+                                    values.put("SENDER_ID",model.getUid());
 
                                     db.insert(dbHelper.sender_table_name, null, values);
-                                    messageModels.add(model);
+                                    localMessageModel.add(model);
                                     chatAdapter.notifyDataSetChanged();
-                                    chatRecyclerView.scrollToPosition(messageModels.size()-1);
+                                    chatRecyclerView.scrollToPosition(localMessageModel.size()-1);
 
 
                                 }
                             });
+
                 }
 
             }
@@ -241,55 +237,63 @@ public class InboxActivity extends AppCompatActivity {
             }
         });
 
-//        chatRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//            @Override
-//            public void onGlobalLayout() {
-//                chatRecyclerView.scrollToPosition(messageModels.size()-1);
-//                chatRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-//            }
-//        });
 
         inputMessage.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if(hasFocus){
-                    chatRecyclerView.scrollToPosition(messageModels.size()-1);
+                    chatRecyclerView.scrollToPosition(localMessageModel.size()-1);
                 }
             }
         });
+
+        chatRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View view, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
+                chatRecyclerView.scrollToPosition(localMessageModel.size()-1);
+                // when the edittext is pressed , the onscreen keyboard is displayed. so the recyclerview is hidden.
+                // setonclicklistener will also not work for first click.
+                // cause after first click the recylerview will go to the botton position , that's right,
+                // but then the on screen keyboard will pop up
+                // and the recylerview's bottom portion will be hidden again.
+                //so i've used the scrollToPosition method when the on screen keyboard appears
+
+            }
+        });
+
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(InboxActivity.this,HomeScreen.class);
+
                 startActivity(intent);
+                finish();
             }
         });
 
 
     }
 
-    private void updateLocalDatabase() {
-        //String createTableQuery = "CREATE TABLE IF NOT EXISTS "+senderRoom+
-//                " (COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT," +
-//                "SENDER_ID TEXT, MESSAGE TEXT, TIMESTAMP INTEGER);";
+    @Override
+    protected void onStop() {
+        super.onStop();
+//        database.getReference().removeEventListener(chatListener);
+    }
 
-        //db.execSQL(createTableQuery);
+    private void updateLocalDatabase(MessageModel message) {
+        ContentValues values = new ContentValues();
 
-        for(MessageModel message : messageModels){
-            ContentValues values = new ContentValues();
+        values.put("MESSAGEID", message.getMessageId());
+        values.put("MESSAGE", message.getMessage());
+        values.put("MESSAGETYPE",message.getMessageType());
+        values.put("TIMESTAMP", message.getTimestamp());
+        values.put("SENDER_ID",message.getUid());
 
-            values.put("MESSAGE", message.getMessage());
-            values.put("MESSAGETYPE",message.getMessageType());
-            values.put("TIMESTAMP", message.getTimestamp());
-            values.put("SENDER_ID",message.getUid());
-
-            db.insert(dbHelper.sender_table_name, null, values);
-            //db.insert(dbHelper.receiver_table_name,null,values);
-
-        }
+        db.insert(dbHelper.sender_table_name, null, values);
 
     }
+
 
     @Override
     protected void onActivityResult(int requestCode,int resultCode,@Nullable Intent data){
@@ -338,7 +342,7 @@ public class InboxActivity extends AppCompatActivity {
                                         .setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void unused) {
-                                                chatRecyclerView.scrollToPosition(messageModels.size()-1);
+                                                chatRecyclerView.scrollToPosition(localMessageModel.size()-1);
                                                 database.getReference().child("chats")
                                                         .child(receiverRoom)
                                                         .push()
@@ -394,7 +398,7 @@ public class InboxActivity extends AppCompatActivity {
                                         .setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void unused) {
-                                                chatRecyclerView.scrollToPosition(messageModels.size()-1);
+                                                chatRecyclerView.scrollToPosition(localMessageModel.size()-1);
                                                 database.getReference().child("chats")
                                                         .child(receiverRoom)
                                                         .push()
@@ -413,10 +417,7 @@ public class InboxActivity extends AppCompatActivity {
                         }
 
                     });
-//                    Toast.makeText(ProfileActivity.this, "Image Uploaded", Toast.LENGTH_SHORT).show();
-                }
-                else {
-//                    Toast.makeText(ProfileActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+
                 }
 
             }
@@ -427,7 +428,7 @@ public class InboxActivity extends AppCompatActivity {
     public ArrayList<MessageModel> getAllMessages() {
         ArrayList<MessageModel> messages = new ArrayList<>();
 
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        db = dbHelper.getReadableDatabase();
 
         Cursor cursor = db.query(
                 dbHelper.sender_table_name,
@@ -447,11 +448,14 @@ public class InboxActivity extends AppCompatActivity {
             message.setTimestamp(cursor.getLong(cursor.getColumnIndexOrThrow("TIMESTAMP")));
             message.setUid(cursor.getString(cursor.getColumnIndexOrThrow("SENDER_ID")));
 
+
             messages.add(message);
         }
 
         cursor.close();
         //db.close();
+
+        //Log.d("message",messages.toString());
 
         return messages;
     }

@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/receiverText"
         android:layout_margin="8dp"
-        android:inputType="textLongMessage|textMultiLine"
+        android:inputType="textLongMessage|textMultiLine|textNoSuggestions"
         android:maxWidth="270dp"
         android:minWidth="50dp"
         android:text="TextView"

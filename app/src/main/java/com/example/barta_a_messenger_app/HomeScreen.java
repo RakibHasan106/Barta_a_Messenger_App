@@ -3,21 +3,17 @@ package com.example.barta_a_messenger_app;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
+
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
+
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -28,7 +24,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -61,7 +56,6 @@ public class HomeScreen extends AppCompatActivity {
         setContentView(R.layout.activity_home_screen);
 
 
-
         tabLayout = findViewById(R.id.tablayout);
         viewPager = findViewById(R.id.viewpager);
 
@@ -92,6 +86,7 @@ public class HomeScreen extends AppCompatActivity {
         DatabaseReference userRef = database.getReference("user").child(uid);
 
 
+
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -118,77 +113,39 @@ public class HomeScreen extends AppCompatActivity {
             }
 
         });
-        getFCMToken();
+
+//        database.getReference().child("chats")
+//                .child(user.getUid())
+//                .addValueEventListener(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                        for(DataSnapshot datasnapshot:snapshot.getChildren()){
+//                            MessageModel message = snapshot.getValue(MessageModel.class);
+//                            String username;
+//                            database.getReference().child("user").child(message.getUid())
+//                                    .child("username")
+//                                            .addValueEventListener(new ValueEventListener() {
+//                                                @Override
+//                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                                    username = snapshot.getValue(String.class);
+//                                                }
 //
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        contactList = new ArrayList<>();
+//                                                @Override
+//                                                public void onCancelled(@NonNull DatabaseError error) {
 //
+//                                                }
+//                                            });
+//                            NotificationHelper.notificationDialog(HomeScreen.this);
+//                        }
+//                    }
 //
-//        databaseReference = FirebaseDatabase.getInstance().getReference("Contacts").child(uid);
-//        ContactAdapter adapter = new ContactAdapter(this,contactList);
-//        databaseReference.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                contactList.clear();
-//                for(DataSnapshot datasnapshot:snapshot.getChildren()){
-//                    Contact contact = datasnapshot.getValue(Contact.class);
-//                    contactList.add(contact);
-//                }
-//                adapter.notifyDataSetChanged();
-//            }
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError error) {
 //
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//
-//       recyclerView.setAdapter(adapter);
-//
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(HomeScreen.this, AddFriendActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-//
-//        bottomNavigationView = findViewById(R.id.bottom_navigation);
-//
-//        bottomNavigationView.setOnNavigationItemSelectedListener(this);
-//
-//
-//    }
-//
-//    @Override
-//    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//        int id = item.getItemId();
-//
-//        if (id == R.id.menu_chat) {
-//            return true;
-//        }
-//        else if (id == R.id.menu_profile) {
-//            startActivity(new Intent(HomeScreen.this,ProfileActivity.class));
-//            return true;
-//        }
-//        else if (id == R.id.menu_settings) {
-//            startActivity(new Intent(HomeScreen.this,SettingsActivity.class));
-//            return true;
-//        }
-//        else {
-//            return false;
-//        }
+//                    }
+//                });
+
+
     }
-    void getFCMToken(){
-        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
-            @Override
-            public void onComplete(@NonNull Task<String> task) {
-                if(task.isSuccessful()){
-                    String token = task.getResult();
-                    Log.i("My token: ",token);
-                }
-            }
-        });
-    }
-    
+
 }

@@ -40,11 +40,14 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
         holder.contact_name.setText(contact.getFull_name());
         holder.contact_phone.setText(contact.getPhone_number());
 
+
         String profilePicUrl = contact.getProfilePic();
 
         if (profilePicUrl != null && !profilePicUrl.isEmpty()) {
             Picasso.get().load(profilePicUrl).into(holder.profile_pic);
-        } else {
+        }
+        else
+        {
             // Handle the case where the URL is empty or null
         }
 
@@ -93,8 +96,6 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
                     c.startActivity(intent);
                 }
             });
-
-
         }
     }
 //    public interface ClickListener{

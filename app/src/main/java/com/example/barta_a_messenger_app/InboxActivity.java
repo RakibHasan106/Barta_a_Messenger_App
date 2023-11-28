@@ -154,6 +154,7 @@ public class InboxActivity extends AppCompatActivity {
         };
 
                 database.getReference().child("chats")
+                        .child(senderId)
                         .child(receiverRoom)
                                 .addValueEventListener(chatListener);
 
@@ -169,6 +170,7 @@ public class InboxActivity extends AppCompatActivity {
 
 
                     database.getReference().child("chats")
+                            .child(receiverId)
                             .child(senderRoom)
                             .push()
                             .setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -278,7 +280,7 @@ public class InboxActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-//        database.getReference().removeEventListener(chatListener);
+        database.getReference().removeEventListener(chatListener);
     }
 
     private void updateLocalDatabase(MessageModel message) {

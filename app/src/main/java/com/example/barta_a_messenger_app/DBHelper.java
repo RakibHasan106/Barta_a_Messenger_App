@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 public class DBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "messenger_db";
-    private static int DATABASE_VERSION = 10;
+    private static int DATABASE_VERSION = 11;
 
     public static String sender_table_name , receiver_table_name;
     Context context;

@@ -105,7 +105,7 @@ public class SignUpActivity extends AppCompatActivity {
 
 
 //                            user.delete();
-                            firebaseDatabase.getInstance().getReference().child("user").child(user).setValue(new User(name.getText().toString(),email.getText().toString(),""));
+//                            firebaseDatabase.getInstance().getReference().child("user").child(user).setValue(new User(name.getText().toString(),email.getText().toString(),"",""));
                             Intent intent = new Intent(SignUpActivity.this, SendOTPActivity.class);
                             intent.putExtra("email",mail);
                             intent.putExtra("name",name.getText().toString());

@@ -7,6 +7,8 @@ public class Contact {
 
     private String profilePic;
 
+
+
     public Contact() {
     }
 
@@ -44,4 +46,5 @@ public class Contact {
     }
 
     public void setProfilePic(String profilePic) { this.profilePic = profilePic;}
+
 }

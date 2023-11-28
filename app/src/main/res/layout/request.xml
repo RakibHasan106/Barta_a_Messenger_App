@@ -11,7 +11,7 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_margin="12dp"
-        android:src="@drawable/profile_pic"
+        android:src="@drawable/profile_icon"
         android:layout_alignParentStart="true"
         android:layout_marginEnd="16dp"/>
 
@@ -26,24 +26,51 @@
         tools:ignore="UnknownId" />
 
     <!-- Contact Name -->
+
+    <!-- Contact Number -->
+
     <TextView
-        android:id="@+id/contact_name"
+        android:id="@+id/userNameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:text="Contact Name"
-        android:textSize="18sp"
+        android:layout_alignTop="@+id/contact_image"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="5dp"
         android:layout_toEndOf="@+id/contact_image"
-        android:layout_alignTop="@+id/contact_image"/>
+        android:text="Contact Name"
+        android:textSize="18sp" />
 
-    <!-- Contact Number -->
     <TextView
         android:id="@+id/contact_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Contact Number"
-        android:textSize="14sp"
+        android:layout_below="@+id/userNameTextView"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="7dp"
         android:layout_toEndOf="@+id/contact_image"
-        android:layout_below="@+id/contact_name"/>
+        android:text="Contact Number"
+        android:textSize="14sp" />
+
+    <ImageView
+        android:id="@+id/acceptButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="86dp"
+        android:layout_marginBottom="32dp"
+        android:src="@drawable/accept" />
+
+    <ImageView
+        android:id="@+id/rejectButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="31dp"
+        android:src="@drawable/reject" />
+
 
 </RelativeLayout>

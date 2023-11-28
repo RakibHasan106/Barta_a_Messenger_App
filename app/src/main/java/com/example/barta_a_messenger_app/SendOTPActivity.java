@@ -28,6 +28,7 @@ public class SendOTPActivity extends AppCompatActivity {
 
     EditText phoneNumber;
     Button getOtpButton;
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     CountryCodePicker countryCodePicker;
 
@@ -45,6 +46,8 @@ public class SendOTPActivity extends AppCompatActivity {
         databaseReference =  FirebaseDatabase.getInstance().getReference();
 
         String email,name,password;
+
+        String user = mAuth.getCurrentUser().getUid();
 
         email = getIntent().getStringExtra("email");
         name = getIntent().getStringExtra("name");
@@ -71,6 +74,7 @@ public class SendOTPActivity extends AppCompatActivity {
                             else{
                                 databaseReference.child("All Accounts").child(phone).child("phone_no").setValue(phone);
                                 databaseReference.child("All Accounts").child(phone).child("uid").setValue(FirebaseAuth.getInstance().getUid());
+                                databaseReference.child("user").child(user).setValue(new User(name,email,phone,"",""));
                                 Intent intent = new Intent(SendOTPActivity.this, HomeScreen.class);
                                 intent.putExtra("email",email);
                                 intent.putExtra("phone",countryCodePicker.getFullNumberWithPlus());

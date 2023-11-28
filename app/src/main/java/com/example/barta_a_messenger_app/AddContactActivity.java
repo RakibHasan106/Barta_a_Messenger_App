@@ -88,10 +88,18 @@ public class AddContactActivity extends AppCompatActivity {
     }
 
     private void saveContact(String contact_uid) {
-        Contact contact = new Contact(fname,phone,contact_uid,"");
-        databaseReference.child("Contacts").child(uid).child(phone).setValue(contact);
+//        Contact contact = new Contact(fname,phone,contact_uid,"");
+//        databaseReference.child("Contacts").child(uid).child(phone).setValue(contact);
+//        name.setText("");
+//        phone_number.setText("");
+
+        Request request = new Request(fname,phone,uid,contact_uid,"pending");
+
+        databaseReference.child("FriendRequestPending").child(contact_uid).child(uid).setValue(request);
         name.setText("");
         phone_number.setText("");
+
+        Toast.makeText(this, "Friend request sent", Toast.LENGTH_SHORT).show();
 
     }
 

@@ -60,11 +60,14 @@
     </LinearLayout>
 
     <!-- Logout Button -->
-    <Button
+    <androidx.constraintlayout.utils.widget.MotionButton
         android:id="@+id/btnLogout"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Logout" />
+        android:text="Logout"
+        android:layout_gravity="center"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#035283"/>
 
 </LinearLayout>

@@ -19,9 +19,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class friendRequest extends Fragment implements FriendRequestAdapter.FriendRequestActionListener{
+public class friendRequestFragment extends Fragment implements FriendRequestAdapter.FriendRequestActionListener{
 
     private RecyclerView recyclerView;
     private FriendRequestAdapter adapter;
@@ -102,7 +101,7 @@ public class friendRequest extends Fragment implements FriendRequestAdapter.Frie
                         .child(request.getReceiverUid())
                         .child(request.getSenderUid());
 
-                contactsRef.setValue(new Contact(request.getName(), request.getPhone(), request.getReceiverUid(), ""));
+                contactsRef.setValue(new Contact(request.getName(), request.getPhone(), request.getSenderUid(), ""));
 
 //                DatabaseReference Ref = FirebaseDatabase.getInstance().getReference("Contacts")
 //                        .child(request.getSenderUid())
@@ -110,6 +109,7 @@ public class friendRequest extends Fragment implements FriendRequestAdapter.Frie
 //
 //                Ref.setValue(new Contact(request.getName(), request.getPhone(), request.getReceiverUid(), ""));
                 adapter.notifyDataSetChanged();
+                friendRequest.clear();
             }
 
             @Override
@@ -139,6 +139,7 @@ public class friendRequest extends Fragment implements FriendRequestAdapter.Frie
 //
 //                Ref.setValue(new Contact(request.getName(), request.getPhone(), request.getReceiverUid(), ""));
                 adapter.notifyDataSetChanged();
+                friendRequest.clear();
             }
 
             @Override

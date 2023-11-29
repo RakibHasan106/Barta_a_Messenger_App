@@ -35,6 +35,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="3dp"
+            android:textColor="#FFFFFF"
             android:inputType="textLongMessage|textMultiLine|textNoSuggestions"
             android:maxWidth="270dp"
             android:minWidth="50dp"
@@ -87,6 +88,7 @@
             android:layout_marginBottom="4dp"
             android:text="12:45pm"
             android:textSize="10sp"
+            android:textColor="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
            />

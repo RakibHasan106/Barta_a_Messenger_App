@@ -27,7 +27,7 @@ public class AddContactActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     CountryCodePicker countryCodePicker;
 
-    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference databaseReference,reference;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -35,7 +35,7 @@ public class AddContactActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_contact);
 
-        name = findViewById(R.id.contact_name);
+//        name = findViewById(R.id.contact_name);
         phone_number = findViewById(R.id.contact_number);
         save = findViewById(R.id.save_button);
         countryCodePicker = findViewById(R.id.countrypicker);
@@ -44,6 +44,9 @@ public class AddContactActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        reference = FirebaseDatabase.getInstance().getReference();
 
         if(currentUser != null){
             uid = currentUser.getUid();
@@ -61,27 +64,48 @@ public class AddContactActivity extends AppCompatActivity {
                 }
 
                 else {
-                    fname = name.getText().toString().trim();
+//                    fname = name.getText().toString().trim();
                     phone = countryCodePicker.getFullNumberWithPlus();
 
-                    databaseReference.child("All Accounts").child(phone).addListenerForSingleValueEvent(new ValueEventListener() {
+                    reference.child("user").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if (snapshot.exists()){
+                            String phone_numb = snapshot.child("phone").getValue().toString();
+                            if (!phone_numb.equals(phone)){
+                                databaseReference.child("All Accounts").child(phone).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if (snapshot.exists()){
 
-                                saveContact(snapshot.child("uid").getValue().toString());
+                                            saveContact(snapshot.child("uid").getValue().toString());
+                                        }
+                                        else {
+                                            Toast.makeText(AddContactActivity.this, "Phone number doesn't exists", Toast.LENGTH_SHORT).show();
+
+
+                                        }
+                                    }
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
                             }
                             else {
-                                Toast.makeText(AddContactActivity.this, "Phone number doesn't exists", Toast.LENGTH_SHORT).show();
-
-
+                                phone_number.setError("Invalid phone number");
                             }
                         }
+
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
 
                         }
                     });
+
+
+
+
                 }
             }
         });

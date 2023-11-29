@@ -39,12 +39,13 @@
                 android:textStyle="bold"
                 android:textColor="@color/black"/>
 
-            <Button
+            <androidx.constraintlayout.utils.widget.MotionButton
                 android:id="@+id/updateStatusBtn"
-                android:layout_width="wrap_content"
+                android:layout_width="130dp"
                 android:layout_height="wrap_content"
-                android:text="Update Status"
+                android:text="Update Profile"
                 android:layout_margin="20dp"
+                android:textColor="#FFFFFF"
                 android:backgroundTint="#035283"/>
 
             <TextView

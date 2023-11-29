@@ -64,7 +64,7 @@ public class HomeScreen extends AppCompatActivity {
         viewPagerAdapter vpAdapter = new viewPagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         vpAdapter.addFragment(new chatFragment(),"CHATS");
         vpAdapter.addFragment(new profileFragment(),"PROFILE");
-        vpAdapter.addFragment(new friendRequest(),"REQUEST");
+        vpAdapter.addFragment(new friendRequestFragment(),"REQUEST");
         vpAdapter.addFragment(new settingsFragment(),"SETTINGS");
 
         viewPager.setAdapter(vpAdapter);

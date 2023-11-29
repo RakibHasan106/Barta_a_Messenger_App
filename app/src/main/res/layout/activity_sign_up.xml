@@ -10,7 +10,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/my_primary"
+        android:background="#7EBBFD"
         android:alpha=".7"/>
     <LinearLayout
         android:layout_width="match_parent"
@@ -54,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Sign Up"
-                android:textColor="@color/my_primary"
+                android:textColor="#035283"
                 android:textSize="32sp"
                 android:textStyle="bold"/>
 
@@ -151,20 +151,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="10dp"/>
 
-            <com.google.android.material.button.MaterialButton
+            <androidx.constraintlayout.utils.widget.MotionButton
                 android:id="@+id/otpsendbutton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:text="Send OTP"
+                android:backgroundTint="#035283"
+                android:textColor="#FFFFFF"
                 app:cornerRadius="32dp"/>
 
 
-            <com.google.android.material.button.MaterialButton
+            <androidx.constraintlayout.utils.widget.MotionButton
                 android:id="@+id/loginbutton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:backgroundTint="#745F9A"
+                android:backgroundTint="#035283"
                 android:text="Login"
+                android:textColor="#FFFFFF"
                 app:cornerRadius="32dp"/>
 
         </LinearLayout>

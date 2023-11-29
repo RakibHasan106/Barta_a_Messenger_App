@@ -10,7 +10,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/my_primary"
+        android:background="#7EBBFD"
         android:alpha=".7">
 
         <ProgressBar

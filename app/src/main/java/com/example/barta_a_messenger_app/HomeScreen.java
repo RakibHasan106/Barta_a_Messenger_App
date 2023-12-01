@@ -43,7 +43,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class HomeScreen extends AppCompatActivity {
+public class HomeScreen extends BaseActivity{
 
     private TabLayout tabLayout;
     private ViewPager viewPager;

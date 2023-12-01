@@ -74,7 +74,7 @@ public class SendOTPActivity extends AppCompatActivity {
                             else{
                                 databaseReference.child("All Accounts").child(phone).child("phone_no").setValue(phone);
                                 databaseReference.child("All Accounts").child(phone).child("uid").setValue(FirebaseAuth.getInstance().getUid());
-                                databaseReference.child("user").child(user).setValue(new User(name,email,phone,"",""));
+                                databaseReference.child("user").child(user).setValue(new User(name,email,phone,"","active"));
                                 Intent intent = new Intent(SendOTPActivity.this, HomeScreen.class);
                                 intent.putExtra("email",email);
                                 intent.putExtra("phone",countryCodePicker.getFullNumberWithPlus());

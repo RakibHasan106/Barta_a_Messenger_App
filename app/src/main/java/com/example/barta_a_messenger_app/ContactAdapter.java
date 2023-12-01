@@ -42,6 +42,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
 
 
         String profilePicUrl = contact.getProfilePic();
+        String status = contact.getStatus();
 
         if (profilePicUrl != null && !profilePicUrl.isEmpty()) {
             Picasso.get().load(profilePicUrl).into(holder.profile_pic);
@@ -49,6 +50,12 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
         else
         {
             // Handle the case where the URL is empty or null
+        }
+
+        if (status.equals("active")) {
+            holder.active_status.setVisibility(View.VISIBLE); // Set the online status indicator to visible
+        } else {
+            holder.active_status.setVisibility(View.INVISIBLE); // Set the online status indicator to invisible
         }
 
 
@@ -73,15 +80,17 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
-        ImageView profile_pic;
+        ImageView profile_pic,active_status;
         TextView contact_name;
         TextView contact_phone;
+
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             profile_pic=itemView.findViewById(R.id.contact_image);
             contact_name=itemView.findViewById(R.id.contact_name);
             contact_phone=itemView.findViewById(R.id.contact_number);
+            active_status = itemView.findViewById(R.id.online_status);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -42,9 +42,10 @@ public class friendRequestFragment extends Fragment implements FriendRequestAdap
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         adapter = new FriendRequestAdapter(requireContext(), friendRequest,this);
+        loadFriendRequests();
         recyclerView.setAdapter(adapter);
 
-        loadFriendRequests();
+
 
         return view;
     }

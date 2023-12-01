@@ -2,15 +2,26 @@ package com.example.barta_a_messenger_app;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.annotation.SuppressLint;
 
+import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
+import android.provider.Settings;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -94,6 +105,16 @@ public class HomeScreen extends AppCompatActivity {
         DatabaseReference userRef = database.getReference("user").child(uid);
 
 
+        if (!isNotificationPermissionGranted()) {
+            // If not granted, prompt the user to grant permission
+            showNotificationPermissionDialog();
+            //promptForNotificationPermission();
+        }
+        else{
+            Toast.makeText(HomeScreen.this,"notification enabled",Toast.LENGTH_SHORT);
+        }
+
+
 
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -140,7 +161,7 @@ public class HomeScreen extends AppCompatActivity {
                                                 DataSnapshot ds = task.getResult();
                                                 if(ds.exists()){
                                                     sendername = ds.child("username").getValue(String.class);
-                                                    NotificationHelper.notificationDialog(HomeScreen.this,message.getMessage(),sendername);
+                                                    new NotificationHelper().notificationDialog(HomeScreen.this,message.getMessage(),sendername);
                                                     //Log.d("senderName",sendername);
 
                                                 }
@@ -200,5 +221,63 @@ public class HomeScreen extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         database.getReference().child("chats").child(uid).addValueEventListener(notificationListener);
+    }
+
+    private void showNotificationPermissionDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // Get the layout inflater
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.notification_permission_dialog, null);
+        builder.setView(dialogView);
+        builder.setTitle("Please Give Notification Permission to Continue");
+
+        Button btnYes = dialogView.findViewById(R.id.btnOk);
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        btnYes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                promptForNotificationPermission();
+                dialog.dismiss();
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+
+    }
+
+    private boolean isNotificationPermissionGranted() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // For Android Oreo and above, use NotificationManagerCompat
+            return NotificationManagerCompat.from(this)
+                    .areNotificationsEnabled();
+        } else {
+            // For versions below Oreo, check if the notification channel is enabled
+            NotificationManager notificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            return notificationManager != null &&
+                    notificationManager.getImportance() != NotificationManager.IMPORTANCE_NONE;
+        }
+    }
+
+    private void promptForNotificationPermission() {
+        // You can show a dialog or navigate the user to the notification settings
+        // For example, you can open the app settings page
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(Uri.fromParts("package", getPackageName(), null));
+        startActivity(intent);
+
+        // You can also display a toast or a dialog to inform the user
+        //Toast.makeText(this, "Please enable notification permission", Toast.LENGTH_LONG).show();
     }
 }

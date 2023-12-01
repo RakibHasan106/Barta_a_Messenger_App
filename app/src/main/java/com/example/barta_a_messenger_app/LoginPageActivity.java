@@ -9,14 +9,20 @@ import androidx.activity.result.IntentSenderRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.net.Uri;
 import android.nfc.Tag;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.InputType;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -88,6 +94,8 @@ public class LoginPageActivity extends AppCompatActivity{
         progressDialog.setCancelable(false);
 
         forgetPass = findViewById(R.id.forgetpasstext);
+
+
 
 
         forgetPass.setOnClickListener(new View.OnClickListener() {

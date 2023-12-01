@@ -70,6 +70,7 @@ public class InboxActivity extends AppCompatActivity {
     SQLiteDatabase db;
     ValueEventListener chatListener,otherChatListener;
     ChatAdapter chatAdapter;
+    String messageSenderName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,7 +151,6 @@ public class InboxActivity extends AppCompatActivity {
         };
 
         otherChatListener = new ValueEventListener() {
-            final String[] sendername={""};
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot datasnapshot : snapshot.getChildren()) {
@@ -167,13 +167,14 @@ public class InboxActivity extends AppCompatActivity {
                                                 if(task.isSuccessful()){
                                                     DataSnapshot ds = task.getResult();
                                                     if(ds.exists()){
-                                                        sendername[0] = ds.child("username").getValue(String.class);
+                                                        messageSenderName = ds.child("username").getValue(String.class);
+                                                        NotificationHelper.notificationDialog(InboxActivity.this,message.getMessage(),messageSenderName);
                                                     }
                                                 }
                                             }
                                         });
 
-                                NotificationHelper.notificationDialog(InboxActivity.this,message.getMessage(),sendername[0]);
+
 
                                 database.getReference().child("chats")
                                         .child(senderId).child(datasnapshot.getKey())

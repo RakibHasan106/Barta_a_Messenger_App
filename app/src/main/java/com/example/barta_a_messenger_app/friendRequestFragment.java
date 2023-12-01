@@ -173,5 +173,7 @@ public class friendRequestFragment extends Fragment implements FriendRequestAdap
 
         friendRequestsRef.removeValue();
         adapter.notifyDataSetChanged();
+        friendRequest.clear();
+
     }
 }

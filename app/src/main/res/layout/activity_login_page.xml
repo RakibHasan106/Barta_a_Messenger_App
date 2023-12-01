@@ -163,7 +163,7 @@
                 android:text="SignUp"
                 app:cornerRadius="32dp"
                 android:textColor="#FFFFFF"
-                android:backgroundTint="#035283"
+                android:backgroundTint="#2085C3"
                 />
             <TextView
                 android:layout_width="wrap_content"
@@ -183,12 +183,6 @@
                     android:layout_height="40dp"
                     android:layout_margin="12dp"
                     android:background="@drawable/google_logo"/>
-
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_margin="12dp"
-                    android:background="@drawable/facebook_logo"/>
 
 
             </LinearLayout>

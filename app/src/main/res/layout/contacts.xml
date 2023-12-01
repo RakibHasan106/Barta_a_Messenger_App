@@ -34,15 +34,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="18dp">
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/online_indicator"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_alignEnd="@id/contact_image"
-                    android:layout_alignBottom="@id/contact_image"
-                    android:src="@mipmap/ic_launcher_round"
-                    android:visibility="gone"
-                    tools:ignore="UnknownId" />
 
                 <!-- Contact Name -->
                 <TextView

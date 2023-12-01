@@ -23,20 +23,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:text="OTP Verification"
+            android:text="Enter Phone Number"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="50dp"
-            android:layout_marginEnd="50dp"
-            android:layout_marginTop="8dp"
-            android:gravity="center"
-            android:text="We will send you a one time password on this number"
-            android:textSize="14sp"/>
+
 
         <TextView
             android:layout_width="match_parent"
@@ -80,13 +72,14 @@
 <!--                android:layout_marginTop="2dp"-->
 <!--                android:layout_marginEnd="70dp"-->
 <!--                android:background="#03A7FF"/>-->
-            <com.google.android.material.button.MaterialButton
+            <androidx.constraintlayout.utils.widget.MotionButton
                 android:id="@+id/getotpbutton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="30dp"
                 android:backgroundTint="#035283"
-                android:text="Get OTP"
+                android:text="Sign up"
+                android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:textStyle="bold"/>
 

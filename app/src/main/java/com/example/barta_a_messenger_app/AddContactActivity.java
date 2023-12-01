@@ -120,7 +120,7 @@ public class AddContactActivity extends AppCompatActivity {
         Request request = new Request(fname,phone,uid,contact_uid,"pending");
 
         databaseReference.child("FriendRequestPending").child(contact_uid).child(uid).setValue(request);
-        name.setText("");
+        ///name.setText("");
         phone_number.setText("");
 
         Toast.makeText(this, "Friend request sent", Toast.LENGTH_SHORT).show();

@@ -69,11 +69,12 @@
                     android:hint="Username"/>
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
-        <Button
+        <androidx.constraintlayout.utils.widget.MotionButton
             android:id="@+id/updateBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Update"
+            android:textColor="#FFFFFF"
             android:layout_gravity="center"
             android:layout_margin="20dp"
             android:backgroundTint="#035283"/>

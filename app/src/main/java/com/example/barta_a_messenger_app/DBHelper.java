@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 public class DBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "messenger_db";
-    private static int DATABASE_VERSION = 12;
+    private static int DATABASE_VERSION = 14;
 
     public static String chat_table_name ;
     Context context;
@@ -29,6 +29,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String createTableQuery = "CREATE TABLE IF NOT EXISTS "+chat_table_name+
                             " (MESSAGEID TEXT PRIMARY KEY," +
                             " MESSAGE TEXT, MESSAGETYPE TEXT ," +
+                            "ISNOTIFIED TEXT,"+
                             "TIMESTAMP INTEGER, SENDER_ID TEXT);";
 
         sqLiteDatabase.execSQL(createTableQuery);

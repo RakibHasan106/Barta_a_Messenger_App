@@ -12,16 +12,16 @@ import android.os.Build;
 
 public class NotificationHelper {
 
-    public static void notificationDialog(Context context) {
+    public static void notificationDialog(Context context,String message,String senderName) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         String NOTIFICATION_CHANNEL_ID = "Baarta";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            @SuppressLint("WrongConstant") NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_MAX);
+            @SuppressLint("WrongConstant") NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "Message Notification", NotificationManager.IMPORTANCE_MAX);
             // Configure the notification channel
             notificationChannel.setDescription("Sample Channel description");
             notificationChannel.enableLights(true);
-            notificationChannel.setLightColor(Color.RED);
-            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+            notificationChannel.setLightColor(Color.GREEN);
+            notificationChannel.setVibrationPattern(new long[]{0, 1000});
             notificationChannel.enableVibration(true);
             notificationManager.createNotificationChannel(notificationChannel);
         }
@@ -30,10 +30,10 @@ public class NotificationHelper {
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setTicker("Tutorialspoint")
+                .setTicker("test")
                 //.setPriority(Notification.PRIORITY_MAX)
-                .setContentTitle("sample notification")
-                .setContentText("This is sample notification")
+                .setContentTitle(senderName)
+                .setContentText(message)
                 .setContentInfo("Information");
         notificationManager.notify(1, notificationBuilder.build());
     }

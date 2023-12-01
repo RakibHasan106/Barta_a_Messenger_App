@@ -10,10 +10,14 @@ import android.annotation.SuppressLint;
 
 import android.os.Bundle;
 
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -47,7 +51,11 @@ public class HomeScreen extends AppCompatActivity {
     DatabaseReference databaseReference;
     String uid;
 
+    ValueEventListener notificationListener;
+    FirebaseDatabase database;
+
     ArrayList<Contact> contactList;
+    String sendername;
 
     @SuppressLint({"MissingInflatedId", "WrongViewCast"})
     @Override
@@ -82,7 +90,7 @@ public class HomeScreen extends AppCompatActivity {
             uid = user.getUid();
         }
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        database = FirebaseDatabase.getInstance();
         DatabaseReference userRef = database.getReference("user").child(uid);
 
 
@@ -114,38 +122,83 @@ public class HomeScreen extends AppCompatActivity {
 
         });
 
-//        database.getReference().child("chats")
-//                .child(user.getUid())
-//                .addValueEventListener(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                        for(DataSnapshot datasnapshot:snapshot.getChildren()){
-//                            MessageModel message = snapshot.getValue(MessageModel.class);
-//                            String username;
-//                            database.getReference().child("user").child(message.getUid())
-//                                    .child("username")
-//                                            .addValueEventListener(new ValueEventListener() {
-//                                                @Override
-//                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                                                    username = snapshot.getValue(String.class);
-//                                                }
-//
-//                                                @Override
-//                                                public void onCancelled(@NonNull DatabaseError error) {
-//
-//                                                }
-//                                            });
-//                            NotificationHelper.notificationDialog(HomeScreen.this);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError error) {
-//
-//                    }
-//                });
+        notificationListener= new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot datasnapshot : snapshot.getChildren()) {
+                    for(DataSnapshot dataSnapshot2 : datasnapshot.getChildren()){
+                        MessageModel message = dataSnapshot2.getValue(MessageModel.class);
+
+                        if(message.getIsNotified().equals("no")){
+
+                            database.getReference().child("user")
+                                            .child(message.getUid()).get()
+                                    .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                            if(task.isSuccessful()){
+                                                DataSnapshot ds = task.getResult();
+                                                if(ds.exists()){
+                                                    sendername = ds.child("username").getValue(String.class);
+                                                    NotificationHelper.notificationDialog(HomeScreen.this,message.getMessage(),sendername);
+                                                    //Log.d("senderName",sendername);
+
+                                                }
+                                            }
+                                        }
+                                    });
+                            //Toast.makeText(HomeScreen.this,sendername, Toast.LENGTH_SHORT).show();
+
+
+                            database.getReference().child("chats")
+                                    .child(uid).child(datasnapshot.getKey())
+                                    .child(dataSnapshot2.getKey())
+                                    .child("isNotified").setValue("yes");
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+
+        database.getReference().child("chats")
+                .child(uid)
+                .addValueEventListener(notificationListener);
 
 
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        database.getReference().child("chats").child(uid).removeEventListener(notificationListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        database.getReference().child("chats").child(uid).removeEventListener(notificationListener);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        database.getReference().child("chats").child(uid).removeEventListener(notificationListener);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        database.getReference().child("chats").child(uid).addValueEventListener(notificationListener);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        database.getReference().child("chats").child(uid).addValueEventListener(notificationListener);
+    }
 }

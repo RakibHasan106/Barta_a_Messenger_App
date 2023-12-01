@@ -105,7 +105,7 @@ public class ChatAdapter extends RecyclerView.Adapter{
                 ((SenderViewHolder)holder).sentFile.setVisibility(View.VISIBLE);
                 ((SenderViewHolder)holder).senderMsg.setVisibility(View.GONE);
                 ((SenderViewHolder)holder).sentImage.setVisibility(View.GONE);
-                if(messageModel.getMessageType()=="pdf"){
+                if(messageModel.getMessageType().equals("pdf")){
                     ((SenderViewHolder)holder).sentFile.setImageResource(R.drawable.pdf_icon);
                 }
                 else{
@@ -117,7 +117,7 @@ public class ChatAdapter extends RecyclerView.Adapter{
                 ((ReceiverViewHolder)holder).receivedFile.setVisibility(View.VISIBLE);
                 ((ReceiverViewHolder)holder).receiverMsg.setVisibility(View.GONE);
                 ((ReceiverViewHolder)holder).receivedImage.setVisibility(View.GONE);
-                if(messageModel.getMessageType()=="pdf"){
+                if(messageModel.getMessageType().equals("pdf")){
                     ((ReceiverViewHolder)holder).receivedFile.setImageResource(R.drawable.pdf_icon);
                 }
                 else{

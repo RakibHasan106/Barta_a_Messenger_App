@@ -20,9 +20,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 
 import android.widget.EditText;
@@ -71,7 +68,7 @@ public class InboxActivity extends AppCompatActivity {
 
     private DBHelper dbHelper;
     SQLiteDatabase db;
-    ValueEventListener chatListener;
+    ValueEventListener chatListener,otherChatListener;
     ChatAdapter chatAdapter;
 
     @Override
@@ -131,6 +128,7 @@ public class InboxActivity extends AppCompatActivity {
                     for(DataSnapshot snapshot1:snapshot.getChildren()){
                         MessageModel message = snapshot1.getValue(MessageModel.class);
                         message.setMessageId(snapshot1.getKey());
+                        message.setIsNotified("yes");
 
                         localMessageModel.add(message);
                         updateLocalDatabase(message);
@@ -139,7 +137,7 @@ public class InboxActivity extends AppCompatActivity {
                         chatRecyclerView.scrollToPosition(localMessageModel.size()-1);
                     }
 
-                    database.getReference().child("chats").child(senderId).child(receiverRoom).removeValue();
+                    database.getReference().child("chats").child(senderId).child(receiverId).removeValue();
 
                 }
 
@@ -151,10 +149,58 @@ public class InboxActivity extends AppCompatActivity {
             }
         };
 
+        otherChatListener = new ValueEventListener() {
+            final String[] sendername={""};
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot datasnapshot : snapshot.getChildren()) {
+                    if(!datasnapshot.getKey().equals(receiverId)){
+                        for(DataSnapshot dataSnapshot2 : datasnapshot.getChildren()){
+                            MessageModel message = dataSnapshot2.getValue(MessageModel.class);
+
+                            if(message.getIsNotified().equals("no")){
+
+                                database.getReference().child("user")
+                                        .child(message.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                                if(task.isSuccessful()){
+                                                    DataSnapshot ds = task.getResult();
+                                                    if(ds.exists()){
+                                                        sendername[0] = ds.child("username").getValue(String.class);
+                                                    }
+                                                }
+                                            }
+                                        });
+
+                                NotificationHelper.notificationDialog(InboxActivity.this,message.getMessage(),sendername[0]);
+
+                                database.getReference().child("chats")
+                                        .child(senderId).child(datasnapshot.getKey())
+                                        .child(dataSnapshot2.getKey())
+                                        .child("isNotified").setValue("yes");
+
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+
                 database.getReference().child("chats")
                         .child(senderId)
-                        .child(receiverRoom)
+                        .child(receiverId)
                                 .addValueEventListener(chatListener);
+
+        database.getReference().child("chats")
+                .child(senderId).addValueEventListener(otherChatListener);
+
 
 
         sendButton.setOnClickListener(new View.OnClickListener() {
@@ -168,27 +214,22 @@ public class InboxActivity extends AppCompatActivity {
 
                     String key = database.getReference().child("chats")
                             .child(receiverId)
-                            .child(senderRoom)
+                            .child(senderId)
                             .push().getKey();
+
                     model.setMessageId(key);
+                    model.setIsNotified("no");
 
                     database.getReference().child("chats")
                             .child(receiverId)
-                            .child(senderRoom)
+                            .child(senderId)
                             .child(key)
                             .setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
 
-                                    ContentValues values = new ContentValues();
+                                    updateLocalDatabase(model);
 
-                                    values.put("MESSAGEID",model.getMessageId());
-                                    values.put("MESSAGE", model.getMessage());
-                                    values.put("MESSAGETYPE",model.getMessageType());
-                                    values.put("TIMESTAMP", model.getTimestamp());
-                                    values.put("SENDER_ID",model.getUid());
-
-                                    db.insert(dbHelper.chat_table_name, null, values);
                                     localMessageModel.add(model);
                                     chatAdapter.notifyDataSetChanged();
                                     chatRecyclerView.scrollToPosition(localMessageModel.size()-1);
@@ -284,7 +325,31 @@ public class InboxActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        database.getReference().removeEventListener(chatListener);
+        database.getReference().child("chats")
+                .child(senderId)
+                .child(receiverId).removeEventListener(chatListener);
+
+        database.getReference().child("chats")
+                .child(senderId).removeEventListener(otherChatListener);
+    }
+
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        database.getReference().child("chats")
+//                .child(senderId)
+//                .child(receiverRoom).removeEventListener(chatListener);
+//    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        database.getReference().child("chats")
+                .child(senderId)
+                .child(receiverId).removeEventListener(chatListener);
+
+        database.getReference().child("chats")
+                .child(senderId).removeEventListener(otherChatListener);
     }
 
     private void updateLocalDatabase(MessageModel message) {
@@ -293,6 +358,7 @@ public class InboxActivity extends AppCompatActivity {
         values.put("MESSAGEID", message.getMessageId());
         values.put("MESSAGE", message.getMessage());
         values.put("MESSAGETYPE",message.getMessageType());
+        values.put("ISNOTIFIED",message.getIsNotified());
         values.put("TIMESTAMP", message.getTimestamp());
         values.put("SENDER_ID",message.getUid());
 
@@ -341,49 +407,25 @@ public class InboxActivity extends AppCompatActivity {
 
                                 MessageModel model = new MessageModel(senderId,imageUrl,"img");
                                 model.setTimestamp(new Date().getTime());
-//
-//                                database.getReference().child("chats")
-//                                        .child(senderRoom)
-//                                        .push()
-//                                        .setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                            @Override
-//                                            public void onSuccess(Void unused) {
-//                                                chatRecyclerView.scrollToPosition(localMessageModel.size()-1);
-//                                                database.getReference().child("chats")
-//                                                        .child(receiverRoom)
-//                                                        .push()
-//                                                        .setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                                            @Override
-//                                                            public void onSuccess(Void unused) {
-//                                                                progressDialog.dismiss();
-//                                                            }
-//                                                        });
-//                                            }
-//                                        });
+
 
                                 String key = database.getReference().child("chats")
                                         .child(receiverId)
-                                        .child(senderRoom)
+                                        .child(senderId)
                                         .push().getKey();
+
                                 model.setMessageId(key);
+                                model.setIsNotified("no");
 
                                 database.getReference().child("chats")
                                         .child(receiverId)
-                                        .child(senderRoom)
+                                        .child(senderId)
                                         .child(key)
                                         .setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void unused) {
 
-                                                ContentValues values = new ContentValues();
-
-                                                values.put("MESSAGEID",model.getMessageId());
-                                                values.put("MESSAGE", model.getMessage());
-                                                values.put("MESSAGETYPE",model.getMessageType());
-                                                values.put("TIMESTAMP", model.getTimestamp());
-                                                values.put("SENDER_ID",model.getUid());
-
-                                                db.insert(dbHelper.chat_table_name, null, values);
+                                                updateLocalDatabase(model);
                                                 localMessageModel.add(model);
                                                 chatAdapter.notifyDataSetChanged();
                                                 chatRecyclerView.scrollToPosition(localMessageModel.size()-1);
@@ -428,47 +470,21 @@ public class InboxActivity extends AppCompatActivity {
                                 MessageModel model = new MessageModel(senderId,fileUrl,fileType);
                                 model.setTimestamp(new Date().getTime());
 
-//                                database.getReference().child("chats")
-//                                        .child(senderRoom)
-//                                        .push()
-//                                        .setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                            @Override
-//                                            public void onSuccess(Void unused) {
-//                                                chatRecyclerView.scrollToPosition(localMessageModel.size()-1);
-//                                                database.getReference().child("chats")
-//                                                        .child(receiverRoom)
-//                                                        .push()
-//                                                        .setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                                            @Override
-//                                                            public void onSuccess(Void unused) {
-//                                                                progressDialog.dismiss();
-//                                                            }
-//                                                        });
-//                                            }
-//                                        });
                                 String key = database.getReference().child("chats")
                                         .child(receiverId)
-                                        .child(senderRoom)
+                                        .child(senderId)
                                         .push().getKey();
                                 model.setMessageId(key);
 
                                 database.getReference().child("chats")
                                         .child(receiverId)
-                                        .child(senderRoom)
+                                        .child(senderId)
                                         .child(key)
                                         .setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void unused) {
 
-                                                ContentValues values = new ContentValues();
-
-                                                values.put("MESSAGEID",model.getMessageId());
-                                                values.put("MESSAGE", model.getMessage());
-                                                values.put("MESSAGETYPE",model.getMessageType());
-                                                values.put("TIMESTAMP", model.getTimestamp());
-                                                values.put("SENDER_ID",model.getUid());
-
-                                                db.insert(dbHelper.chat_table_name, null, values);
+                                                updateLocalDatabase(model);
                                                 localMessageModel.add(model);
                                                 chatAdapter.notifyDataSetChanged();
                                                 chatRecyclerView.scrollToPosition(localMessageModel.size()-1);
@@ -498,6 +514,7 @@ public class InboxActivity extends AppCompatActivity {
         String createTableQuery = "CREATE TABLE IF NOT EXISTS "+dbHelper.chat_table_name+
                 " (MESSAGEID TEXT PRIMARY KEY," +
                 " MESSAGE TEXT, MESSAGETYPE TEXT ," +
+                "ISNOTIFIED TEXT,"+
                 "TIMESTAMP INTEGER, SENDER_ID TEXT);";
 
         db.execSQL(createTableQuery);
@@ -517,8 +534,10 @@ public class InboxActivity extends AppCompatActivity {
         while (cursor.moveToNext()) {
             MessageModel message = new MessageModel();
 
+            message.setMessageId(cursor.getString(cursor.getColumnIndexOrThrow("MESSAGEID"))); //new added
             message.setMessage(cursor.getString(cursor.getColumnIndexOrThrow("MESSAGE")));
             message.setMessageType(cursor.getString(cursor.getColumnIndexOrThrow("MESSAGETYPE")));
+            message.setIsNotified(cursor.getString(cursor.getColumnIndexOrThrow("ISNOTIFIED")));
             message.setTimestamp(cursor.getLong(cursor.getColumnIndexOrThrow("TIMESTAMP")));
             message.setUid(cursor.getString(cursor.getColumnIndexOrThrow("SENDER_ID")));
 

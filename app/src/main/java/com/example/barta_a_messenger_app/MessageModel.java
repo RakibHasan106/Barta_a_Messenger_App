@@ -3,6 +3,7 @@ package com.example.barta_a_messenger_app;
 public class MessageModel {
     String uid, message, messageId;
     String messageType;
+    String isNotified;
     Long timestamp;
 
     public MessageModel(String uid, String message, Long timestamp) {
@@ -65,5 +66,13 @@ public class MessageModel {
 
     public void setMessageType(String messageType) {
         this.messageType = messageType;
+    }
+
+    public String getIsNotified() {
+        return isNotified;
+    }
+
+    public void setIsNotified(String isNotified) {
+        this.isNotified = isNotified;
     }
 }

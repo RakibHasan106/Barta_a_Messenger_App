@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class friendRequestFragment extends Fragment implements FriendRequestAdapter.FriendRequestActionListener{
 
@@ -102,13 +103,9 @@ public class friendRequestFragment extends Fragment implements FriendRequestAdap
                         .child(request.getReceiverUid())
                         .child(request.getSenderUid());
 
-                contactsRef.setValue(new Contact(request.getName(), request.getPhone(), request.getSenderUid(), ""));
+                contactsRef.setValue(new Contact(request.getName(), request.getPhone(), request.getSenderUid(), "","","",new Date().getTime()));
 
-//                DatabaseReference Ref = FirebaseDatabase.getInstance().getReference("Contacts")
-//                        .child(request.getSenderUid())
-//                        .child(request.getReceiverUid());
-//
-//                Ref.setValue(new Contact(request.getName(), request.getPhone(), request.getReceiverUid(), ""));
+
                 adapter.notifyDataSetChanged();
                 friendRequest.clear();
             }
@@ -132,13 +129,8 @@ public class friendRequestFragment extends Fragment implements FriendRequestAdap
                         .child(request.getSenderUid())
                         .child(request.getReceiverUid());
 
-                contactsRef.setValue(new Contact(request.getName(), request.getPhone(), request.getReceiverUid(), ""));
-//
-//                DatabaseReference Ref = FirebaseDatabase.getInstance().getReference("Contacts")
-//                        .child(request.getSenderUid())
-//                        .child(request.getReceiverUid());
-//
-//                Ref.setValue(new Contact(request.getName(), request.getPhone(), request.getReceiverUid(), ""));
+                contactsRef.setValue(new Contact(request.getName(), request.getPhone(), request.getReceiverUid(), "","","",new Date().getTime()));
+
                 adapter.notifyDataSetChanged();
                 friendRequest.clear();
             }
@@ -151,11 +143,7 @@ public class friendRequestFragment extends Fragment implements FriendRequestAdap
 
 
 
-//        DatabaseReference Ref = FirebaseDatabase.getInstance().getReference("Contacts")
-//                .child(request.getSenderUid())
-//                .child(request.getReceiverUid());
-//
-//        Ref.setValue(new Contact(request.getName(), request.getPhone(), request.getReceiverUid(), ""));
+
 
         DatabaseReference friendRequestsRef = FirebaseDatabase.getInstance().getReference("FriendRequestPending")
                 .child(request.getReceiverUid())

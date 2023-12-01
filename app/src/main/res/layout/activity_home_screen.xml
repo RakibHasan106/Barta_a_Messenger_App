@@ -25,7 +25,6 @@
             android:id="@+id/head_textView"
             android:layout_width="220dp"
             android:layout_height="27dp"
-            android:text="Steve Smith"
             android:textColor="#FFFFFF"
             android:textSize="20dp"
             android:layout_marginTop="24dp"

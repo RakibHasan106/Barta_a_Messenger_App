@@ -151,22 +151,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="10dp"/>
 
+
             <androidx.constraintlayout.utils.widget.MotionButton
                 android:id="@+id/otpsendbutton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:text="Send OTP"
                 android:backgroundTint="#035283"
+                android:text="next"
                 android:textColor="#FFFFFF"
-                app:cornerRadius="32dp"/>
-
+                app:cornerRadius="32dp" />
 
             <androidx.constraintlayout.utils.widget.MotionButton
                 android:id="@+id/loginbutton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:backgroundTint="#035283"
-                android:text="Login"
+                android:backgroundTint="#2085C3"
+                android:text="back"
                 android:textColor="#FFFFFF"
                 app:cornerRadius="32dp"/>
 

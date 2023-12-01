@@ -7,7 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -32,6 +35,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -125,9 +129,10 @@ public class ProfileUpdateActivity extends AppCompatActivity {
         imgProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent photoIntent = new Intent(Intent.ACTION_PICK);
-                photoIntent.setType("image/*");
-                startActivityForResult(photoIntent,1);
+//                Intent photoIntent = new Intent(Intent.ACTION_PICK);
+//                photoIntent.setType("image/*");
+//                startActivityForResult(photoIntent,1);
+                showImagePickerDialog();
             }
         });
 
@@ -194,27 +199,87 @@ public class ProfileUpdateActivity extends AppCompatActivity {
             }
         });
     }
+//
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == 1 && resultCode == RESULT_OK && data!=null){
+//            imagePath = data.getData();
+//            getImageInImageView();
+//
+//        }
+//    }
+//
+//    private void getImageInImageView() {
+//
+//        Bitmap bitmap = null;
+//        try {
+//            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),imagePath);
+//        }
+//        catch (IOException e){
+//            e.printStackTrace();
+//        }
+//
+//        imgProfile.setImageBitmap(bitmap);
+//    }
+    private void showImagePickerDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Choose Image Source");
+        String[] options = {"Gallery", "Camera"};
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        // Choose from gallery
+                        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(galleryIntent, 1);
+                        break;
+                    case 1:
+                        // Take a picture from camera
+                        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+                            startActivityForResult(cameraIntent, 2);
+                        } else {
+                            Toast.makeText(ProfileUpdateActivity.this, "Camera not available", Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+                }
+            }
+        });
+        builder.show();
+    }
 
-    @Override
+    // Update onActivityResult to handle both gallery and camera results
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK && data!=null){
-            imagePath = data.getData();
-            getImageInImageView();
-
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case 1: // Gallery
+                    if (data != null) {
+                        imagePath = data.getData();
+                        // Set the chosen image in the ImageView
+                        imgProfile.setImageURI(imagePath);
+                    }
+                    break;
+                case 2: // Camera
+                    if (data != null && data.getExtras() != null) {
+                        Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
+                        // Set the captured image in the ImageView
+                        imgProfile.setImageBitmap(imageBitmap);
+                        // Convert the Bitmap to Uri
+                        imagePath = getImageUri(getApplicationContext(), imageBitmap);
+                    }
+                    break;
+            }
         }
     }
 
-    private void getImageInImageView() {
-
-        Bitmap bitmap = null;
-        try {
-            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),imagePath);
-        }
-        catch (IOException e){
-            e.printStackTrace();
-        }
-
-        imgProfile.setImageBitmap(bitmap);
+    // Helper method to convert Bitmap to Uri
+    private Uri getImageUri(Context context, Bitmap bitmap) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "Title", null);
+        return Uri.parse(path);
     }
 }

@@ -129,7 +129,7 @@ public class HomeScreen extends BaseActivity{
                     }
                     else {
 
-                    }
+                     }
 
                 } else {
                     // Handle the case where the user data doesn't exist

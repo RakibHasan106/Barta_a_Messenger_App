@@ -33,7 +33,7 @@ public class chatFragment extends Fragment {
     FirebaseAuth mAuth ;
     FirebaseUser user;
 
-    private ContactAdapter adapter;
+    private ChatListAdapter adapter;
 
     private ArrayList<Contact> list;
 
@@ -57,14 +57,17 @@ public class chatFragment extends Fragment {
         DatabaseReference userRef = database.getReference("user").child(uid);
 
         list = new ArrayList<>();
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(linearLayoutManager);
 
-        adapter = new ContactAdapter(requireContext(), list);
+        adapter = new ChatListAdapter(requireContext(), list);
         recyclerView.setAdapter(adapter);
 
 
         databaseReference = FirebaseDatabase.getInstance().getReference("Contacts").child(uid);
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.orderByChild("message_time").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 list.clear();

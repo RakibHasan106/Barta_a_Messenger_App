@@ -74,23 +74,26 @@ public class chatFragment extends Fragment {
                     list.add(contact);
 
                     String uid2 = contact.getUid();
-                    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("user").child(uid2);
+                    if (uid2 != null){
+                        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("user").child(uid2);
 
-                    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.exists()) {
-                                String profilePictureUrl = dataSnapshot.child("profilePicture").getValue(String.class);
-                                contact.setProfilePic(profilePictureUrl);
-                                adapter.notifyDataSetChanged();  // Notify adapter to update the UI
+                        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.exists()) {
+                                    String profilePictureUrl = dataSnapshot.child("profilePicture").getValue(String.class);
+                                    contact.setProfilePic(profilePictureUrl);
+                                    adapter.notifyDataSetChanged();  // Notify adapter to update the UI
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            // Handle errors
-                        }
-                    });
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                // Handle errors
+                            }
+                        });
+                    }
+
                 }
                 adapter.notifyDataSetChanged();
             }

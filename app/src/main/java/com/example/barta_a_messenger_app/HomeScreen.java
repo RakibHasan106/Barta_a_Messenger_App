@@ -83,10 +83,8 @@ public class HomeScreen extends BaseActivity{
         vpAdapter.addFragment(new chatFragment(),"CHATS");
         vpAdapter.addFragment(new profileFragment(),"PROFILE");
         vpAdapter.addFragment(new friendRequestFragment(),"REQUEST");
-        vpAdapter.addFragment(new settingsFragment(),"SETTINGS");
 
         viewPager.setAdapter(vpAdapter);
-
 
         recyclerView = findViewById(R.id.recyclerView);
         fab = findViewById(R.id.fab_button);

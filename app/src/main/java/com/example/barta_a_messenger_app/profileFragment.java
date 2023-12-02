@@ -38,7 +38,7 @@ public class profileFragment extends Fragment {
 
     private String uid;
     private RecyclerView recyclerView;
-    private TextView username;
+    private TextView username,phone_nmbr;
     private ImageView imgProfile;
     private Uri imagePath;
     private ArrayList<Contact> list;
@@ -53,6 +53,16 @@ public class profileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
+        androidx.constraintlayout.utils.widget.MotionButton btnLogout = view.findViewById(R.id.btnLogout);
+
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                logout();
+            }
+        });
+
         mAuth = FirebaseAuth.getInstance();
         uid = mAuth.getCurrentUser().getUid();
 
@@ -60,6 +70,7 @@ public class profileFragment extends Fragment {
         imgProfile = view.findViewById(R.id.profilePicture);
         recyclerView = view.findViewById(R.id.recyclerView);
         editStatus=view.findViewById(R.id.updateStatusBtn);
+        phone_nmbr = view.findViewById(R.id.phone);
 
         editStatus.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,9 +93,11 @@ public class profileFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     String name = dataSnapshot.child("username").getValue(String.class);
+                    String number = dataSnapshot.child("phone").getValue(String.class);
                     String profilePictureUrl = dataSnapshot.child("profilePicture").getValue(String.class);
 
                     username.setText(name);
+                    phone_nmbr.setText(number);
 
                     if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) {
                         Picasso.get().load(profilePictureUrl).into(imgProfile);
@@ -108,47 +121,54 @@ public class profileFragment extends Fragment {
                     Contact contact = dataSnapshot.getValue(Contact.class);
                     list.add(contact);
                     String uid2 = contact.getUid();
-                    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("user").child(uid2);
 
-                    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.exists()) {
-                                String profilePictureUrl = dataSnapshot.child("profilePicture").getValue(String.class);
+                    if (uid2 != null){
+                        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("user").child(uid2);
+
+                        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.exists()) {
+                                    String profilePictureUrl = dataSnapshot.child("profilePicture").getValue(String.class);
 
 //                                contact.setProfilePic(profilePictureUrl);
-                                databaseReference.child(uid2).child("profilePic").setValue(profilePictureUrl);
+                                    databaseReference.child(uid2).child("profilePic").setValue(profilePictureUrl);
 
-                                adapter.notifyDataSetChanged();
+                                    adapter.notifyDataSetChanged();
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            // Handle errors
-                        }
-                    });
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                // Handle errors
+                            }
+                        });
 
-                    DatabaseReference userRef2 = FirebaseDatabase.getInstance().getReference("user").child(uid2);
 
-                    userRef2.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.exists()) {
+                        DatabaseReference userRef2 = FirebaseDatabase.getInstance().getReference("user").child(uid2);
 
-                                String status = dataSnapshot.child("status").getValue(String.class);
+                        userRef2.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.exists()) {
+
+                                    String status = dataSnapshot.child("status").getValue(String.class);
 //                                contact.setProfilePic(profilePictureUrl);
 
-                                databaseReference.child(uid2).child("status").setValue(status);
-                                adapter.notifyDataSetChanged();
+                                    databaseReference.child(uid2).child("status").setValue(status);
+                                    adapter.notifyDataSetChanged();
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            // Handle errors
-                        }
-                    });
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                // Handle errors
+                            }
+                        });
+                    }
+
+
+
                 }
 
             }
@@ -242,5 +262,15 @@ public class profileFragment extends Fragment {
             e.printStackTrace();
         }
         imgProfile.setImageBitmap(bitmap);
+    }
+
+    private void logout() {
+
+        FirebaseAuth.getInstance().signOut();
+
+        Intent intent = new Intent(getActivity(), LoginPageActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        getActivity().finish();
     }
 }

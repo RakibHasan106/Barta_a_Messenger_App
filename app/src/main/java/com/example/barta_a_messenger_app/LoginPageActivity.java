@@ -93,7 +93,6 @@ public class LoginPageActivity extends AppCompatActivity{
         loginButton = findViewById(R.id.loginbutton);
         signupButton = findViewById(R.id.signupbutton);
 
-        googleButton = findViewById(R.id.googleButton);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading...");
@@ -142,13 +141,6 @@ public class LoginPageActivity extends AppCompatActivity{
                 });
 
 
-        googleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                signInwithGoogle();
-            }
-        });
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -254,4 +246,8 @@ public class LoginPageActivity extends AppCompatActivity{
         startActivity(intent);
     }
 
+    @Override
+    public void onBackPressed() {
+
+    }
 }

@@ -74,7 +74,6 @@ public class HomeScreen extends BaseActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
 
-
         tabLayout = findViewById(R.id.tablayout);
         viewPager = findViewById(R.id.viewpager);
 
@@ -115,7 +114,6 @@ public class HomeScreen extends BaseActivity{
         }
 
 
-
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -140,7 +138,6 @@ public class HomeScreen extends BaseActivity{
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 // Handle any errors
             }
-
         });
 
         notificationListener= new ValueEventListener() {
@@ -192,6 +189,14 @@ public class HomeScreen extends BaseActivity{
 
 
     }
+
+    @Override
+    public void onBackPressed() {
+
+
+    }
+
+
 
     @Override
     protected void onStop() {
@@ -280,4 +285,5 @@ public class HomeScreen extends BaseActivity{
         // You can also display a toast or a dialog to inform the user
         //Toast.makeText(this, "Please enable notification permission", Toast.LENGTH_LONG).show();
     }
+
 }

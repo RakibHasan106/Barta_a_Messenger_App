@@ -107,7 +107,6 @@ public class profileFragment extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Contact contact = dataSnapshot.getValue(Contact.class);
                     list.add(contact);
-                    adapter.notifyDataSetChanged();
                     String uid2 = contact.getUid();
                     DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("user").child(uid2);
 
@@ -120,7 +119,7 @@ public class profileFragment extends Fragment {
 //                                contact.setProfilePic(profilePictureUrl);
                                 databaseReference.child(uid2).child("profilePic").setValue(profilePictureUrl);
                                 databaseReference.child(uid2).child("status").setValue(status);
-                                adapter.notifyDataSetChanged();  // Notify adapter to update the UI
+                                adapter.notifyDataSetChanged();
                             }
                         }
 
@@ -130,7 +129,7 @@ public class profileFragment extends Fragment {
                         }
                     });
                 }
-                adapter.notifyDataSetChanged();
+
             }
 
             @Override

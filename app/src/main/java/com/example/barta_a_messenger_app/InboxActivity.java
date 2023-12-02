@@ -70,7 +70,7 @@ public class InboxActivity extends AppCompatActivity {
     SQLiteDatabase db;
     ValueEventListener chatListener,otherChatListener;
     ChatAdapter chatAdapter;
-    String messageSenderName;
+    String messageSenderName,senderName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,8 +92,23 @@ public class InboxActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
+
+
         senderId = mAuth.getCurrentUser().getUid();
         receiverId = getIntent().getStringExtra("contact_uid").toString();
+
+        database.getReference().child("user").child(senderId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                senderName = snapshot.child("username").getValue(String.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         senderRoom = senderId + receiverId;
         receiverRoom = receiverId + senderId;
@@ -117,6 +132,8 @@ public class InboxActivity extends AppCompatActivity {
 
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        //layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
         chatRecyclerView.setLayoutManager(layoutManager);
 
         chatRecyclerView.scrollToPosition(localMessageModel.size()-1);
@@ -137,6 +154,23 @@ public class InboxActivity extends AppCompatActivity {
 
                         chatRecyclerView.scrollToPosition(localMessageModel.size()-1);
                     }
+
+
+//                    database.getReference().child("Contacts").child(senderId)
+//                            .child(receiverId).child("last_message")
+//                            .setValue(localMessageModel.get(localMessageModel.size()-1).getMessage());
+//
+//                    database.getReference().child("Contacts").child(senderId)
+//                            .child(receiverId).child("last_sender_name")
+//                                    .setValue(getIntent().getStringExtra("Name").toString());
+//
+//                    database.getReference().child("Contacts").child(senderId)
+//                            .child(receiverId).child("message_time")
+//                                    .setValue(localMessageModel.get(localMessageModel.size()-1).getTimestamp());
+
+                    database.getReference().child("Contacts").child(senderId)
+                            .child(receiverId).child("last_message_seen")
+                            .setValue("true");
 
                     database.getReference().child("chats").child(senderId).child(receiverId).removeValue();
 
@@ -169,6 +203,25 @@ public class InboxActivity extends AppCompatActivity {
                                                     if(ds.exists()){
                                                         messageSenderName = ds.child("username").getValue(String.class);
                                                         NotificationHelper.notificationDialog(InboxActivity.this,message.getMessage(),messageSenderName);
+
+                                                        database.getReference().child("chats")
+                                                                .child(senderId).child(datasnapshot.getKey())
+                                                                .child(dataSnapshot2.getKey())
+                                                                .child("isNotified").setValue("yes");
+
+
+//                                                        database.getReference().child("Contacts").child(senderId)
+//                                                                .child(datasnapshot.getKey()).child("last_message")
+//                                                                .setValue(message.getMessage());
+//
+//                                                        database.getReference().child("Contacts").child(senderId)
+//                                                                .child(datasnapshot.getKey()).child("last_sender_name")
+//                                                                .setValue(message.getUid());
+//
+//                                                        database.getReference().child("Contacts").child(senderId)
+//                                                                .child(datasnapshot.getKey()).child("message_time")
+//                                                                .setValue(message.getTimestamp());
+
                                                     }
                                                 }
                                             }
@@ -176,10 +229,7 @@ public class InboxActivity extends AppCompatActivity {
 
 
 
-                                database.getReference().child("chats")
-                                        .child(senderId).child(datasnapshot.getKey())
-                                        .child(dataSnapshot2.getKey())
-                                        .child("isNotified").setValue("yes");
+
 
                             }
                         }
@@ -235,6 +285,37 @@ public class InboxActivity extends AppCompatActivity {
                                     chatAdapter.notifyDataSetChanged();
                                     chatRecyclerView.scrollToPosition(localMessageModel.size()-1);
 
+                                    database.getReference().child("Contacts").child(receiverId)
+                                            .child(senderId).child("last_message")
+                                            .setValue(message);
+
+                                    database.getReference().child("Contacts").child(receiverId)
+                                            .child(senderId).child("last_sender_name")
+                                            .setValue("");
+
+                                    database.getReference().child("Contacts").child(receiverId)
+                                            .child(senderId).child("message_time")
+                                            .setValue(model.getTimestamp());
+
+                                    database.getReference().child("Contacts").child(receiverId)
+                                            .child(senderId).child("last_message_seen")
+                                                    .setValue("false");
+
+                                    database.getReference().child("Contacts").child(senderId)
+                                            .child(receiverId).child("last_message")
+                                            .setValue(message);
+
+                                    database.getReference().child("Contacts").child(senderId)
+                                            .child(receiverId).child("last_sender_name")
+                                            .setValue("You");
+
+                                    database.getReference().child("Contacts").child(senderId)
+                                            .child(receiverId).child("message_time")
+                                            .setValue(model.getTimestamp());
+
+                                    database.getReference().child("Contacts").child(senderId)
+                                            .child(receiverId).child("last_message_seen")
+                                            .setValue("true");
                                 }
                             });
 
@@ -430,6 +511,39 @@ public class InboxActivity extends AppCompatActivity {
                                                 localMessageModel.add(model);
                                                 chatAdapter.notifyDataSetChanged();
                                                 chatRecyclerView.scrollToPosition(localMessageModel.size()-1);
+
+                                                database.getReference().child("Contacts").child(receiverId)
+                                                        .child(senderId).child("last_message")
+                                                        .setValue("sent an image");
+
+                                                database.getReference().child("Contacts").child(receiverId)
+                                                        .child(senderId).child("last_sender_name")
+                                                        .setValue("");
+
+                                                database.getReference().child("Contacts").child(receiverId)
+                                                        .child(senderId).child("message_time")
+                                                        .setValue(model.getTimestamp());
+
+                                                database.getReference().child("Contacts").child(receiverId)
+                                                        .child(senderId).child("last_message_seen")
+                                                        .setValue("false");
+
+                                                database.getReference().child("Contacts").child(senderId)
+                                                        .child(receiverId).child("last_message")
+                                                        .setValue("sent an image");
+
+                                                database.getReference().child("Contacts").child(senderId)
+                                                        .child(receiverId).child("last_sender_name")
+                                                        .setValue("You");
+
+                                                database.getReference().child("Contacts").child(senderId)
+                                                        .child(receiverId).child("message_time")
+                                                        .setValue(model.getTimestamp());
+
+                                                database.getReference().child("Contacts").child(senderId)
+                                                        .child(receiverId).child("last_message_seen")
+                                                        .setValue("true");
+
                                                 progressDialog.dismiss();
                                             }
                                         });
@@ -489,6 +603,39 @@ public class InboxActivity extends AppCompatActivity {
                                                 localMessageModel.add(model);
                                                 chatAdapter.notifyDataSetChanged();
                                                 chatRecyclerView.scrollToPosition(localMessageModel.size()-1);
+
+                                                database.getReference().child("Contacts").child(receiverId)
+                                                        .child(senderId).child("last_message")
+                                                        .setValue("sent an file");
+
+                                                database.getReference().child("Contacts").child(receiverId)
+                                                        .child(senderId).child("last_sender_name")
+                                                        .setValue("");
+
+                                                database.getReference().child("Contacts").child(receiverId)
+                                                        .child(senderId).child("message_time")
+                                                        .setValue(model.getTimestamp());
+
+                                                database.getReference().child("Contacts").child(receiverId)
+                                                        .child(senderId).child("last_message_seen")
+                                                        .setValue("false");
+
+                                                database.getReference().child("Contacts").child(senderId)
+                                                        .child(receiverId).child("last_message")
+                                                        .setValue("sent an file");
+
+                                                database.getReference().child("Contacts").child(senderId)
+                                                        .child(receiverId).child("last_sender_name")
+                                                        .setValue("You");
+
+                                                database.getReference().child("Contacts").child(senderId)
+                                                        .child(receiverId).child("message_time")
+                                                        .setValue(model.getTimestamp());
+
+                                                database.getReference().child("Contacts").child(senderId)
+                                                        .child(receiverId).child("last_message_seen")
+                                                        .setValue("true");
+
                                                 progressDialog.dismiss();
                                             }
                                         });
@@ -542,11 +689,11 @@ public class InboxActivity extends AppCompatActivity {
             message.setTimestamp(cursor.getLong(cursor.getColumnIndexOrThrow("TIMESTAMP")));
             message.setUid(cursor.getString(cursor.getColumnIndexOrThrow("SENDER_ID")));
 
-
             messages.add(message);
         }
 
         cursor.close();
+
         //db.close();
 
         //Log.d("message",messages.toString());

@@ -72,6 +72,8 @@ public class InboxActivity extends AppCompatActivity {
     ChatAdapter chatAdapter;
     String messageSenderName,senderName;
 
+    String decryptedmessage,decryptedmessagenotification,encryptedMessage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,6 +140,7 @@ public class InboxActivity extends AppCompatActivity {
 
         chatRecyclerView.scrollToPosition(localMessageModel.size()-1);
 
+
         chatListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -147,6 +150,14 @@ public class InboxActivity extends AppCompatActivity {
                         MessageModel message = snapshot1.getValue(MessageModel.class);
                         message.setMessageId(snapshot1.getKey());
                         message.setIsNotified("yes");
+
+                        try{
+                            decryptedmessage = CryptoHelper.decrypt("H@rrY_p0tter_106",message.getMessage());
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        message.setMessage(decryptedmessage);
 
                         localMessageModel.add(message);
                         updateLocalDatabase(message);
@@ -202,7 +213,15 @@ public class InboxActivity extends AppCompatActivity {
                                                     DataSnapshot ds = task.getResult();
                                                     if(ds.exists()){
                                                         messageSenderName = ds.child("username").getValue(String.class);
-                                                        NotificationHelper.notificationDialog(InboxActivity.this,message.getMessage(),messageSenderName);
+
+                                                        try{
+                                                            decryptedmessagenotification = CryptoHelper.decrypt("H@rrY_p0tter_106",message.getMessage());
+                                                        } catch (Exception e) {
+                                                            throw new RuntimeException(e);
+                                                        }
+
+
+                                                        NotificationHelper.notificationDialog(InboxActivity.this,decryptedmessagenotification,messageSenderName);
 
                                                         database.getReference().child("chats")
                                                                 .child(senderId).child(datasnapshot.getKey())
@@ -259,7 +278,16 @@ public class InboxActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String message = inputMessage.getText().toString();
                 if(!message.isEmpty()){
-                    final MessageModel model = new MessageModel(senderId,message);
+
+                    try {
+                        encryptedMessage = CryptoHelper.encrypt("H@rrY_p0tter_106",message);
+
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    MessageModel model;
+                    model = new MessageModel(senderId, encryptedMessage);
                     model.setTimestamp(new Date().getTime());
                     inputMessage.setText("");
 
@@ -278,7 +306,7 @@ public class InboxActivity extends AppCompatActivity {
                             .setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-
+                                    model.setMessage(message);
                                     updateLocalDatabase(model);
 
                                     localMessageModel.add(model);
@@ -287,7 +315,7 @@ public class InboxActivity extends AppCompatActivity {
 
                                     database.getReference().child("Contacts").child(receiverId)
                                             .child(senderId).child("last_message")
-                                            .setValue(message);
+                                            .setValue(encryptedMessage);
 
                                     database.getReference().child("Contacts").child(receiverId)
                                             .child(senderId).child("last_sender_name")
@@ -303,7 +331,7 @@ public class InboxActivity extends AppCompatActivity {
 
                                     database.getReference().child("Contacts").child(senderId)
                                             .child(receiverId).child("last_message")
-                                            .setValue(message);
+                                            .setValue(encryptedMessage);
 
                                     database.getReference().child("Contacts").child(senderId)
                                             .child(receiverId).child("last_sender_name")
@@ -359,6 +387,11 @@ public class InboxActivity extends AppCompatActivity {
                         }
                         else{
                             checker="doc";
+
+                            Intent intent = new Intent();
+                            intent.setAction(Intent.ACTION_GET_CONTENT);
+                            intent.setType("application/msword");
+                            startActivityForResult(Intent.createChooser(intent,"Select Doc File"),123);
                         }
                     }
                 });
@@ -464,7 +497,8 @@ public class InboxActivity extends AppCompatActivity {
                 uploadFile("pdf");
             }
             else if(checker.equals("doc")){
-
+                fileUri = data.getData();
+                uploadFile("doc");
             }
             else{
                 Toast.makeText(this,"Nothing Selected,Error",Toast.LENGTH_SHORT).show();
@@ -487,7 +521,14 @@ public class InboxActivity extends AppCompatActivity {
                             if (task.isSuccessful()){
                                 imageUrl = task.getResult().toString();
 
-                                MessageModel model = new MessageModel(senderId,imageUrl,"img");
+                                try{
+                                    encryptedMessage = CryptoHelper.encrypt("H@rrY_p0tter_106",imageUrl);
+                                }
+                                catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
+
+                                MessageModel model = new MessageModel(senderId,encryptedMessage,"img");
                                 model.setTimestamp(new Date().getTime());
 
 
@@ -506,7 +547,7 @@ public class InboxActivity extends AppCompatActivity {
                                         .setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void unused) {
-
+                                                model.setMessage(imageUrl);
                                                 updateLocalDatabase(model);
                                                 localMessageModel.add(model);
                                                 chatAdapter.notifyDataSetChanged();
@@ -572,7 +613,7 @@ public class InboxActivity extends AppCompatActivity {
         progressDialog.setTitle("Uploading....");
         progressDialog.show();
 
-        FirebaseStorage.getInstance().getReference("pdf_files/"+ getFileNameFromUri(fileUri)).putFile(fileUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+        FirebaseStorage.getInstance().getReference("files/"+ getFileNameFromUri(fileUri)).putFile(fileUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if (task.isSuccessful()){
@@ -582,7 +623,14 @@ public class InboxActivity extends AppCompatActivity {
                             if (task.isSuccessful()){
                                 fileUrl = task.getResult().toString();
 
-                                MessageModel model = new MessageModel(senderId,fileUrl,fileType);
+                                try{
+                                    encryptedMessage = CryptoHelper.encrypt("H@rrY_p0tter_106",fileUrl);
+                                }
+                                catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
+
+                                MessageModel model = new MessageModel(senderId,encryptedMessage,fileType);
                                 model.setTimestamp(new Date().getTime());
 
                                 String key = database.getReference().child("chats")
@@ -598,7 +646,7 @@ public class InboxActivity extends AppCompatActivity {
                                         .setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void unused) {
-
+                                                model.setMessage(fileUrl);
                                                 updateLocalDatabase(model);
                                                 localMessageModel.add(model);
                                                 chatAdapter.notifyDataSetChanged();

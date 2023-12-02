@@ -108,6 +108,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
                     intent.putExtra("Name",contact.getFull_name());
                     intent.putExtra("phone_no",contact.getPhone_number());
                     intent.putExtra("contact_uid",contact.getUid());
+                    intent.putExtra("profile_pic",contact.getProfilePic());
 
                     c.startActivity(intent);
                 }

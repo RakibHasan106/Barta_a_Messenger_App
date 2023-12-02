@@ -48,7 +48,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="28dp">
+            android:paddingLeft="28dp"
+            android:paddingRight="28dp"
+            android:paddingTop="28dp"
+            android:paddingBottom="60dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -85,7 +88,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
-                    android:drawableEnd="@drawable/done_icon"/>
+                    android:drawableEnd="@drawable/done_icon"
+                    />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -165,27 +169,9 @@
                 android:textColor="#FFFFFF"
                 android:backgroundTint="#2085C3"
                 />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Or Login with"
-                android:layout_gravity="center"
-                android:alpha="0.7"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
-                <ImageView
-                    android:id="@+id/googleButton"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_margin="12dp"
-                    android:background="@drawable/google_logo"/>
 
 
-            </LinearLayout>
+
 
         </LinearLayout>
 

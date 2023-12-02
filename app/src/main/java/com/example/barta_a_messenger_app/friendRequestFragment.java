@@ -57,8 +57,9 @@ public class friendRequestFragment extends Fragment implements FriendRequestAdap
         friendRequestsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                friendRequest.clear();
+
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    friendRequest.clear();
                     Request request = dataSnapshot.getValue(Request.class);
 
                     DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("user").child(request.getSenderUid());
@@ -69,6 +70,7 @@ public class friendRequestFragment extends Fragment implements FriendRequestAdap
                             request.setName(username);
                             friendRequest.add(request);
                             adapter.notifyDataSetChanged();
+
                         }
 
                         @Override
@@ -76,6 +78,7 @@ public class friendRequestFragment extends Fragment implements FriendRequestAdap
 
                         }
                     });
+
                 }
 
             }

@@ -55,7 +55,7 @@ public class BaseActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot contactSnapshot : snapshot.getChildren()) {
                     Contact contact = contactSnapshot.getValue(Contact.class);
-                    if (contact != null && contact.getUid().equals(uid)) {
+                    if (contact != null && contact.getUid()!=null && contact.getUid().equals(uid)) {
                         contactsRef.child(contactSnapshot.getKey()).child("status").setValue(status);
                     }
                 }

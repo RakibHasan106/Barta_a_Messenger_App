@@ -287,7 +287,6 @@ public class ProfileUpdateActivity extends AppCompatActivity {
                     break;
             }
         }
-        finish();
     }
 
     // Helper method to convert Bitmap to Uri
@@ -298,5 +297,8 @@ public class ProfileUpdateActivity extends AppCompatActivity {
         return Uri.parse(path);
     }
 
+    @Override
+    public void onBackPressed() {
 
+    }
 }

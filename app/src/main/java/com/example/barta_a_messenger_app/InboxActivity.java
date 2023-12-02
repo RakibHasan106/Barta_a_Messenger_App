@@ -25,6 +25,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +39,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,6 +48,8 @@ import java.util.UUID;
 public class InboxActivity extends AppCompatActivity {
 
     TextView userName;
+
+    ImageView DP;
     AppCompatImageView backButton;
 
     RecyclerView chatRecyclerView;
@@ -81,7 +85,13 @@ public class InboxActivity extends AppCompatActivity {
 
         userName = findViewById(R.id.userName);
         userName.setText(getIntent().getStringExtra("Name").toString());
+         DP = findViewById(R.id.headImageView);
 
+         String profilePictureUrl = getIntent().getStringExtra("profile_pic").toString();
+
+        if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) {
+            Picasso.get().load(profilePictureUrl).into(DP);
+        }
 
         backButton = findViewById(R.id.imageBack);
         chatRecyclerView = findViewById(R.id.chatRecyclerView);

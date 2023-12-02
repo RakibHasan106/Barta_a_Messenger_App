@@ -65,7 +65,7 @@ public class SendOTPActivity extends AppCompatActivity {
                 else{
                     String phone = countryCodePicker.getFullNumberWithPlus();
 //                    databaseReference.child("All Accounts").child(phone).setValue(phone);
-                    databaseReference.child("All Accounts").addValueEventListener(new ValueEventListener() {
+                    databaseReference.child("All Accounts").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if(snapshot.child(phone).exists()){

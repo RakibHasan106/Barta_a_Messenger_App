@@ -101,8 +101,8 @@ public class SignUpActivity extends AppCompatActivity {
                         if(task.isSuccessful()){
                             Log.d(TAG, "New User Created Successfully!");
 
-                            String user = mAuth.getCurrentUser().getUid();
-
+//                            FirebaseUser user = mAuth.getCurrentUser();
+//                            user.delete();
 
 //                            user.delete();
 //                            firebaseDatabase.getInstance().getReference().child("user").child(user).setValue(new User(name.getText().toString(),email.getText().toString(),"",""));
@@ -112,6 +112,7 @@ public class SignUpActivity extends AppCompatActivity {
                             intent.putExtra("password",pass);
                             progressDialog.cancel();
                             startActivity(intent);
+                            finish();
                         }
                         else{
 

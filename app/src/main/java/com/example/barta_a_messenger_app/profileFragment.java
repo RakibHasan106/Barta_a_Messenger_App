@@ -115,9 +115,30 @@ public class profileFragment extends Fragment {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
                                 String profilePictureUrl = dataSnapshot.child("profilePicture").getValue(String.class);
-                                String status = dataSnapshot.child("status").getValue(String.class);
+
 //                                contact.setProfilePic(profilePictureUrl);
                                 databaseReference.child(uid2).child("profilePic").setValue(profilePictureUrl);
+
+                                adapter.notifyDataSetChanged();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            // Handle errors
+                        }
+                    });
+
+                    DatabaseReference userRef2 = FirebaseDatabase.getInstance().getReference("user").child(uid2);
+
+                    userRef2.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+
+                                String status = dataSnapshot.child("status").getValue(String.class);
+//                                contact.setProfilePic(profilePictureUrl);
+
                                 databaseReference.child(uid2).child("status").setValue(status);
                                 adapter.notifyDataSetChanged();
                             }

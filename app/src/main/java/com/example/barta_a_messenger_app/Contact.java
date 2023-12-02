@@ -4,22 +4,13 @@ public class Contact {
     private String full_name;
     private String phone_number;
     private String uid;
-
     private String profilePic;
-
     private String status;
-
     private String last_messege;
-
     private Long messege_time;
-
-
     public Contact() {
     }
 
-    public boolean isActive() {
-        return "active".equals(this.status);
-    }
 
     public Contact(String full_name, String phone_number, String uid, String profilePic, String status,String last_messege,Long messege_time) {
         this.full_name = full_name;

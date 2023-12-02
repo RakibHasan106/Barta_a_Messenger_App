@@ -19,6 +19,7 @@ import java.util.ArrayList;
 public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.MyViewHolder> {
     Context context;
     static ArrayList<Contact> list;
+    String decryptedmessage;
 
 
     public ChatListAdapter(Context context, ArrayList<Contact> list) {
@@ -38,15 +39,22 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.MyView
         Contact contact = list.get(position);
         holder.contact_name.setText(contact.getFull_name());
 
+        try{
+            decryptedmessage = CryptoHelper.decrypt("H@rrY_p0tter_106",contact.getLast_message());
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         if(contact.getLast_message().equals("")){
             holder.contact_phone.setText("");
         }
         else{
             if(contact.getLast_sender_name().equals("You")){
-                holder.contact_phone.setText(contact.getLast_sender_name()+" : "+contact.getLast_message());
+                holder.contact_phone.setText(contact.getLast_sender_name()+" : "+decryptedmessage);
             }
             else{
-                holder.contact_phone.setText(contact.getLast_message());
+                holder.contact_phone.setText(decryptedmessage);
             }
         }
 

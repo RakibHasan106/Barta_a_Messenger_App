@@ -67,6 +67,7 @@ public class HomeScreen extends BaseActivity{
 
     ArrayList<Contact> contactList;
     String sendername;
+    String decryptedmessage;
 
     @SuppressLint({"MissingInflatedId", "WrongViewCast"})
     @Override
@@ -158,7 +159,14 @@ public class HomeScreen extends BaseActivity{
                                                 DataSnapshot ds = task.getResult();
                                                 if(ds.exists()){
                                                     sendername = ds.child("username").getValue(String.class);
-                                                    new NotificationHelper().notificationDialog(HomeScreen.this,message.getMessage(),sendername);
+
+                                                    try{
+                                                        decryptedmessage = CryptoHelper.decrypt("H@rrY_p0tter_106",message.getMessage());
+                                                    } catch (Exception e) {
+                                                        throw new RuntimeException(e);
+                                                    }
+
+                                                    new NotificationHelper().notificationDialog(HomeScreen.this,decryptedmessage,sendername);
                                                     //Log.d("senderName",sendername);
 
                                                 }

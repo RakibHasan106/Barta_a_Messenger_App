@@ -106,7 +106,7 @@ public class friendRequestFragment extends Fragment implements FriendRequestAdap
                         .child(request.getReceiverUid())
                         .child(request.getSenderUid());
 
-                contactsRef.setValue(new Contact(request.getName(), request.getPhone(), request.getSenderUid(), "","","",new Date().getTime()));
+                contactsRef.setValue(new Contact(request.getName(), request.getPhone(), request.getSenderUid(), "","","",new Date().getTime(),"",""));
 
 
                 adapter.notifyDataSetChanged();
@@ -132,7 +132,7 @@ public class friendRequestFragment extends Fragment implements FriendRequestAdap
                         .child(request.getSenderUid())
                         .child(request.getReceiverUid());
 
-                contactsRef.setValue(new Contact(request.getName(), request.getPhone(), request.getReceiverUid(), "","","",new Date().getTime()));
+                contactsRef.setValue(new Contact(request.getName(), request.getPhone(), request.getReceiverUid(), "","","",new Date().getTime(),"",""));
 
                 adapter.notifyDataSetChanged();
                 friendRequest.clear();
@@ -143,9 +143,6 @@ public class friendRequestFragment extends Fragment implements FriendRequestAdap
 
             }
         });
-
-
-
 
 
         DatabaseReference friendRequestsRef = FirebaseDatabase.getInstance().getReference("FriendRequestPending")

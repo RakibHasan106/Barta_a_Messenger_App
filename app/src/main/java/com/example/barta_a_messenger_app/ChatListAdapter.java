@@ -2,6 +2,7 @@ package com.example.barta_a_messenger_app;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,23 +12,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHolder>{
-//    private ClickListener clickListener;
-
+public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.MyViewHolder> {
     Context context;
     static ArrayList<Contact> list;
+    String decryptedmessage;
 
 
-    public ContactAdapter(Context context, ArrayList<Contact> list) {
+    public ChatListAdapter(Context context, ArrayList<Contact> list) {
         this.context = context;
         this.list = list;
     }
@@ -36,14 +31,39 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(context).inflate(R.layout.contacts,parent,false);
-        return new MyViewHolder(v);
+        return new ChatListAdapter.MyViewHolder(v);
     }
 
 
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ChatListAdapter.MyViewHolder holder, int position) {
         Contact contact = list.get(position);
         holder.contact_name.setText(contact.getFull_name());
-        holder.contact_phone.setText(contact.getPhone_number());
+
+        try{
+            decryptedmessage = CryptoHelper.decrypt("H@rrY_p0tter_106",contact.getLast_message());
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        if(contact.getLast_message().equals("")){
+            holder.contact_phone.setText("");
+        }
+        else{
+            if(contact.getLast_sender_name().equals("You")){
+                holder.contact_phone.setText(contact.getLast_sender_name()+" : "+decryptedmessage);
+            }
+            else{
+                holder.contact_phone.setText(decryptedmessage);
+            }
+        }
+
+        if(contact.getLast_message_seen().equals("false")){
+            holder.contact_phone.setTypeface(null, Typeface.BOLD);
+        }
+        else{
+            holder.contact_phone.setTypeface(null,Typeface.NORMAL);
+        }
 
 
         String profilePicUrl = contact.getProfilePic();
@@ -73,7 +93,6 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
 //        } else {
 //            alertImageView.setVisibility(View.INVISIBLE);
 //        }
-
     }
 
     public int getItemCount() {
@@ -108,19 +127,10 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
                     intent.putExtra("Name",contact.getFull_name());
                     intent.putExtra("phone_no",contact.getPhone_number());
                     intent.putExtra("contact_uid",contact.getUid());
-                    intent.putExtra("profile_pic",contact.getProfilePic());
-
+                    contact_phone.setTypeface(null,Typeface.NORMAL);
                     c.startActivity(intent);
                 }
             });
         }
     }
-//    public interface ClickListener{
-//        void onItemClick(int position);
-//    }
-
-//    public void setOnItemClickListener(ClickListener clickListener){
-//        this.clickListener = clickListener;
-//    }
-
 }

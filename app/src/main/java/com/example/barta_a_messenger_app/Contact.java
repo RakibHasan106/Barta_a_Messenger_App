@@ -6,34 +6,43 @@ public class Contact {
     private String uid;
     private String profilePic;
     private String status;
-    private String last_messege;
-    private Long messege_time;
+
+    private String last_message,last_sender_name, last_message_seen;
+
+
+    private Long message_time;
+
+
     public Contact() {
     }
 
 
-    public Contact(String full_name, String phone_number, String uid, String profilePic, String status,String last_messege,Long messege_time) {
+    public Contact(String full_name, String phone_number, String uid, String profilePic, String status, String last_message, Long message_time,String last_sender_name,String last_message_seen) {
         this.full_name = full_name;
         this.phone_number = phone_number;
         this.uid = uid;
         this.profilePic=profilePic;
         this.status=status;
+        this.last_message=last_message;
+        this.message_time=message_time;
+        this.last_sender_name=last_sender_name;
+        this.last_message_seen=last_message_seen;
     }
 
-    public String getLast_messege() {
-        return last_messege;
+    public String getLast_message() {
+        return last_message;
     }
 
-    public void setLast_messege(String last_messege) {
-        this.last_messege = last_messege;
+    public void setLast_message(String last_message) {
+        this.last_message = last_message;
     }
 
-    public Long getMessege_time() {
-        return messege_time;
+    public Long getMessage_time() {
+        return message_time;
     }
 
-    public void setMessege_time(Long messege_time) {
-        this.messege_time = messege_time;
+    public void setMessage_time(Long message_time) {
+        this.message_time = message_time;
     }
 
     public String getUid() {
@@ -70,5 +79,21 @@ public class Contact {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getLast_sender_name() {
+        return last_sender_name;
+    }
+
+    public String getLast_message_seen() {
+        return last_message_seen;
+    }
+
+    public void setLast_message_seen(String last_message_seen) {
+        this.last_message_seen = last_message_seen;
+    }
+
+    public void setLast_sender_name(String last_sender_name) {
+        this.last_sender_name = last_sender_name;
     }
 }

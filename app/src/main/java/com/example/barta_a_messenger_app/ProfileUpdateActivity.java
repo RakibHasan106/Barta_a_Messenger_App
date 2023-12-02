@@ -3,6 +3,7 @@ package com.example.barta_a_messenger_app;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,6 +45,8 @@ public class ProfileUpdateActivity extends AppCompatActivity {
     String uid,userNameTxt;;
     RecyclerView recyclerView;
 
+    AppCompatImageView backButton;
+
     EditText username;
     Button updateBtn;
 
@@ -70,6 +73,7 @@ public class ProfileUpdateActivity extends AppCompatActivity {
         username = findViewById(R.id.username);
         imgProfile=findViewById(R.id.profilePicture);
         updateBtn=findViewById(R.id.updateBtn);
+        backButton = findViewById(R.id.imageBack);
 
         userRef = FirebaseDatabase.getInstance().getReference().child("user").child(uid);
 
@@ -123,6 +127,16 @@ public class ProfileUpdateActivity extends AppCompatActivity {
 
 
                 }
+            }
+        });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ProfileUpdateActivity.this,HomeScreen.class);
+
+                startActivity(intent);
+                finish();
             }
         });
 
@@ -273,6 +287,7 @@ public class ProfileUpdateActivity extends AppCompatActivity {
                     break;
             }
         }
+        finish();
     }
 
     // Helper method to convert Bitmap to Uri
@@ -282,4 +297,6 @@ public class ProfileUpdateActivity extends AppCompatActivity {
         String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "Title", null);
         return Uri.parse(path);
     }
+
+
 }

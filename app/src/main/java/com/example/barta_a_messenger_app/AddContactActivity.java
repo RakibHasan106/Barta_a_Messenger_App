@@ -2,8 +2,10 @@ package com.example.barta_a_messenger_app;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageView;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -24,6 +26,7 @@ public class AddContactActivity extends AppCompatActivity {
     String fname,phone,uid;
     EditText name, phone_number;
     Button save;
+    AppCompatImageView backButton;
     private FirebaseAuth mAuth;
     CountryCodePicker countryCodePicker;
 
@@ -39,7 +42,7 @@ public class AddContactActivity extends AppCompatActivity {
         phone_number = findViewById(R.id.contact_number);
         save = findViewById(R.id.save_button);
         countryCodePicker = findViewById(R.id.countrypicker);
-
+        backButton = findViewById(R.id.imageBack);
         countryCodePicker.registerCarrierNumberEditText(phone_number);
 
         mAuth = FirebaseAuth.getInstance();
@@ -109,7 +112,19 @@ public class AddContactActivity extends AppCompatActivity {
                 }
             }
         });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AddContactActivity.this,HomeScreen.class);
+
+                startActivity(intent);
+                finish();
+            }
+        });
     }
+
+
 
     private void saveContact(String contact_uid) {
 //        Contact contact = new Contact(fname,phone,contact_uid,"");

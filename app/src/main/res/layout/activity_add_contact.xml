@@ -15,20 +15,36 @@
         android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:background="#035283"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginBottom="30dp">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageBack"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:backgroundTint="#FFFFFF"
+                android:clickable="true"
+                android:layout_marginLeft="15dp"
+                android:src="@drawable/ic_back"
+                android:layout_gravity="center"
+                />
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Send Friend Request"
-                android:textColor="#FFFFFF"
-                android:textSize="20dp"
-                android:textStyle="bold"
-                android:layout_margin="30dp"
+                android:layout_height="50dp"
                 android:padding="10dp"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:background="#19668F"/>
+                android:layout_marginRight="40dp"
+                android:textAlignment="center"
+                android:text="Send Friend Request"
+                android:textSize="20dp"
+
+
+                android:textColor="#f3f2f7"
+                />
         </LinearLayout>
+
 <!--        <ImageView-->
 <!--            android:layout_width="130dp"-->
 <!--            android:layout_height="130dp"-->

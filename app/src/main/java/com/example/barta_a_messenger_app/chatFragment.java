@@ -27,7 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class chatFragment extends Fragment {
-    private FloatingActionButton fab;
+
     RecyclerView recyclerView;
 
     FirebaseAuth mAuth ;
@@ -47,7 +47,8 @@ public class chatFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
 
-        fab=view.findViewById(R.id.fab_button);
+        FloatingActionButton fab =requireActivity().findViewById(R.id.fab_button);
+        fab.setVisibility(View.VISIBLE);
         recyclerView=view.findViewById(R.id.recyclerView);
 
         mAuth = FirebaseAuth.getInstance();
@@ -93,7 +94,6 @@ public class chatFragment extends Fragment {
                 }
                 adapter.notifyDataSetChanged();
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 // Handle errors
@@ -111,4 +111,7 @@ public class chatFragment extends Fragment {
 
         return view;
     }
+
+
+
 }

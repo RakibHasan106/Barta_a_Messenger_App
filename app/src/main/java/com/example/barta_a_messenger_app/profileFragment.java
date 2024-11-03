@@ -106,7 +106,7 @@ public class profileFragment extends Fragment {
                 }
             }
 
-            // Sohel
+            // Sohel added this
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(getContext(), "Error: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();

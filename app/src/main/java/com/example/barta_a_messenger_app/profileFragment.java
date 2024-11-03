@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,32 +105,10 @@ public class profileFragment extends Fragment {
                 }
             }
 
-            // Sohel added this
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(getContext(), "Error: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-
-                Log.e("FirebaseErrorInProfileFragment", "Error: " + databaseError.getMessage());
-
-                switch (databaseError.getCode()) {
-                    case DatabaseError.DISCONNECTED:
-                        Log.e("FirebaseError", "The operation had to be aborted due to a network disconnect.");
-                        break;
-                    case DatabaseError.PERMISSION_DENIED:
-                        Log.e("FirebaseError", "The client doesn't have permission to access the database.");
-                        break;
-                    case DatabaseError.NETWORK_ERROR:
-                        Log.e("FirebaseError", "The operation could not be performed due to a network error.");
-                        break;
-                    case DatabaseError.OPERATION_FAILED:
-                        Log.e("FirebaseError", "The server indicated that this operation failed.");
-                        break;
-                    default:
-                        Log.e("FirebaseError", "An unknown error occurred.");
-                        break;
-                }
+                // Handle any errors
             }
-
         });
 
         databaseReference = FirebaseDatabase.getInstance().getReference("Contacts").child(uid);

@@ -739,8 +739,6 @@ public class InboxActivity extends AppCompatActivity {
 
         while (cursor.moveToNext()) {
             MessageModel message = new MessageModel();
-
-            message.setMessageId(cursor.getString(cursor.getColumnIndexOrThrow("MESSAGEID"))); //new added
             message.setMessageId(cursor.getString(cursor.getColumnIndexOrThrow("MESSAGEID"))); //new added
             message.setMessage(cursor.getString(cursor.getColumnIndexOrThrow("MESSAGE")));
             message.setMessageType(cursor.getString(cursor.getColumnIndexOrThrow("MESSAGETYPE")));

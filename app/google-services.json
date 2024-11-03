@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "276864239924",
+    "project_id": "barta-a-messenger-app",
+    "storage_bucket": "barta-a-messenger-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:276864239924:android:ebf87f528702cfd2fc3d61",
+        "android_client_info": {
+          "package_name": "com.example.barta_a_messenger_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "276864239924-bgskr05ikjtvv8qahohpevdom5crel45.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.barta_a_messenger_app",
+            "certificate_hash": "806839c9989ada607c3bc3464400240eaeecd3a1"
+          }
+        },
+        {
+          "client_id": "276864239924-k269711r5u6jl6m539cq6en155ltisfn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnsvcP0tYc1_vRfCqH68iywscCzgYQxFU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "276864239924-k269711r5u6jl6m539cq6en155ltisfn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

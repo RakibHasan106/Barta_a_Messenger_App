@@ -1,0 +1,80 @@
+<!-- contact_item.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="3dp"
+        app:cardElevation="10dp"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginLeft="16dp">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/contact_image"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+
+                    android:src="@drawable/profile_icon"
+                    app:civ_border_color="#D3D3D3"
+                    app:civ_border_width="1dp"/>
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/online_status"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_gravity="bottom|end"
+                    android:background="@drawable/green_circle"
+                    app:civ_border_color="#FFFFFF"
+                    app:civ_border_width="1dp"
+                    android:visibility="invisible"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="18dp"
+                android:paddingBottom="18dp"
+                android:paddingLeft="8dp">
+
+                <!-- Contact Name -->
+                <TextView
+                    android:id="@+id/contact_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="Contact Name"
+                    android:textSize="18sp"
+                    android:layout_toEndOf="@+id/contact_image"
+                    android:layout_alignTop="@+id/contact_image"/>
+
+                <!-- Contact Number -->
+                <TextView
+                    android:id="@+id/contact_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Contact Number"
+                    android:textSize="14sp"
+                    android:layout_toEndOf="@+id/contact_image"
+                    android:layout_below="@+id/contact_name"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- Contact Image -->
+
+
+</LinearLayout>

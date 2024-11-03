@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Barta_a_Messenger_App</string>
+    <string name="title_activity_add_friend">AddFriendActivity</string>
+    <string name="web_client_id">276864239924-k269711r5u6jl6m539cq6en155ltisfn.apps.googleusercontent.com</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

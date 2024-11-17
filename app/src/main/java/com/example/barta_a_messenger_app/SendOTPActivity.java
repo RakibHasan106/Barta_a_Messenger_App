@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -58,6 +59,7 @@ public class SendOTPActivity extends AppCompatActivity {
         getOtpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                Log.d("onClick" , countryCodePicker.getFullNumberWithPlus());
                 if(!countryCodePicker.isValidFullNumber()){
                     phoneNumber.setError("Invalid phone number");
                 }
@@ -72,6 +74,7 @@ public class SendOTPActivity extends AppCompatActivity {
                                 phoneNumber.setError("Phone Number Already Registered");
                             }
                             else{
+//                                Log.d("phone" , "phone number added");
                                 databaseReference.child("All Accounts").child(phone).child("phone_no").setValue(phone);
                                 databaseReference.child("All Accounts").child(phone).child("uid").setValue(FirebaseAuth.getInstance().getUid());
                                 databaseReference.child("user").child(user).setValue(new User(name,email,phone,"","active"));

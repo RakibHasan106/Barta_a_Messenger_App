@@ -9,9 +9,9 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.example.barta_a_messenger_app" />
-                  <option name="mobileSdkAppId" value="1:276864239924:android:ebf87f528702cfd2fc3d61" />
-                  <option name="projectId" value="barta-a-messenger-app" />
-                  <option name="projectNumber" value="276864239924" />
+                  <option name="mobileSdkAppId" value="1:699762782243:android:e7d148c09693cc3f24c196" />
+                  <option name="projectId" value="barta-a-messenger-app-18f56" />
+                  <option name="projectNumber" value="699762782243" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

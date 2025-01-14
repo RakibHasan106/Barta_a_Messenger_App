@@ -31,14 +31,22 @@ All messages are encrypted to ensure privacy and secure communication between us
   <table>
   <tr>
     <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/Splash%20Screen.jpg" height="400px" width="200px"></td>
-    <td><img src="https://github.com/RakibHasan106/CardiacRecorder/assets/68016728/b0af61fc-ed86-423e-8069-d15263ef1ab2" height="400px" width="200px"</td>
-      <td><img src="https://github.com/RakibHasan106/CardiacRecorder/assets/68016728/48bba1a9-8405-43da-a333-5196e1776f37" height="400px" width="200px"</td>
-        <td><img src="https://github.com/RakibHasan106/CardiacRecorder/assets/68016728/e4b7662b-2e7b-4e35-b12d-b2333893ff86" height="400px" width="200px"</td>
+    <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/login%20page.jpg" height="400px" width="200px"</td>
+      <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/signup%20page.png" height="400px" width="200px"</td>
+        <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/OTP%20number.png" height="400px" width="200px"</td>
   </tr>
   <tr>
-    <td><img src="https://github.com/RakibHasan106/CardiacRecorder/assets/68016728/e3410674-0a12-4070-b541-2bd243432ef2" height="400px" width="200px"</td>
-      <td><img src="https://github.com/RakibHasan106/CardiacRecorder/assets/68016728/e2c48335-5c57-41cf-a76c-fbb13c209937" height="400px" width="200px"</td>
-        <td><img src="https://github.com/RakibHasan106/CardiacRecorder/assets/68016728/4261eb42-9a17-4ab1-af35-498bb801aca5" height="400px" width="200px"</td>
+    <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/Verification%20Mail%20Sent.png" height="400px" width="200px"</td>
+      <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/Chat%20List.jpg" height="400px" width="200px"</td>
+        <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/Inbox.jpg" height="400px" width="200px"</td>
+          <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/profile.jpg" height="400px" width="200px"</td>
+            
+  </tr>
+  <tr>
+    <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/Friend%20Request.png" height="400px" width="200px"</td>
+            <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/Friend%20Request.jpg" height="400px" width="200px"</td>
+                <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/Edit%20Profile.png" height="400px" width="200px"</td>
+                  <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/Settings.jpg" height="400px" width="200px"</td>
   </tr>
 </table>
   

@@ -1,8 +1,8 @@
 ## Baarta - A Messenger App
 A chat application where an user can chat with another user, send them pictures , documents etc privately and securely . User will have to think less about security and data leakage as the copies of their messages will be deleted from the server once the receiver receives the message.
 
-## Featurs
-**🔒 Secure End-to-End Messaging**  
+## Features
+- **🔒 Secure End-to-End Messaging**  
 All messages are encrypted to ensure privacy and secure communication between users.
 
 - **🕒 Self-Destructing Messages**  

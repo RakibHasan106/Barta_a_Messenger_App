@@ -49,6 +49,12 @@ All messages are encrypted to ensure privacy and secure communication between us
                   <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/Settings.jpg" height="400px" width="200px"</td>
   </tr>
 </table>
+
+<h2>Contributors</h2>
+<ul>
+  <li><a href="https://github.com/Abtahe103" target="_blank"><strong>Mohammad Abtahe Alam</strong></a></li>
+  <li><a href="https://github.com/RakibHasan106" target="_blank"><strong>Md. Rakibul Hasan Adnan</strong></a></li>
+</ul>
   
 
 

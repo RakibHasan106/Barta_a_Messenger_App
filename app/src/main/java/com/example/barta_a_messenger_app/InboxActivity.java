@@ -20,6 +20,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.View;
 
 import android.widget.EditText;
@@ -35,9 +36,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
@@ -45,7 +48,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
-public class InboxActivity extends AppCompatActivity {
+public class InboxActivity extends AppCompatActivity{
 
     TextView userName;
 
@@ -85,9 +88,9 @@ public class InboxActivity extends AppCompatActivity {
 
         userName = findViewById(R.id.userName);
         userName.setText(getIntent().getStringExtra("Name").toString());
-         DP = findViewById(R.id.headImageView);
+        DP = findViewById(R.id.headImageView);
 
-         String profilePictureUrl = getIntent().getStringExtra("profile_pic").toString();
+        String profilePictureUrl = getIntent().getStringExtra("profile_pic");
 
         if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) {
             Picasso.get().load(profilePictureUrl).into(DP);
@@ -111,16 +114,16 @@ public class InboxActivity extends AppCompatActivity {
 
         database.getReference().child("user").child(senderId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                senderName = snapshot.child("username").getValue(String.class);
-            }
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        senderName = snapshot.child("username").getValue(String.class);
+                    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                    }
+                });
 
         senderRoom = senderId + receiverId;
         receiverRoom = receiverId + senderId;
@@ -134,10 +137,6 @@ public class InboxActivity extends AppCompatActivity {
 
         localMessageModel = new ArrayList<>();
         localMessageModel = getAllMessages();
-//        for(int i=0;i<localMessageModel.size();i++){
-//            Log.d("message",localMessageModel.get(i).getMessage());
-//        }
-
 
 
         chatAdapter = new ChatAdapter(localMessageModel,this,receiverId);
@@ -154,129 +153,115 @@ public class InboxActivity extends AppCompatActivity {
         chatListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                    //localMessageModel.clear();
-                    for(DataSnapshot snapshot1:snapshot.getChildren()){
+                if (snapshot.exists()) {
+                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                         MessageModel message = snapshot1.getValue(MessageModel.class);
                         message.setMessageId(snapshot1.getKey());
                         message.setIsNotified("yes");
 
-                        try{
-                            decryptedmessage = CryptoHelper.decrypt("H@rrY_p0tter_106",message.getMessage());
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
+                        try {
+                            // STEP: Hybrid decryption
+                            String decryptedMessage = EncryptionHelper.decryptMessage(
+                                    message.getMessage(),
+                                    message.getEncryptedAESKey(),
+                                    message.getIv()
+                            );
+                            message.setMessage(decryptedMessage);
 
-                        message.setMessage(decryptedmessage);
+                        } catch (Exception e) {
+                            Log.e("DECRYPTION", "Failed to decrypt message: " + e.getMessage(), e);
+                            message.setMessage("[decryption failed]");
+                        }
 
                         localMessageModel.add(message);
                         updateLocalDatabase(message);
                         chatAdapter.notifyDataSetChanged();
-
-                        chatRecyclerView.scrollToPosition(localMessageModel.size()-1);
+                        chatRecyclerView.scrollToPosition(localMessageModel.size() - 1);
                     }
-
-
-//                    database.getReference().child("Contacts").child(senderId)
-//                            .child(receiverId).child("last_message")
-//                            .setValue(localMessageModel.get(localMessageModel.size()-1).getMessage());
-//
-//                    database.getReference().child("Contacts").child(senderId)
-//                            .child(receiverId).child("last_sender_name")
-//                                    .setValue(getIntent().getStringExtra("Name").toString());
-//
-//                    database.getReference().child("Contacts").child(senderId)
-//                            .child(receiverId).child("message_time")
-//                                    .setValue(localMessageModel.get(localMessageModel.size()-1).getTimestamp());
 
                     database.getReference().child("Contacts").child(senderId)
                             .child(receiverId).child("last_message_seen")
                             .setValue("true");
 
                     database.getReference().child("chats").child(senderId).child(receiverId).removeValue();
-
                 }
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Log.e("CHAT", "Chat listener cancelled: " + error.getMessage());
             }
         };
+
 
         otherChatListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot datasnapshot : snapshot.getChildren()) {
-                    if(!datasnapshot.getKey().equals(receiverId)){
-                        for(DataSnapshot dataSnapshot2 : datasnapshot.getChildren()){
+                    if (!datasnapshot.getKey().equals(receiverId)) {
+                        for (DataSnapshot dataSnapshot2 : datasnapshot.getChildren()) {
                             MessageModel message = dataSnapshot2.getValue(MessageModel.class);
 
-                            if(message.getIsNotified().equals("no")){
+                            if (message != null && "no".equals(message.getIsNotified())) {
 
+                                // STEP 1: Get sender's name
                                 database.getReference().child("user")
-                                        .child(message.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                                                if(task.isSuccessful()){
-                                                    DataSnapshot ds = task.getResult();
-                                                    if(ds.exists()){
-                                                        messageSenderName = ds.child("username").getValue(String.class);
+                                        .child(message.getUid()).get()
+                                        .addOnCompleteListener(task -> {
+                                            if (task.isSuccessful()) {
+                                                DataSnapshot ds = task.getResult();
+                                                if (ds.exists()) {
+                                                    messageSenderName = ds.child("username").getValue(String.class);
 
-                                                        try{
-                                                            decryptedmessagenotification = CryptoHelper.decrypt("H@rrY_p0tter_106",message.getMessage());
-                                                        } catch (Exception e) {
-                                                            throw new RuntimeException(e);
-                                                        }
+                                                    try {
+                                                        // STEP 2: Hybrid decryption
+                                                        decryptedmessagenotification = EncryptionHelper.decryptMessage(
+                                                                message.getMessage(),
+                                                                message.getEncryptedAESKey(),
+                                                                message.getIv()
+                                                        );
 
-
-                                                        NotificationHelper.notificationDialog(InboxActivity.this,decryptedmessagenotification,messageSenderName);
-
-                                                        database.getReference().child("chats")
-                                                                .child(senderId).child(datasnapshot.getKey())
-                                                                .child(dataSnapshot2.getKey())
-                                                                .child("isNotified").setValue("yes");
-
-
-//                                                        database.getReference().child("Contacts").child(senderId)
-//                                                                .child(datasnapshot.getKey()).child("last_message")
-//                                                                .setValue(message.getMessage());
-//
-//                                                        database.getReference().child("Contacts").child(senderId)
-//                                                                .child(datasnapshot.getKey()).child("last_sender_name")
-//                                                                .setValue(message.getUid());
-//
-//                                                        database.getReference().child("Contacts").child(senderId)
-//                                                                .child(datasnapshot.getKey()).child("message_time")
-//                                                                .setValue(message.getTimestamp());
-
+                                                    } catch (Exception e) {
+                                                        Log.e("NOTIF DECRYPTION", "Failed to decrypt message: " + e.getMessage(), e);
+                                                        decryptedmessagenotification = "[decryption failed]";
                                                     }
+
+                                                    // STEP 3: Show notification dialog
+                                                    NotificationHelper.notificationDialog(
+                                                            InboxActivity.this,
+                                                            decryptedmessagenotification,
+                                                            messageSenderName
+                                                    );
+
+                                                    // STEP 4: Mark message as notified
+                                                    database.getReference().child("chats")
+                                                            .child(senderId)
+                                                            .child(datasnapshot.getKey())
+                                                            .child(dataSnapshot2.getKey())
+                                                            .child("isNotified")
+                                                            .setValue("yes");
                                                 }
+                                            } else {
+                                                Log.e("USER LOOKUP", "Failed to retrieve sender info.");
                                             }
                                         });
-
-
-
-
-
                             }
                         }
                     }
-
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Log.e("otherChatListener", "Cancelled: " + error.getMessage());
             }
         };
 
-                database.getReference().child("chats")
-                        .child(senderId)
-                        .child(receiverId)
-                                .addValueEventListener(chatListener);
+
+        database.getReference().child("chats")
+                .child(senderId)
+                .child(receiverId)
+                .addValueEventListener(chatListener);
 
         database.getReference().child("chats")
                 .child(senderId).addValueEventListener(otherChatListener);
@@ -286,81 +271,102 @@ public class InboxActivity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String message = inputMessage.getText().toString();
-                if(!message.isEmpty()){
+                String message = inputMessage.getText().toString().trim();
+                if (!message.isEmpty()) {
 
-                    try {
-                        encryptedMessage = CryptoHelper.encrypt("H@rrY_p0tter_106",message);
-
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    MessageModel model;
-                    model = new MessageModel(senderId, encryptedMessage);
-                    model.setTimestamp(new Date().getTime());
-                    inputMessage.setText("");
-
-                    String key = database.getReference().child("chats")
-                            .child(receiverId)
+                    // STEP 1: Get receiver's public key from Firebase
+                    DatabaseReference receiverKeyRef = FirebaseDatabase.getInstance()
+                            .getReference("Contacts")
                             .child(senderId)
-                            .push().getKey();
-
-                    model.setMessageId(key);
-                    model.setIsNotified("no");
-
-                    database.getReference().child("chats")
                             .child(receiverId)
-                            .child(senderId)
-                            .child(key)
-                            .setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    model.setMessage(message);
-                                    updateLocalDatabase(model);
+                            .child("publicKey");
 
-                                    localMessageModel.add(model);
-                                    chatAdapter.notifyDataSetChanged();
-                                    chatRecyclerView.scrollToPosition(localMessageModel.size()-1);
+                    // STEP 1.5: Get sender's public key from KeyStoreHelper
+                    String senderPublicKey = KeyStoreHelper.getPublicKeyBase64(); // You need this method implemented
 
-                                    database.getReference().child("Contacts").child(receiverId)
-                                            .child(senderId).child("last_message")
-                                            .setValue(encryptedMessage);
+                    receiverKeyRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                String receiverPublicKey = snapshot.getValue(String.class);
 
-                                    database.getReference().child("Contacts").child(receiverId)
-                                            .child(senderId).child("last_sender_name")
-                                            .setValue("");
+                                try {
+                                    // STEP 2: Encrypt using hybrid method with dual encryption
+                                    EncryptionHelper.EncryptedPayload payload =
+                                            EncryptionHelper.encryptMessage(message, receiverPublicKey, senderPublicKey);
 
-                                    database.getReference().child("Contacts").child(receiverId)
-                                            .child(senderId).child("message_time")
-                                            .setValue(model.getTimestamp());
+                                    MessageModel model = new MessageModel(senderId, payload.encryptedMessage);
+                                    model.setEncryptedAESKey(payload.encryptedAESKey);                // Receiver encrypted AES key
+                                    model.setIv(payload.iv);
+                                    model.setTimestamp(new Date().getTime());
+                                    model.setMessageType("msg");
+                                    model.setIsNotified("no");
+                                    // Optionally store sender-side encrypted AES key in the message model if needed
+                                    // model.setEncryptedAESKeyForSender(payload.encryptedAESKeyForSender);
 
-                                    database.getReference().child("Contacts").child(receiverId)
-                                            .child(senderId).child("last_message_seen")
-                                                    .setValue("false");
+                                    inputMessage.setText("");
 
-                                    database.getReference().child("Contacts").child(senderId)
-                                            .child(receiverId).child("last_message")
-                                            .setValue(encryptedMessage);
+                                    // STEP 3: Push to Firebase
+                                    String key = database.getReference().child("chats")
+                                            .child(receiverId)
+                                            .child(senderId)
+                                            .push().getKey();
 
-                                    database.getReference().child("Contacts").child(senderId)
-                                            .child(receiverId).child("last_sender_name")
-                                            .setValue("You");
+                                    model.setMessageId(key);
 
-                                    database.getReference().child("Contacts").child(senderId)
-                                            .child(receiverId).child("message_time")
-                                            .setValue(model.getTimestamp());
+                                    database.getReference().child("chats")
+                                            .child(receiverId)
+                                            .child(senderId)
+                                            .child(key)
+                                            .setValue(model)
+                                            .addOnSuccessListener(unused -> {
+                                                // Store original message locally
+                                                model.setMessage(message);
+                                                updateLocalDatabase(model);
+                                                localMessageModel.add(model);
+                                                chatAdapter.notifyDataSetChanged();
+                                                chatRecyclerView.scrollToPosition(localMessageModel.size() - 1);
 
-                                    database.getReference().child("Contacts").child(senderId)
-                                            .child(receiverId).child("last_message_seen")
-                                            .setValue("true");
+                                                // Update Contact metadata for RECEIVER side
+                                                DatabaseReference receiverContactRef = database.getReference()
+                                                        .child("Contacts").child(receiverId).child(senderId);
+                                                receiverContactRef.child("last_message").setValue(payload.encryptedMessage);
+                                                receiverContactRef.child("last_sender_name").setValue("");
+                                                receiverContactRef.child("message_time").setValue(model.getTimestamp());
+                                                receiverContactRef.child("last_message_seen").setValue("false");
+                                                receiverContactRef.child("encryptedAESKey").setValue(payload.encryptedAESKey);
+                                                receiverContactRef.child("iv").setValue(payload.iv);
+
+                                                // Update Contact metadata for SENDER side
+                                                DatabaseReference senderContactRef = database.getReference()
+                                                        .child("Contacts").child(senderId).child(receiverId);
+                                                senderContactRef.child("last_message").setValue(payload.encryptedMessage);
+                                                senderContactRef.child("last_sender_name").setValue("You");
+                                                senderContactRef.child("message_time").setValue(model.getTimestamp());
+                                                senderContactRef.child("last_message_seen").setValue("true");
+                                                senderContactRef.child("encryptedAESKey").setValue(payload.encryptedAESKeyForSender); // Sender side encrypted AES key
+                                                senderContactRef.child("iv").setValue(payload.iv);
+                                            });
+
+                                } catch (Exception e) {
+                                    Log.e("ENCRYPTION", "Encryption failed: " + e.getMessage(), e);
                                 }
-                            });
 
+                            } else {
+                                Log.e("KEY ERROR", "Receiver public key not found in Contacts node.");
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Log.e("KEY ERROR", "Error retrieving public key: " + error.getMessage());
+                        }
+                    });
                 }
-
             }
         });
+
+
 
         imageSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -458,13 +464,6 @@ public class InboxActivity extends AppCompatActivity {
                 .child(senderId).removeEventListener(otherChatListener);
     }
 
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        database.getReference().child("chats")
-//                .child(senderId)
-//                .child(receiverRoom).removeEventListener(chatListener);
-//    }
 
     @Override
     protected void onDestroy() {
@@ -521,197 +520,210 @@ public class InboxActivity extends AppCompatActivity {
         progressDialog.setTitle("Uploading....");
         progressDialog.show();
 
-        FirebaseStorage.getInstance().getReference("chat_images/"+ UUID.randomUUID().toString()).putFile(imagePath).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                if (task.isSuccessful()){
-                    task.getResult().getStorage().getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            if (task.isSuccessful()){
-                                imageUrl = task.getResult().toString();
+        FirebaseStorage.getInstance()
+                .getReference("chat_images/" + UUID.randomUUID().toString())
+                .putFile(imagePath)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        task.getResult().getStorage().getDownloadUrl()
+                                .addOnCompleteListener(urlTask -> {
+                                    if (urlTask.isSuccessful()) {
+                                        imageUrl = urlTask.getResult().toString();
 
-                                try{
-                                    encryptedMessage = CryptoHelper.encrypt("H@rrY_p0tter_106",imageUrl);
-                                }
-                                catch (Exception e) {
-                                    throw new RuntimeException(e);
-                                }
+                                        // 1) Get receiver's public key from Contacts
+                                        DatabaseReference receiverKeyRef = FirebaseDatabase.getInstance()
+                                                .getReference("Contacts")
+                                                .child(senderId)
+                                                .child(receiverId)
+                                                .child("publicKey");
 
-                                MessageModel model = new MessageModel(senderId,encryptedMessage,"img");
-                                model.setTimestamp(new Date().getTime());
-
-
-                                String key = database.getReference().child("chats")
-                                        .child(receiverId)
-                                        .child(senderId)
-                                        .push().getKey();
-
-                                model.setMessageId(key);
-                                model.setIsNotified("no");
-
-                                database.getReference().child("chats")
-                                        .child(receiverId)
-                                        .child(senderId)
-                                        .child(key)
-                                        .setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        receiverKeyRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
-                                            public void onSuccess(Void unused) {
-                                                model.setMessage(imageUrl);
-                                                updateLocalDatabase(model);
-                                                localMessageModel.add(model);
-                                                chatAdapter.notifyDataSetChanged();
-                                                chatRecyclerView.scrollToPosition(localMessageModel.size()-1);
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                if (!snapshot.exists()) {
+                                                    Log.e("KEY ERROR", "Receiver public key not found in Contacts node.");
+                                                    progressDialog.dismiss();
+                                                    return;
+                                                }
 
-                                                database.getReference().child("Contacts").child(receiverId)
-                                                        .child(senderId).child("last_message")
-                                                        .setValue("sent an image");
+                                                String receiverPublicKey = snapshot.getValue(String.class);
 
-                                                database.getReference().child("Contacts").child(receiverId)
-                                                        .child(senderId).child("last_sender_name")
-                                                        .setValue("");
+                                                try {
+                                                    // 2) Get sender public key from keystore (Base64)
+                                                    String senderPublicKey = KeyStoreHelper.getPublicKeyBase64();
 
-                                                database.getReference().child("Contacts").child(receiverId)
-                                                        .child(senderId).child("message_time")
-                                                        .setValue(model.getTimestamp());
+                                                    // 3) Encrypt imageUrl with EncryptionHelper (dual encryption)
+                                                    EncryptionHelper.EncryptedPayload payload =
+                                                            EncryptionHelper.encryptMessage(imageUrl, receiverPublicKey, senderPublicKey);
 
-                                                database.getReference().child("Contacts").child(receiverId)
-                                                        .child(senderId).child("last_message_seen")
-                                                        .setValue("false");
+                                                    // 4) Build message model
+                                                    MessageModel model = new MessageModel(senderId, payload.encryptedMessage, "img");
+                                                    model.setEncryptedAESKey(payload.encryptedAESKey); // for receiver
+                                                    // if your MessageModel has this field, set it (recommended)
+                                                    // model.setEncryptedAESKeyForSender(payload.encryptedAESKeyForSender);
+                                                    model.setIv(payload.iv);
+                                                    model.setTimestamp(new Date().getTime());
+                                                    model.setIsNotified("no");
 
-                                                database.getReference().child("Contacts").child(senderId)
-                                                        .child(receiverId).child("last_message")
-                                                        .setValue("sent an image");
+                                                    // 5) Push to chats/receiverId/senderId
+                                                    String key = database.getReference().child("chats")
+                                                            .child(receiverId)
+                                                            .child(senderId)
+                                                            .push().getKey();
 
-                                                database.getReference().child("Contacts").child(senderId)
-                                                        .child(receiverId).child("last_sender_name")
-                                                        .setValue("You");
+                                                    model.setMessageId(key);
 
-                                                database.getReference().child("Contacts").child(senderId)
-                                                        .child(receiverId).child("message_time")
-                                                        .setValue(model.getTimestamp());
+                                                    database.getReference().child("chats")
+                                                            .child(receiverId)
+                                                            .child(senderId)
+                                                            .child(key)
+                                                            .setValue(model)
+                                                            .addOnSuccessListener(unused -> {
+                                                                // store original url locally only
+                                                                model.setMessage(imageUrl);
+                                                                updateLocalDatabase(model);
+                                                                localMessageModel.add(model);
+                                                                chatAdapter.notifyDataSetChanged();
+                                                                chatRecyclerView.scrollToPosition(localMessageModel.size() - 1);
 
-                                                database.getReference().child("Contacts").child(senderId)
-                                                        .child(receiverId).child("last_message_seen")
-                                                        .setValue("true");
+                                                                long ts = model.getTimestamp();
 
+                                                                // 6) Update Contacts (RECEIVER)
+                                                                DatabaseReference receiverContactRef = database.getReference()
+                                                                        .child("Contacts").child(receiverId).child(senderId);
+                                                                receiverContactRef.child("last_message").setValue("sent an image");
+                                                                receiverContactRef.child("last_sender_name").setValue("");
+                                                                receiverContactRef.child("message_time").setValue(ts);
+                                                                receiverContactRef.child("last_message_seen").setValue("false");
+                                                                receiverContactRef.child("encryptedAESKey").setValue(payload.encryptedAESKey);
+                                                                receiverContactRef.child("iv").setValue(payload.iv);
+
+                                                                // 7) Update Contacts (SENDER)
+                                                                DatabaseReference senderContactRef = database.getReference()
+                                                                        .child("Contacts").child(senderId).child(receiverId);
+                                                                senderContactRef.child("last_message").setValue("sent an image");
+                                                                senderContactRef.child("last_sender_name").setValue("You");
+                                                                senderContactRef.child("message_time").setValue(ts);
+                                                                senderContactRef.child("last_message_seen").setValue("true");
+                                                                // if you saved sender-side AES key separately, use it here. If not, you can still store payload.encryptedAESKey.
+                                                                // Prefer: payload.encryptedAESKeyForSender (if your MessageModel/DB supports it)
+                                                                // senderContactRef.child("encryptedAESKey").setValue(payload.encryptedAESKeyForSender);
+                                                                senderContactRef.child("encryptedAESKey").setValue(payload.encryptedAESKey);
+                                                                senderContactRef.child("iv").setValue(payload.iv);
+
+                                                                progressDialog.dismiss();
+                                                            });
+
+                                                } catch (Exception e) {
+                                                    Log.e("ENCRYPTION", "Encryption failed: " + e.getMessage(), e);
+                                                    progressDialog.dismiss();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+                                                Log.e("KEY ERROR", "Error retrieving public key: " + error.getMessage());
                                                 progressDialog.dismiss();
                                             }
                                         });
 
-//                                updateProfilePicture(task.getResult().toString());
-                            }
-
-                        }
-
-                    });
-//                    Toast.makeText(ProfileActivity.this, "Image Uploaded", Toast.LENGTH_SHORT).show();
-                }
-                else {
-//                    Toast.makeText(ProfileActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                }
-
-            }
-
-        });
-
-
+                                    } else {
+                                        Log.e("UPLOAD", "Failed to get image download URL: " + urlTask.getException());
+                                        progressDialog.dismiss();
+                                    }
+                                });
+                    } else {
+                        Log.e("UPLOAD", "Image upload failed: " + task.getException());
+                        progressDialog.dismiss();
+                    }
+                });
     }
 
-    private void uploadFile(String fileType){
+
+
+
+    private void uploadFile(String fileType) {
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Uploading....");
         progressDialog.show();
 
-        FirebaseStorage.getInstance().getReference("files/"+ getFileNameFromUri(fileUri)).putFile(fileUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                if (task.isSuccessful()){
-                    task.getResult().getStorage().getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            if (task.isSuccessful()){
-                                fileUrl = task.getResult().toString();
+        // Upload file to Firebase Storage
+        FirebaseStorage.getInstance()
+                .getReference("files/" + getFileNameFromUri(fileUri))
+                .putFile(fileUri)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        task.getResult().getStorage().getDownloadUrl()
+                                .addOnCompleteListener(urlTask -> {
+                                    if (urlTask.isSuccessful()) {
+                                        String fileUrl = urlTask.getResult().toString();
 
-                                try{
-                                    encryptedMessage = CryptoHelper.encrypt("H@rrY_p0tter_106",fileUrl);
-                                }
-                                catch (Exception e) {
-                                    throw new RuntimeException(e);
-                                }
+                                        // Create MessageModel with unencrypted file URL
+                                        MessageModel model = new MessageModel(senderId, fileUrl, fileType);
+                                        model.setTimestamp(new Date().getTime());
+                                        model.setIsNotified("no");
 
-                                MessageModel model = new MessageModel(senderId,encryptedMessage,fileType);
-                                model.setTimestamp(new Date().getTime());
+                                        // Push message to Firebase Database under chats/receiverId/senderId
+                                        String key = database.getReference().child("chats")
+                                                .child(receiverId)
+                                                .child(senderId)
+                                                .push().getKey();
 
-                                String key = database.getReference().child("chats")
-                                        .child(receiverId)
-                                        .child(senderId)
-                                        .push().getKey();
-                                model.setMessageId(key);
+                                        model.setMessageId(key);
 
-                                database.getReference().child("chats")
-                                        .child(receiverId)
-                                        .child(senderId)
-                                        .child(key)
-                                        .setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void unused) {
-                                                model.setMessage(fileUrl);
-                                                updateLocalDatabase(model);
-                                                localMessageModel.add(model);
-                                                chatAdapter.notifyDataSetChanged();
-                                                chatRecyclerView.scrollToPosition(localMessageModel.size()-1);
+                                        database.getReference().child("chats")
+                                                .child(receiverId)
+                                                .child(senderId)
+                                                .child(key)
+                                                .setValue(model)
+                                                .addOnSuccessListener(unused -> {
+                                                    // Store file URL locally for sender
+                                                    updateLocalDatabase(model);
+                                                    localMessageModel.add(model);
+                                                    chatAdapter.notifyDataSetChanged();
+                                                    chatRecyclerView.scrollToPosition(localMessageModel.size() - 1);
 
-                                                database.getReference().child("Contacts").child(receiverId)
-                                                        .child(senderId).child("last_message")
-                                                        .setValue("sent an file");
+                                                    long ts = model.getTimestamp();
 
-                                                database.getReference().child("Contacts").child(receiverId)
-                                                        .child(senderId).child("last_sender_name")
-                                                        .setValue("");
+                                                    // Update Contacts metadata for receiver
+                                                    DatabaseReference receiverContactRef = database.getReference()
+                                                            .child("Contacts").child(receiverId).child(senderId);
+                                                    receiverContactRef.child("last_message").setValue("sent a file");
+                                                    receiverContactRef.child("last_sender_name").setValue("");
+                                                    receiverContactRef.child("message_time").setValue(ts);
+                                                    receiverContactRef.child("last_message_seen").setValue("false");
 
-                                                database.getReference().child("Contacts").child(receiverId)
-                                                        .child(senderId).child("message_time")
-                                                        .setValue(model.getTimestamp());
+                                                    // Update Contacts metadata for sender
+                                                    DatabaseReference senderContactRef = database.getReference()
+                                                            .child("Contacts").child(senderId).child(receiverId);
+                                                    senderContactRef.child("last_message").setValue("sent a file");
+                                                    senderContactRef.child("last_sender_name").setValue("You");
+                                                    senderContactRef.child("message_time").setValue(ts);
+                                                    senderContactRef.child("last_message_seen").setValue("true");
 
-                                                database.getReference().child("Contacts").child(receiverId)
-                                                        .child(senderId).child("last_message_seen")
-                                                        .setValue("false");
+                                                    progressDialog.dismiss();
+                                                })
+                                                .addOnFailureListener(e -> {
+                                                    Log.e("UPLOAD", "Failed to save message to database: " + e.getMessage());
+                                                    progressDialog.dismiss();
+                                                });
 
-                                                database.getReference().child("Contacts").child(senderId)
-                                                        .child(receiverId).child("last_message")
-                                                        .setValue("sent an file");
-
-                                                database.getReference().child("Contacts").child(senderId)
-                                                        .child(receiverId).child("last_sender_name")
-                                                        .setValue("You");
-
-                                                database.getReference().child("Contacts").child(senderId)
-                                                        .child(receiverId).child("message_time")
-                                                        .setValue(model.getTimestamp());
-
-                                                database.getReference().child("Contacts").child(senderId)
-                                                        .child(receiverId).child("last_message_seen")
-                                                        .setValue("true");
-
-                                                progressDialog.dismiss();
-                                            }
-                                        });
-
-
-//                                updateProfilePicture(task.getResult().toString());
-                            }
-
-                        }
-
-                    });
-
-                }
-
-            }
-
-        });
+                                    } else {
+                                        Log.e("UPLOAD", "Failed to get file download URL: " + urlTask.getException());
+                                        progressDialog.dismiss();
+                                    }
+                                });
+                    } else {
+                        Log.e("UPLOAD", "File upload failed: " + task.getException());
+                        progressDialog.dismiss();
+                    }
+                });
     }
+
+
+
+
+
 
     public ArrayList<MessageModel> getAllMessages() {
         ArrayList<MessageModel> messages = new ArrayList<>();

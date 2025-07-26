@@ -6,16 +6,18 @@ public class Request {
     private String senderUid;
     private String receiverUid;
     private String status;
+    private String profilePic; // NEW FIELD
 
     public Request() {
     }
 
-    public Request(String name, String phone, String senderUid, String receiverUid, String status) {
+    public Request(String name, String phone, String senderUid, String receiverUid, String status, String profilePic) {
         this.name = name;
         this.phone = phone;
         this.senderUid = senderUid;
         this.receiverUid = receiverUid;
         this.status = status;
+        this.profilePic = profilePic;
     }
 
     public String getPhone() {
@@ -56,5 +58,13 @@ public class Request {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
     }
 }

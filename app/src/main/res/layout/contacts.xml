@@ -64,7 +64,7 @@
                     android:id="@+id/contact_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Contact Number"
+                    android:text=""
                     android:textSize="14sp"
                     android:layout_toEndOf="@+id/contact_image"
                     android:layout_below="@+id/contact_name"/>

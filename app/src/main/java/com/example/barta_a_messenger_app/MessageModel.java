@@ -6,6 +6,12 @@ public class MessageModel {
     String isNotified;
     Long timestamp;
 
+    // New fields for hybrid encryption
+    String encryptedAESKey;
+    String iv;
+
+
+
     public MessageModel(String uid, String message, Long timestamp) {
         this.uid = uid;
         this.message = message;
@@ -13,7 +19,7 @@ public class MessageModel {
         messageType = "msg";
     }
 
-    public MessageModel(String uid, String message,  String messageType) {
+    public MessageModel(String uid, String message, String messageType) {
         this.uid = uid;
         this.message = message;
         this.messageType = messageType;
@@ -28,6 +34,7 @@ public class MessageModel {
     public MessageModel() {
     }
 
+    // Existing getters and setters
     public String getUid() {
         return uid;
     }
@@ -74,5 +81,22 @@ public class MessageModel {
 
     public void setIsNotified(String isNotified) {
         this.isNotified = isNotified;
+    }
+
+    // New getters and setters for encryption fields
+    public String getEncryptedAESKey() {
+        return encryptedAESKey;
+    }
+
+    public void setEncryptedAESKey(String encryptedAESKey) {
+        this.encryptedAESKey = encryptedAESKey;
+    }
+
+    public String getIv() {
+        return iv;
+    }
+
+    public void setIv(String iv) {
+        this.iv = iv;
     }
 }

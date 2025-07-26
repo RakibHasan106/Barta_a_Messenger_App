@@ -27,10 +27,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
         Log.d("DBHelper","onCreate called");
         String createTableQuery = "CREATE TABLE IF NOT EXISTS "+chat_table_name+
-                            " (MESSAGEID TEXT PRIMARY KEY," +
-                            " MESSAGE TEXT, MESSAGETYPE TEXT ," +
-                            "ISNOTIFIED TEXT,"+
-                            "TIMESTAMP INTEGER, SENDER_ID TEXT);";
+                " (MESSAGEID TEXT PRIMARY KEY," +
+                " MESSAGE TEXT, MESSAGETYPE TEXT ," +
+                "ISNOTIFIED TEXT,"+
+                "TIMESTAMP INTEGER, SENDER_ID TEXT);";
 
         sqLiteDatabase.execSQL(createTableQuery);
     }

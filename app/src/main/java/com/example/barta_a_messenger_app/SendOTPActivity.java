@@ -10,19 +10,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.PhoneAuthCredential;
-import com.google.firebase.auth.PhoneAuthOptions;
-import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.hbb20.CountryCodePicker;
-
-import java.util.concurrent.TimeUnit;
 
 public class SendOTPActivity extends AppCompatActivity {
 
@@ -31,8 +25,7 @@ public class SendOTPActivity extends AppCompatActivity {
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     CountryCodePicker countryCodePicker;
-
-    DatabaseReference databaseReference ;
+    DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,56 +36,66 @@ public class SendOTPActivity extends AppCompatActivity {
         getOtpButton = findViewById(R.id.getotpbutton);
         countryCodePicker = findViewById(R.id.countrypicker);
 
-        databaseReference =  FirebaseDatabase.getInstance().getReference();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        String email,name,password;
+        String email = getIntent().getStringExtra("email");
+        String name = getIntent().getStringExtra("name");
+        String password = getIntent().getStringExtra("password");
 
-        String user = mAuth.getCurrentUser().getUid();
-
-        email = getIntent().getStringExtra("email");
-        name = getIntent().getStringExtra("name");
-        password = getIntent().getStringExtra("password");
-
+        String userUid = mAuth.getCurrentUser().getUid();
 
         countryCodePicker.registerCarrierNumberEditText(phoneNumber);
+
         getOtpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!countryCodePicker.isValidFullNumber()){
+                if (!countryCodePicker.isValidFullNumber()) {
                     phoneNumber.setError("Invalid phone number");
-                }
-
-                else{
+                } else {
                     String phone = countryCodePicker.getFullNumberWithPlus();
-//                    databaseReference.child("All Accounts").child(phone).setValue(phone);
+
                     databaseReference.child("All Accounts").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if(snapshot.child(phone).exists()){
+                            if (snapshot.child(phone).exists()) {
                                 phoneNumber.setError("Phone Number Already Registered");
-                            }
-                            else{
-                                databaseReference.child("All Accounts").child(phone).child("phone_no").setValue(phone);
-                                databaseReference.child("All Accounts").child(phone).child("uid").setValue(FirebaseAuth.getInstance().getUid());
-                                databaseReference.child("user").child(user).setValue(new User(name,email,phone,"","active"));
-                                Intent intent = new Intent(SendOTPActivity.this, HomeScreen.class);
-                                intent.putExtra("email",email);
-                                intent.putExtra("phone",countryCodePicker.getFullNumberWithPlus());
-                                intent.putExtra("name",name);
-                                intent.putExtra("password",password);
-                                startActivity(intent);
+                            } else {
+                                try {
+                                    // ✅ Generate KeyPair if not already
+                                    KeyStoreHelper.generateKeyPairIfNotExists();
+
+                                    // ✅ Get encoded public key
+                                    String publicKeyString = KeyStoreHelper.getEncodedPublicKey();
+
+                                    // Save phone and uid in "All Accounts"
+                                    databaseReference.child("All Accounts").child(phone).child("phone_no").setValue(phone);
+                                    databaseReference.child("All Accounts").child(phone).child("uid").setValue(userUid);
+
+                                    // Save full user data including public key
+                                    User newUser = new User(name, email, phone, publicKeyString, "active");
+                                    databaseReference.child("user").child(userUid).setValue(newUser);
+
+                                    // Navigate to home screen
+                                    Intent intent = new Intent(SendOTPActivity.this, HomeScreen.class);
+                                    intent.putExtra("email", email);
+                                    intent.putExtra("phone", phone);
+                                    intent.putExtra("name", name);
+                                    intent.putExtra("password", password);
+                                    startActivity(intent);
+                                    finish();
+
+                                } catch (Exception e) {
+                                    Toast.makeText(SendOTPActivity.this, "Key generation failed", Toast.LENGTH_SHORT).show();
+                                    e.printStackTrace();
+                                }
                             }
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-
-                            Toast.makeText(SendOTPActivity.this,"error",Toast.LENGTH_SHORT).show();
-
+                            Toast.makeText(SendOTPActivity.this, "Database error", Toast.LENGTH_SHORT).show();
                         }
                     });
-
-
                 }
             }
         });

@@ -127,20 +127,36 @@ public class AddContactActivity extends AppCompatActivity {
 
 
     private void saveContact(String contact_uid) {
-//        Contact contact = new Contact(fname,phone,contact_uid,"");
-//        databaseReference.child("Contacts").child(uid).child(phone).setValue(contact);
-//        name.setText("");
-//        phone_number.setText("");
+        // Step 1: Retrieve the sender's profile picture from the 'user' node
+        reference.child("user").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String senderProfilePic = "";
+                if (snapshot.child("profilePicture").exists()) {
+                    senderProfilePic = snapshot.child("profilePicture").getValue(String.class);
+                }
 
-        Request request = new Request("",phone,uid,contact_uid,"pending");
+                // Step 2: Create the Request object with profile picture
+                Request request = new Request("", phone, uid, contact_uid, "pending", senderProfilePic);
 
-        databaseReference.child("FriendRequestPending").child(contact_uid).child(uid).setValue(request);
+                // Step 3: Save to Firebase
+                databaseReference.child("FriendRequestPending")
+                        .child(contact_uid)
+                        .child(uid)
+                        .setValue(request);
 
-        phone_number.setText("");
+                phone_number.setText("");
 
-        Toast.makeText(this, "Friend request sent", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddContactActivity.this, "Friend request sent", Toast.LENGTH_SHORT).show();
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(AddContactActivity.this, "Failed to fetch sender's profile picture", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
 
 
 }

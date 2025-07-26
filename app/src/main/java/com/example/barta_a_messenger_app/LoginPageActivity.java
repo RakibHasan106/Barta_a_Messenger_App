@@ -176,14 +176,27 @@ public class LoginPageActivity extends AppCompatActivity{
         super.onStart();
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
-//            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child(String.valueOf(currentUser));
 
-//            databaseReference.child("status").setValue("active");
-            Intent intent = new Intent(LoginPageActivity.this,HomeScreen.class);
+        Log.d("AUTH_DEBUG_CRITICAL", "=== onStart() Debug ===");
+        Log.d("AUTH_DEBUG_CRITICAL", "Current user in onStart: " + (currentUser != null ? currentUser.getUid() : "NULL"));
+        Log.d("AUTH_DEBUG_CRITICAL", "Is anonymous: " + (currentUser != null ? currentUser.isAnonymous() : "N/A"));
+        Log.d("AUTH_DEBUG_CRITICAL", "Email: " + (currentUser != null ? currentUser.getEmail() : "N/A"));
+        Log.d("AUTH_DEBUG_CRITICAL", "Creation timestamp: " + (currentUser != null ? currentUser.getMetadata().getCreationTimestamp() : "N/A"));
+        Log.d("AUTH_DEBUG_CRITICAL", "Last sign in timestamp: " + (currentUser != null ? currentUser.getMetadata().getLastSignInTimestamp() : "N/A"));
+        Log.d("AUTH_DEBUG_CRITICAL", "========================");
+
+        if (currentUser != null && !currentUser.isAnonymous()) {
+            Log.d("AUTH_DEBUG_CRITICAL", "NAVIGATING TO HOMESCREEN - User found!");
+            Intent intent = new Intent(LoginPageActivity.this, HomeScreen.class);
             startActivity(intent);
+        } else if (currentUser != null && currentUser.isAnonymous()) {
+            Log.d("AUTH_DEBUG_CRITICAL", "ANONYMOUS USER FOUND - Signing out");
+            mAuth.signOut();
+        } else {
+            Log.d("AUTH_DEBUG_CRITICAL", "NO USER FOUND - Staying on login screen");
         }
     }
+
 
 
 

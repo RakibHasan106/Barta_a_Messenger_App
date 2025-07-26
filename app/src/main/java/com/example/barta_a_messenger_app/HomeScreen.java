@@ -139,41 +139,77 @@ public class HomeScreen extends BaseActivity{
             }
         });
 
-        notificationListener= new ValueEventListener() {
+        notificationListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot datasnapshot : snapshot.getChildren()) {
                     for(DataSnapshot dataSnapshot2 : datasnapshot.getChildren()){
                         MessageModel message = dataSnapshot2.getValue(MessageModel.class);
 
-                        if(message.getIsNotified().equals("no")){
+                        if(message != null && "no".equals(message.getIsNotified())){
 
                             database.getReference().child("user")
-                                            .child(message.getUid()).get()
+                                    .child(message.getUid()).get()
                                     .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<DataSnapshot> task) {
-                                            if(task.isSuccessful()){
+                                            if (task.isSuccessful()) {
                                                 DataSnapshot ds = task.getResult();
-                                                if(ds.exists()){
+                                                if (ds.exists()) {
                                                     sendername = ds.child("username").getValue(String.class);
 
-                                                    try{
-                                                        decryptedmessage = CryptoHelper.decrypt("H@rrY_p0tter_106",message.getMessage());
-                                                    } catch (Exception e) {
-                                                        throw new RuntimeException(e);
+                                                    // Handle different message types
+                                                    String messageType = message.getMessageType();
+                                                    String notificationMessage = "";
+
+                                                    if ("msg".equals(messageType)) {
+                                                        // Text message - decrypt it
+                                                        try {
+                                                            String encryptedAESKey = message.getEncryptedAESKey();
+                                                            String iv = message.getIv();
+                                                            String encryptedMsg = message.getMessage();
+
+                                                            Log.d("DecryptionDebug", "EncryptedAESKey: " + encryptedAESKey);
+                                                            Log.d("DecryptionDebug", "IV: " + iv);
+                                                            Log.d("DecryptionDebug", "EncryptedMsg: " + encryptedMsg);
+
+                                                            if (encryptedAESKey == null || iv == null || encryptedMsg == null) {
+                                                                notificationMessage = encryptedMsg != null ? encryptedMsg : "";
+                                                                Log.d("DecryptionDebug", "Missing encryption parameters, skipping decryption.");
+                                                            } else {
+                                                                notificationMessage = EncryptionHelper.decryptMessage(encryptedMsg, encryptedAESKey, iv);
+                                                                Log.d("DecryptionDebug", "Decrypted message: " + notificationMessage);
+                                                            }
+                                                        } catch (Exception e) {
+                                                            Log.e("DecryptionDebug", "Decryption failed", e);
+                                                            notificationMessage = "";
+                                                        }
+                                                    }
+                                                    else if ("img".equals(messageType)) {
+                                                        // Image message - show generic notification
+                                                        notificationMessage = "sent an image";
+                                                    }
+                                                    else if ("pdf".equals(messageType)) {
+                                                        // PDF file - show generic notification
+                                                        notificationMessage = "sent a file";
+                                                    }
+                                                    else if ("doc".equals(messageType)) {
+                                                        // DOC file - show generic notification
+                                                        notificationMessage = "sent a file";
+                                                    }
+                                                    else {
+                                                        // Unknown message type
+                                                        notificationMessage = "sent a message";
                                                     }
 
-                                                    new NotificationHelper().notificationDialog(HomeScreen.this,decryptedmessage,sendername);
-                                                    //Log.d("senderName",sendername);
-
+                                                    // Show notification
+                                                    new NotificationHelper().notificationDialog(HomeScreen.this, notificationMessage, sendername);
                                                 }
                                             }
                                         }
                                     });
-                            //Toast.makeText(HomeScreen.this,sendername, Toast.LENGTH_SHORT).show();
 
-
+                            // Mark message as notified
                             database.getReference().child("chats")
                                     .child(uid).child(datasnapshot.getKey())
                                     .child(dataSnapshot2.getKey())
@@ -185,7 +221,7 @@ public class HomeScreen extends BaseActivity{
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Log.e("NotificationListener", "Cancelled: " + error.getMessage());
             }
         };
 

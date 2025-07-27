@@ -53,12 +53,19 @@
 
             <androidx.constraintlayout.utils.widget.MotionButton
                 android:id="@+id/updateStatusBtn"
-                android:layout_width="130dp"
+                android:layout_width="140dp"
                 android:layout_height="wrap_content"
                 android:text="Update Profile"
                 android:layout_margin="10dp"
                 android:textColor="#FFFFFF"
-                android:backgroundTint="#035283"/>
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:background="@drawable/update_profile_button_selector"
+                android:elevation="4dp"
+                android:stateListAnimator="@drawable/button_state_animator"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="2dp"/>
 
             <androidx.constraintlayout.utils.widget.MotionButton
                 android:id="@+id/btnLogout"
@@ -67,7 +74,15 @@
                 android:text="Logout"
                 android:layout_gravity="center"
                 android:textColor="#FFFFFF"
-                android:backgroundTint="#035283"/>
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:background="@drawable/logout_button_selector"
+                android:elevation="4dp"
+                android:stateListAnimator="@drawable/button_state_animator"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="12dp" />
 
             <TextView
                 android:id="@+id/contact_list"

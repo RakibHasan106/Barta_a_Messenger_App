@@ -85,6 +85,8 @@ public class chatFragment extends Fragment {
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 if (dataSnapshot.exists()) {
                                     String profilePictureUrl = dataSnapshot.child("profilePicture").getValue(String.class);
+                                    String username = dataSnapshot.child("username").getValue(String.class);
+                                    contact.setFull_name(username);
                                     contact.setProfilePic(profilePictureUrl);
                                     adapter.notifyDataSetChanged();  // Notify adapter to update the UI
                                 }

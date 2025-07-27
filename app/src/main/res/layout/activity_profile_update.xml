@@ -81,15 +81,24 @@
                     android:hint="Username"/>
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
+
+
         <androidx.constraintlayout.utils.widget.MotionButton
             android:id="@+id/updateBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Update"
+            android:layout_margin="10dp"
             android:textColor="#FFFFFF"
             android:layout_gravity="center"
-            android:layout_margin="20dp"
-            android:backgroundTint="#035283"/>
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:background="@drawable/update_profile_button_selector"
+            android:elevation="4dp"
+            android:stateListAnimator="@drawable/button_state_animator"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="2dp"/>
 
     </LinearLayout>
 

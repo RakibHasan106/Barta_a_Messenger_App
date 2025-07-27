@@ -143,9 +143,7 @@ public class ProfileUpdateActivity extends AppCompatActivity {
         imgProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent photoIntent = new Intent(Intent.ACTION_PICK);
-//                photoIntent.setType("image/*");
-//                startActivityForResult(photoIntent,1);
+
                 showImagePickerDialog();
             }
         });
@@ -213,29 +211,7 @@ public class ProfileUpdateActivity extends AppCompatActivity {
             }
         });
     }
-//
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == 1 && resultCode == RESULT_OK && data!=null){
-//            imagePath = data.getData();
-//            getImageInImageView();
-//
-//        }
-//    }
-//
-//    private void getImageInImageView() {
-//
-//        Bitmap bitmap = null;
-//        try {
-//            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),imagePath);
-//        }
-//        catch (IOException e){
-//            e.printStackTrace();
-//        }
-//
-//        imgProfile.setImageBitmap(bitmap);
-//    }
+
     private void showImagePickerDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Choose Image Source");

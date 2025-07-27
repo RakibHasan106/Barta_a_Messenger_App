@@ -82,6 +82,9 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.MyView
                 if ("You".equals(contact.getLast_sender_name())) {
                     holder.contact_phone.setText(contact.getLast_sender_name() + " : " + decryptedmessage);
                 }
+                else {
+                    holder.contact_phone.setText(decryptedmessage);
+                }
             }
             else {
                 holder.contact_phone.setText(decryptedmessage);
@@ -147,6 +150,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.MyView
                 intent.putExtra("Name", contact.getFull_name());
                 intent.putExtra("phone_no", contact.getPhone_number());
                 intent.putExtra("contact_uid", contact.getUid());
+                intent.putExtra("profile_pic", contact.getProfilePic());
                 contact_phone.setTypeface(null, Typeface.NORMAL);
                 c.startActivity(intent);
             });

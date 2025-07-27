@@ -45,70 +45,7 @@
                 />
         </LinearLayout>
 
-<!--        <ImageView-->
-<!--            android:layout_width="130dp"-->
-<!--            android:layout_height="130dp"-->
-<!--            android:layout_marginTop="80dp"-->
-<!--            android:contentDescription="@string/app_name"-->
-<!--            android:src="@drawable/otpsend"/>-->
 
-<!--        <TextView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="30dp"-->
-<!--            android:text="OTP Verification"-->
-<!--            android:textColor="@color/black"-->
-<!--            android:textSize="20sp"-->
-<!--            android:textStyle="bold"/>-->
-
-<!--        <TextView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="50dp"-->
-<!--            android:layout_marginEnd="50dp"-->
-<!--            android:layout_marginTop="8dp"-->
-<!--            android:gravity="center"-->
-<!--            android:text="We will send you a one time password on this number"-->
-<!--            android:textSize="14sp"/>-->
-
-<!--        <TextView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="30dp"-->
-<!--            android:layout_marginTop="50dp"-->
-<!--            android:layout_marginEnd="30dp"-->
-<!--            android:gravity="center"-->
-<!--            android:text="Enter Mobile Number"-->
-<!--            android:textSize="14sp"/>-->
-
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="vertical">-->
-<!--            <com.google.android.material.textfield.TextInputLayout-->
-<!--                android:id="@+id/usernameContainer"-->
-<!--                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                app:helperText="Required"-->
-<!--                app:hintTextColor="#035283"-->
-<!--                android:textColorHint="#035283"-->
-<!--                app:boxStrokeColor="#035283"-->
-<!--                app:helperTextTextColor="#d40202"-->
-<!--                android:layout_marginHorizontal="20dp"-->
-<!--                android:layout_margin="30dp"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent">-->
-<!--                <com.google.android.material.textfield.TextInputEditText-->
-<!--                    android:id="@+id/contact_name"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:lines="1"-->
-
-<!--                    android:hint="Name"/>-->
-<!--            </com.google.android.material.textfield.TextInputLayout>-->
-<!--        </LinearLayout>-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -154,7 +91,7 @@
                     app:layout_constraintTop_toTopOf="parent">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/contact_number"
-                        android:layout_width="180dp"
+                        android:layout_width="170dp"
                         android:layout_height="50dp"
                         android:inputType="number"
                         android:textSize="16sp"
@@ -180,16 +117,23 @@
         <!--                android:layout_marginTop="2dp"-->
         <!--                android:layout_marginEnd="70dp"-->
         <!--                android:background="#03A7FF"/>-->
+
+
         <androidx.constraintlayout.utils.widget.MotionButton
             android:id="@+id/save_button"
-            android:layout_width="wrap_content"
+            android:layout_width="140dp"
             android:layout_height="wrap_content"
+            android:text="SEND"
             android:layout_margin="30dp"
-            android:text="Send"
-            android:textSize="16sp"
-            android:textStyle="bold"
             android:textColor="#FFFFFF"
-            android:backgroundTint="#3771AE"/>
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:background="@drawable/update_profile_button_selector"
+            android:elevation="4dp"
+            android:stateListAnimator="@drawable/button_state_animator"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="2dp"/>
 
 
     </LinearLayout>

@@ -76,13 +76,13 @@ All messages are encrypted to ensure privacy and secure communication between us
     <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/Verification%20Mail%20Sent.png" height="400px" width="200px"</td>
       <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/Chat%20List.jpg" height="400px" width="200px"</td>
         <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/Inbox.jpg" height="400px" width="200px"</td>
-          <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/profile.jpg" height="400px" width="200px"</td>
+          <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/profile_view.jpg" height="400px" width="200px"</td>
             
   </tr>
   <tr>
-    <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/Friend%20Request.png" height="400px" width="200px"</td>
+    <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/Friend_Request.png" height="400px" width="200px"</td>
             <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/Friend%20Request.jpg" height="400px" width="200px"</td>
-                <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/Edit%20Profile.png" height="400px" width="200px"</td>
+                <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/Edit_Profile.png" height="400px" width="200px"</td>
                   <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/Settings.jpg" height="400px" width="200px"</td>
   </tr>
 </table>

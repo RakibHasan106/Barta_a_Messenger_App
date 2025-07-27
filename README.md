@@ -26,6 +26,43 @@ All messages are encrypted to ensure privacy and secure communication between us
 - **✨ User-Friendly Interface**  
   Intuitive and easy-to-navigate design for a smooth user experience.
 
+<h2>🔐 End-to-End Encryption</h2>
+
+<p><strong>Barta: A Messenger App</strong> ensures private communication using a hybrid <strong>End-to-End Encryption</strong> system combining AES and RSA encryption.</p>
+
+<h3>🔧 Key Concepts</h3>
+<ul>
+  <li><strong>Hybrid Encryption:</strong> Combines the speed of AES with the security of RSA.</li>
+  <li><strong>AES:</strong> Encrypts the actual message (symmetric, fast).</li>
+  <li><strong>RSA:</strong> Encrypts the AES key (asymmetric, secure).</li>
+  <li><strong>Dual Encryption:</strong> AES key is encrypted using both the receiver's and sender's public RSA keys.</li>
+</ul>
+
+<h3>🔑 Key Management</h3>
+<ul>
+  <li><strong>RSA Key Generation:</strong> 2048-bit key pairs are created and stored in Android Keystore using <code>KeyStoreHelper</code>.</li>
+  <li><strong>Public Key Sharing:</strong> Base64-encoded public keys are saved in Firebase under each user's Contacts entry.</li>
+</ul>
+
+<h3>🔒 Message Encryption Process</h3>
+<ol>
+  <li><strong>AES Key Generation:</strong> A new 256-bit AES key is created per message.</li>
+  <li><strong>AES Encryption:</strong> Message encrypted with <code>AES/GCM/NoPadding</code> and random 12-byte IV.</li>
+  <li><strong>RSA Encryption:</strong> AES key is encrypted:
+    <ul>
+      <li>Once with the receiver’s public key.</li>
+      <li>Once with the sender’s public key (for secure history storage).</li>
+    </ul>
+  </li>
+  <li><strong>Payload:</strong> Includes encrypted message, AES key(s), and IV.</li>
+</ol>
+
+<h3>🔓 Message Decryption Process</h3>
+<ol>
+  <li><strong>RSA Decryption:</strong> AES key is decrypted using the device's private RSA key.</li>
+  <li><strong>AES Decryption:</strong> Message decrypted with the recovered AES key and IV.</li>
+</ol>
+
   ## UI
 
   <table>

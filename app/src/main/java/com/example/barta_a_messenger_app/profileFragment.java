@@ -130,9 +130,12 @@ public class profileFragment extends Fragment {
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 if (dataSnapshot.exists()) {
                                     String profilePictureUrl = dataSnapshot.child("profilePicture").getValue(String.class);
+                                    String username = dataSnapshot.child("username").getValue(String.class);
 
-//                                contact.setProfilePic(profilePictureUrl);
-                                    databaseReference.child(uid2).child("profilePic").setValue(profilePictureUrl);
+                                    contact.setProfilePic(profilePictureUrl);
+                                    contact.setFull_name(username);
+//                                    databaseReference.child(uid2).child("profilePic").setValue(profilePictureUrl);
+//                                    databaseReference.child(uid2).child("full name").setValue(username);
 
                                     adapter.notifyDataSetChanged();
                                 }

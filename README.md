@@ -83,7 +83,7 @@ All messages are encrypted to ensure privacy and secure communication between us
     <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/Friend_Request.png" height="400px" width="200px"</td>
             <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/Friend%20Request.jpg" height="400px" width="200px"</td>
                 <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/Edit_Profile.png" height="400px" width="200px"</td>
-                  <td><img src="https://github.com/RakibHasan106/Barta_a_Messenger_App/blob/master/Images/Settings.jpg" height="400px" width="200px"</td>
+                  
   </tr>
 </table>
 

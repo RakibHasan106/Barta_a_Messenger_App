@@ -10,7 +10,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/my_primary"
+        android:background="#7EBBFD"
         android:alpha=".7"/>
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,7 +22,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/message_icon"/>
+            android:src="@drawable/app_icon"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -48,13 +48,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="28dp">
+            android:paddingLeft="28dp"
+            android:paddingRight="28dp"
+            android:paddingTop="28dp"
+            android:paddingBottom="60dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Welcome"
-                android:textColor="@color/my_primary"
+                android:textColor="#035283"
                 android:textSize="32sp"
                 android:textStyle="bold"/>
 
@@ -71,15 +74,26 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Phone Number"
+                android:text="Email"
                 android:alpha="0.7"
                 android:textStyle="bold"/>
 
-            <EditText
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="phone"
-                android:drawableEnd="@drawable/done_icon"/>
+                app:boxBackgroundMode="filled">
+
+                <EditText
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:drawableEnd="@drawable/done_icon"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
 
             <View
                 android:layout_width="wrap_content"
@@ -92,23 +106,39 @@
                 android:alpha="0.7"
                 android:textStyle="bold"/>
 
-            <EditText
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:drawableEnd="@drawable/password_icon"/>
+                app:passwordToggleEnabled="true"
+                app:boxBackgroundMode="filled"
+                >
+
+                <EditText
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
             
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                >
                 
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Remember me"
-                    android:layout_centerVertical="true"
-                    android:alpha="0.7"/>
+<!--                <CheckBox-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Remember me"-->
+<!--                    android:layout_centerVertical="true"-->
+<!--                    android:alpha="0.7"/>-->
                 <TextView
+                    android:id="@+id/forgetpasstext"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="I forgot my password"
@@ -121,21 +151,30 @@
                 android:layout_width="wrap_content"
                 android:layout_height="10dp"/>
 
-            <com.google.android.material.button.MaterialButton
+            <androidx.constraintlayout.utils.widget.MotionButton
+                android:id="@+id/loginbutton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:text="Login"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#035283"
                 app:cornerRadius="32dp"/>
 
-            <com.google.android.material.button.MaterialButton
+            <androidx.constraintlayout.utils.widget.MotionButton
+                android:id="@+id/signupbutton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:text="SignUp"
                 app:cornerRadius="32dp"
-                android:backgroundTint="#7C66A5"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#2085C3"
                 />
 
+
+
+
         </LinearLayout>
+
 
     </androidx.cardview.widget.CardView>
 

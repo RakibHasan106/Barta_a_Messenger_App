@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ProfileUpdateActivity">
+    tools:context=".activities.ProfileUpdateActivity">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".profileFragment">
+    tools:context=".fragments.profileFragment">
         <LinearLayout
             android:id="@+id/profile"
             android:layout_width="match_parent"

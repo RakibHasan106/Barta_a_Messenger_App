@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:background="#035283"
-    tools:context=".InboxActivity">
+    tools:context=".activities.InboxActivity">
 
     <View
         android:id="@+id/viewBackground"
